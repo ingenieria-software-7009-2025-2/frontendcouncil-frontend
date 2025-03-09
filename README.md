@@ -1,77 +1,99 @@
 # frontendcouncil-frontend
-frontend del consejo del backend usando React con TypeScript
+Frontend del Consejo del Backend usando React con TypeScript.
 
-# Requisitos para instalacion
-
-se nesesita lo siguiente:
+### Requisitos para instalación
 
 - Node.js
 - Npm (se puede usar yarn)
 
-la instalacion de Node se puede encontrar en su [sitio oficial](https://nodejs.org/es)
+La instalacion de Node se puede encontrar en su [sitio oficial](https://nodejs.org/es).
 
-## Instalacion
+## Instalación
 
-### para `Arch Linux` (de basados en el):
+### Para `Arch Linux` (y basados en él):
+
 - Actualizamos paquetes:
-  ```
+
+  ```bash
   sudo pacman -Syu 
   ```
 
-- Instalacion de Node.js y Npm:
-  ```
+- Instalación de Node.js y Npm:
+
+  ```bash
   sudo pacman -S nodejs npm
   ```
-- Instalacion de TypeScript:
-  ```
-  npm install -g typescript
-  ```
-### para `ubuntu` (y basados en debian)
-  - Actualizar paquetes:
-  ```
-  sudo apt update
-  ```
-  - Instalacion de Node.js y Npm:
-  ```
-    sudo apt install nodejs npm -y
-  ```
-  - Verificamos la instalacion:
-  ```
-  node -v
-  npm -v
-  ```
-  - Instalacion de TypeScript:
-  ```
-  npm install -g typescript
-  ```
-### para `fedora`:
-- Instalacion de Node.js (ya incluye npm)
-  ```
-  sudo dnf install nodejs -y
-  ```
-- Instalacion de TypeScript
+  
+- Instalación de TypeScript:
+
   ```
   npm install -g typescript
   ```
   
-(opcional) ejecuta este comando para verificar la correcta instalacion de TypeScript
+### Para `Ubuntu` (y basados en `Debian`)
+
+  - Actualizar paquetes:
+
+  ```bash
+  sudo apt update
   ```
+  
+  - Instalación de Node.js y Npm:
+  
+  ```bash
+    sudo apt install nodejs npm -y
+  ```
+  
+  - Verificamos la instalación:
+  
+  ```bash
+  node -v
+  npm -v
+  ```
+
+  - Instalación de TypeScript:
+  
+  ```bash
+  npm install -g typescript
+  ```
+
+### Para `Fedora`:
+
+- Instalación de Node.js (ya incluye npm)
+
+  ```bash
+  sudo dnf install nodejs -y
+  ```
+  
+- Instalación de TypeScript
+
+  ```bash
+  npm install -g typescript
+  ```
+  
+- (Opcional) Ejecute este comando para verificar la correcta instalación de TypeScript
+
+  ```bash
   tsc --version
   ```
-# Ejecucion
+  
+## Ejecución
 
-lo primero es clonar el repositorio y colocarnos en la carpeta recien creada:
-```
+Primero, se requiere clonar el repositorio y colocarnos en la carpeta recien creada:
+
+```bash
 git clone https://github.com/ingenieria-software-7009-2025-2/frontendcouncil-frontend.git
 cd frontendcouncil-frontend
 ```
-ya en la carpeta `frontendcouncil-frontend`, ejecutamos los siguientes comandos:
 
-```
+Despúes, ya en la carpeta `frontendcouncil-frontend/`, ejecutamos los siguientes comandos:
+
+```bash
 npm install
 ```
-```
+
+```bash
 npm run dev
 ```
-si todo salio bien, el proyecto estara en ejecucion y se podra visualizar en un navegador web en localhost 
 
+Si todo ha salido de manera correcta, el proyecto estará en ejecución y se podrá visualizar en un **navegador web en localhost**. 
