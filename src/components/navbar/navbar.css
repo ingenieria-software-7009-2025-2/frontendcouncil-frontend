@@ -1,0 +1,70 @@
+/* Estilos del Navbar */
+.navbar-custom {
+    width: 98%;
+    height: 50px !important;
+    background-color: rgba(3, 4, 54, 0.25) !important;
+    border-radius: 10px;
+    position: fixed !important;
+    top: 2% !important;
+    left: 50% !important;
+    transform: translateX(-50%)!important;
+    z-index: 9999;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+  
+.navbar-custom .navbar-brand, 
+.navbar-custom .navbar-nav .nav-link {
+    color: rgb(0, 0, 0) !important; 
+}
+  
+/* STYLES BOTÓN LOGIN */
+.login-button {
+    border-radius: 20px !important;
+    background-color: #030436 !important;
+    font-weight: bold !important;
+    border-color: #030436 !important;
+    position: absolute !important;
+    right: 20px; /* Alineado a la derecha */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.userMenu{
+    position: absolute !important;
+    right: 20px; 
+}
+
+/* Cambiar el color del texto en hover */
+.login-button:hover {
+    color: #5bfff1 !important; 
+}
+
+.menuH {
+    position: absolute !important;
+    left: 10px; 
+    top: 50%;
+    transform: translateY(-50%); 
+}
+
+/* Superposición del modal */
+.modal-overlay {
+    position: fixed;         
+    top: 0;
+    left: 0;
+    width: 100vw;             
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7); 
+    z-index: 9999;           
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  
+/* Asegura que el modal de Bootstrap también se mantenga visible */
+.modal-content {
+    z-index: 10001;           
+    position: relative;
+}
+  
+
+ 

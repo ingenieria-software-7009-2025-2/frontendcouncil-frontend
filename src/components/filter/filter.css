@@ -1,0 +1,29 @@
+/* Botón circular */
+  .menu-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 80% !important;
+    background: #030436 !important; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s;
+  }
+  
+
+  .menu-circle .navbar-toggler-icon {
+    display: none;
+  }
+  
+  /* Estilos para el menú desplegable */
+  .menu-content {
+    position: absolute;
+    left: 50%;
+    transform: translateX(80%);
+    top: 110% !important; 
+    margin-top: 20px; 
+    text-align: center; 
+    width: 200px; 
+  }
