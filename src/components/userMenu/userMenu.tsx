@@ -1,13 +1,14 @@
 import { useState, useRef } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { PersonFill, Gear, BoxArrowRight } from 'react-bootstrap-icons';
-
+import { useNavigate } from "react-router-dom";
 import './UserDropdown.css';
 
 
 const UserDropdown = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate(); //hook de navegacion
 
   // Cambiar esto con el auth y la bd
   const userData = {
@@ -36,7 +37,7 @@ const UserDropdown = () => {
             <div className="user-email">{userData.email}</div>
           </div>
           <Dropdown.Divider/>
-          <Dropdown.Item href="#/action-2" className="dropdown-item-with-icon">
+          <Dropdown.Item href="/profile" className="dropdown-item-with-icon">
             <Gear className="dropdown-icon" />
             <span>Configuración de la cuenta</span>
           </Dropdown.Item>
