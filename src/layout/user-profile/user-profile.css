@@ -1,0 +1,98 @@
+/* Contenedor principal */
+.profile-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.5rem;
+}
+
+/* Estilo para el nombre */
+.profile-name {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  color: #212529;
+}
+
+/* Estilo para el botón de editar */
+.edit-profile-button {
+    width:30px;
+    height:30px;
+    background-color: rgb(33, 37, 41, 70%) !important;
+    border:none !important;
+    padding: 0 !important;
+    margin-right: 10px !important;
+    border-radius: 100px !important;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center !important;
+    margin-left: 0.9rem !important;
+}
+
+
+/* Efecto hover para el botón */
+.edit-profile-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+  /* Efecto active para el botón */
+  .edit-profile-button:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+
+  .btn-link.text-body:hover {
+    color: var(--bs-primary) !important;
+  }
+  
+  .btn-link.text-danger:hover {
+    color: var(--bs-danger) !important;
+    text-decoration: underline;
+  }
+  
+  /* Alinear iconos correctamente */
+  .btn-link .d-flex {
+    align-items: center;
+  }
+
+
+  /* Elimina los márgenes del contenedor principal */
+.user-profile-container {
+    padding: 0;
+    margin: none !important;
+    border: none !important;
+  }
+  
+  .profile-card {
+    margin: 0;
+    border: none;
+    box-shadow: none;
+  }
+  
+  
+  /* Cambiar color del ícono del lápiz */
+  .edit-profile-button .bi-pencil {
+    color: #ffffff; /* Color gris de Bootstrap */
+    transition: color 0.2s ease;
+    margin-left: 0.26rem !important;
+  }
+  
+  .edit-profile-button:hover .bi-pencil {
+    color: #eef5ff !important; /* Color primary de Bootstrap al hacer hover */
+  }
+  
+  /* Ajuste para el contenedor del nombre y botón */
+  .d-flex.justify-content-between.align-items-center.mb-4 {
+    margin-bottom: 0 !important;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee; /* Opcional: línea divisoria */
+  }
+  
+  /* Ajuste para el nombre */
+  .profile-header h4 {
+    margin: 0;
+    padding: 0;
+  }

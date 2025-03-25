@@ -1,0 +1,8 @@
+.mapa-background {
+    background-image: url('../../assets/mapa.jpg'); /* Asegúrate de que la ruta sea correcta */
+    background-size: cover; /* Hace que la imagen cubra todo el contenedor */
+    background-position: center; /* Centra la imagen */
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    width: 100%; /* Ocupa todo el ancho disponible */
+    position: relative; /* Asegura que cualquier contenido adicional se ubique correctamente encima */
+  }

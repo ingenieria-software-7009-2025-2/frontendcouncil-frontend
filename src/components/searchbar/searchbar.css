@@ -1,0 +1,67 @@
+/* Estilos generales de la barra de navegación */
+.navbar-searchbar {
+    background-color: #466584;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 20px !important;
+  }
+  
+  /* Contenedor de la búsqueda */
+  .search-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    border-radius: 80px !important;
+  }
+  
+  /* Campo de entrada */
+  .search-input {
+    flex-grow: 1;
+    padding-left: 40px;
+    padding-right: 40px;
+    height: 45px;
+    border-radius: 25px;
+    border: 2px solid #34495e;
+    background-color: #34495e;
+    color: white;
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus {
+    background-color: #2c3e50;
+    border-color: #3498db;
+    box-shadow: none;
+    color: rgb(49, 26, 26);
+  }
+  
+  /* Ícono de búsqueda */
+  .search-icon {
+    position: absolute;
+    left: 15px;
+    color: #000000;
+  }
+  
+  /* Botón para limpiar */
+  .clear-button {
+    position: absolute;
+    right: 120px;
+    background: transparent;
+    border: none;
+    color: #031520;
+    padding: 0 8px;
+  }
+  
+  .clear-button:hover {
+    color: #e74c3c;
+  }
+  
+  /* Dropdown de filtros */
+  .filter-dropdown {
+    margin-left: 10px;
+  }
+  /* Botón de búsqueda para móviles */
+  .search-button {
+    margin-left: 10px;
+    border-radius: 25px;
+    padding: 8px 20px;
+  }

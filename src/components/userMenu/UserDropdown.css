@@ -1,0 +1,128 @@
+    /* Contenedor principal */
+    .user-dropdown-container {
+        position: relative;
+        display: inline-block;
+    }
+
+  /* Ajustes para el menú desplegable */
+  .user-dropdown-menu {
+    margin-top: 10px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 8px 0;
+    min-width: 240px;
+    position: absolute !important;
+    top: 110% !important; 
+    right: 0 !important; 
+    left: auto !important;
+    transform: none !important; 
+  }
+  
+  
+  /* Botón circular del user */
+  .user-toggle {
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    outline: none;
+  }
+  
+  .user-toggle::after {
+    display: none !important; 
+  }
+  
+  .user-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #3498db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: all 0.3s ease;
+  }
+  
+  .user-circle:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+  }
+  
+  .user-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Menú desplegable */
+  .user-dropdown-menu {
+    margin-top: 10px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 0;
+    min-width: 210px;
+  }
+  
+  .user-dropdown-menu .dropdown-item {
+    padding: 10px 16px;
+    color: #333;
+    transition: background-color 0.2s;
+  }
+  
+  .user-dropdown-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #000;
+  }
+  
+  .user-dropdown-menu .dropdown-divider {
+    margin: 6px auto; 
+    width: 90%; 
+    border-top: 1px solid #d0d1d2;
+    position: relative;
+  }
+
+  .dropdown-item-with-icon {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px !important;
+    color: #000000 !important;
+    transition: background-color 0.2s !important;
+  }
+  
+  .dropdown-item-with-icon:hover {
+    background-color: #ecf6ff !important;
+    color: #000 !important;
+  }
+
+  .dropdown-icon {
+    margin-right: 10px !important; 
+    width: 16px;
+    height: 16px;
+    color: #9aaaba; 
+    font-size: 14px !important;
+  }
+
+  .gear-icon {
+    color: #9aaaba; /* Color gris para la tuerca */
+  }
+
+  .user-name {
+    font-size: large;
+    font-weight: bold;
+  }
+
+  .user-email {
+    font-size: 14px;
+    margin-top: 5px;
+  }
+
+  .user-info-section {
+    padding: 14px 14px 12px 14px;
+    cursor: default;
+    margin-bottom: 4px; 
+
+  }
