@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, Form, Button, Row, Col, Container } from 'react-bootstrap';
-import { Pencil, Envelope, Person, Lock, ShieldLock, ExclamationTriangle } from 'react-bootstrap-icons';
+import { Pencil, Envelope, Person, Lock, ExclamationTriangle, Trash } from 'react-bootstrap-icons';
 import './user-profile.css';
 
 type UserProfile = {
@@ -9,17 +9,16 @@ type UserProfile = {
   lastName: string;
   motherLastName: string;
   email: string;
-  incidents: any[]; // Tipo más específico según tu necesidad
+  incidents: any[];
 };
 
 const UserProfilePage = () => {
-  // Datos del usuario 
   const [user, setUser] = useState<UserProfile>({
-    username: 'jperez123',
-    firstName: 'Juan',
-    lastName: 'Pérez',
-    motherLastName: 'Gómez',
-    email: 'juan.perez@example.com',
+    username: 'username',
+    firstName: 'Nombre',
+    lastName: 'Apellido',
+    motherLastName: 'Apellido',
+    email: 'correo_ejemplo@gmail.com',
     incidents: []
   });
 
@@ -34,11 +33,20 @@ const UserProfilePage = () => {
   const handleSave = () => {
     setUser({ ...tempUser });
     setIsEditing(false);
-    // Aquí iría la llamada a la API para guardar los cambios
   };
 
   const handleCancel = () => {
     setIsEditing(false);
+  };
+
+  const handleChangePassword = () => {
+    // Lógica para cambiar contraseña
+    console.log('Cambiar contraseña');
+  };
+
+  const handleDeleteAccount = () => {
+    // Lógica para eliminar cuenta
+    console.log('Eliminar cuenta');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,47 +59,13 @@ const UserProfilePage = () => {
   return (
     <Container className="user-profile-container">
       <Card className="profile-card">
-        <Card.Header className="profile-header">
-          <h2>Perfil de Usuario</h2>
-          {!isEditing ? (
-            <Button variant="outline-primary" onClick={handleEdit}>
-              <Pencil className="me-2" /> Editar
-            </Button>
-          ) : (
-            <div>
-              <Button variant="success" className="me-2" onClick={handleSave}>
-                Guardar
-              </Button>
-              <Button variant="outline-secondary" onClick={handleCancel}>
-                Cancelar
-              </Button>
-            </div>
-          )}
-        </Card.Header>
-
         <Card.Body>
           <Row>
             <Col md={6}>
-              <Form.Group className="mb-4">
-                <Form.Label className="d-flex align-items-center">
-                  <Person className="me-2 field-icon" /> Nombre de usuario
-                </Form.Label>
-                {isEditing ? (
-                  <Form.Control
-                    type="text"
-                    name="username"
-                    value={tempUser.username}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <div className="profile-field-value">{user.username}</div>
-                )}
-              </Form.Group>
-
-              <Form.Group className="mb-4">
-                <Form.Label>Nombre completo</Form.Label>
-                {isEditing ? (
-                  <>
+              {isEditing ? (
+                <>
+                  <Form.Group className="mb-4">
+                    <Form.Label>Nombre completo</Form.Label>
                     <Form.Control
                       type="text"
                       name="firstName"
@@ -115,38 +89,80 @@ const UserProfilePage = () => {
                       onChange={handleChange}
                       placeholder="Apellido materno"
                     />
-                  </>
-                ) : (
-                  <div className="profile-field-value">
-                    {`${user.firstName} ${user.lastName} ${user.motherLastName}`}
+                  </Form.Group>
+
+                  <Form.Group className="mb-4">
+                    <Form.Label>Nombre de usuario</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="username"
+                      value={tempUser.username}
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-4">
+                    <Form.Label>Correo electrónico</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      value={tempUser.email}
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
+
+                  <div className="d-flex mt-4">
+                    <Button variant="success" className="me-2" onClick={handleSave}>
+                      Guardar
+                    </Button>
+                    <Button variant="outline-secondary" onClick={handleCancel}>
+                      Cancelar
+                    </Button>
                   </div>
-                )}
-              </Form.Group>
+                </>
+              ) : (
+                <>
+                  <div className="d-flex justify-content-between align-items-center mb-4">
+                    <h4 className="mb-0 fw-bold">
+                      {`${user.firstName} ${user.lastName} ${user.motherLastName}`}
+                    </h4>
+                    <Button variant="outline-primary" onClick={handleEdit} className="edit-profile-button"> <Pencil className="me-2"/> </Button>
+                  </div>
 
-              <Form.Group className="mb-4">
-                <Form.Label className="d-flex align-items-center">
-                  <Envelope className="me-2 field-icon" /> Correo electrónico
-                </Form.Label>
-                {isEditing ? (
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    value={tempUser.email}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <div className="profile-field-value">{user.email}</div>
-                )}
-              </Form.Group>
+                  <div className="profile-info mb-4">
+                    <div className="d-flex align-items-center mb-2">
+                      <Envelope className="me-2 text-muted" />
+                      <span>{user.email}</span>
+                    </div>
+                    <div className="d-flex align-items-center mb-2">
+                      <Person className="me-2 text-muted" />
+                      <span>{user.username}</span>
+                    </div>
+                  </div>
 
-              <Form.Group className="mb-4">
-                <Form.Label className="d-flex align-items-center">
-                  <Lock className="me-2 field-icon" /> Contraseña
-                </Form.Label>
-                <Button variant="outline-secondary">
-                  Cambiar contraseña
-                </Button>
-              </Form.Group>
+                  <div className="d-flex flex-column gap-2 mt-3 ps-2">
+                    <Button 
+                      variant="link" 
+                      className="text-start p-0 text-decoration-none text-body"
+                      onClick={handleChangePassword}>
+                      <div className="d-flex align-items">
+                        <Lock className="me-2" />
+                        <span>Cambiar contraseña</span>
+                      </div>
+                    </Button>
+                    
+                    <Button 
+                      variant="link" 
+                      className="text-start p-0 text-decoration-none text-danger"
+                      onClick={handleDeleteAccount}>
+                      <div className="d-flex align-items-center">
+                        <Trash className="me-2" />
+                        <span>Eliminar cuenta</span>
+                      </div>
+                    </Button>
+                  </div>
+                </>
+              )}
             </Col>
 
             <Col md={6}>
@@ -156,7 +172,7 @@ const UserProfilePage = () => {
                 </h5>
                 {user.incidents.length === 0 ? (
                   <div className="no-incidents">
-                    No hay incidentes reportados
+                    No has reportado incidentes
                   </div>
                 ) : (
                   <div className="incidents-list">
