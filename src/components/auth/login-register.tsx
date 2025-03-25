@@ -11,13 +11,13 @@ interface ModalLoginRegisterProps {
 
 const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const { successMessage, errorMessage, confirmMessage } = useSwalMessages();
+  const { successMessage, errorMessage} = useSwalMessages();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     motherLastName: '',
     username: '',
-    email: '',
+    correo: '',
     password: '',
     confirmPassword: '',
   });
@@ -46,25 +46,41 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
     });
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-  
     // Verificamos si es email o username.
     const isEmail = loginData.identifier.includes('@');
-  
+
     // Si es un correo se manda como correo de lo contrario como username.
     const credentials = isEmail
-      ? { email: loginData.identifier, password: loginData.password }
-      : { username: loginData.identifier, password: loginData.password };
-  
+        ? {correo: loginData.identifier, password: loginData.password}
+        : {username: loginData.identifier, password: loginData.password};
+
     // Autenticacion con fetch
-    console.log(credentials);
-  
-    // Hacer la solicitud al backend para verificar las credenciales
+    try {
+      const response = await fetch("http://localhost:8080/v1/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
+      console.log(response)
+      if (!response.ok) {
+        throw new Error("Error en la autenticación");
+      }
+
+      const data = await response.json();
+      console.log("Usuario autenticado:", data);
+      successMessage("Inicio de sesión exitoso");
+    } catch (error) {
+      console.error("Error de login:", error);
+      errorMessage("Credenciales incorrectas");
+    }
   };
 
   // Función para manejar el envío del formulario
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
@@ -75,16 +91,35 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
     setFormError('');
     // Crear objeto user con todos los datos.
     const user = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      motherLastName: formData.motherLastName,
-      email: formData.email,
+      nombre: formData.firstName,
+      apPaterno: formData.lastName,
+      apMaterno: formData.motherLastName,
+      correo: formData.correo,
       username: formData.username, // Agregamos el campo de nombre de usuario
       password: formData.password,
     };
 
     console.log("Formulario enviado:", user);
+    try {
+      const response = await fetch("http://localhost:8080/v1/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      console.log(response)
+      if (!response.ok) {
+        throw new Error("Error en el registro");
+      }
 
+      const data = await response.json();
+      console.log("Usuario Registrado:", data);
+      successMessage("Exito");
+    } catch (error) {
+      console.error("Error de register:", error);
+      errorMessage("datos invalidos");
+    }
     // Aquí puedes hacer la petición al backend con fetch o axios
     // fetch('URL_DEL_BACKEND/register', {
     //   method: 'POST',
@@ -142,7 +177,7 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
         {/* El resto de tu contenido permanece igual */}
         <div className="modal-body">
           {isLogin ? (
-            <form>
+            <form onSubmit={handleLogin}>
               <div className="mb-3">
                 <label htmlFor="identifier" className="form-label">Correo electrónico o Usuario</label>
                 <input 
@@ -157,7 +192,16 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">Contraseña</label>
-                <input type="password" className="form-control" id="password" placeholder="Ingresa tu contraseña" />
+                <input
+                    type="password"
+                    className="form-control"
+                    id="password"
+                    name="password"
+                    value={loginData.password}
+                    onChange={handleLoginChange}
+                    placeholder="Ingresa tu contraseña"
+
+                    />
               </div>
               <div className="d-flex justify-content-end">
                 <button 
@@ -220,11 +264,11 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
                 <div className="mb-3">
                   <label htmlFor="emailRegister" className="form-label">Correo electrónico</label>
                   <input
-                    type="email"
+                    type="correo"
                     className="form-control"
                     id="emailRegister"
-                    name="email"
-                    value={formData.email}
+                    name="correo"
+                    value={formData.correo}
                     onChange={handleChange}
                     placeholder="Ingresa tu correo"
                   />

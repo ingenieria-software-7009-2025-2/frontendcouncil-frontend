@@ -37,7 +37,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #3498db;
+    background-color: #030436;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,23 +48,13 @@
   }
   
   .user-circle:hover {
-    background-color: #2980b9;
+    background-color: #0c0d4e;
     transform: scale(1.05);
   }
   
   .user-icon {
     width: 20px;
     height: 20px;
-  }
-  
-  /* Menú desplegable */
-  .user-dropdown-menu {
-    margin-top: 10px;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-radius: 8px;
-    padding: 0;
-    min-width: 210px;
   }
   
   .user-dropdown-menu .dropdown-item {

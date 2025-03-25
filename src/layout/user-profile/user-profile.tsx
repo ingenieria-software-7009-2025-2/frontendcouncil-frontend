@@ -57,14 +57,15 @@ const UserProfilePage = () => {
   };
 
   return (
-    <Container className="user-profile-container">
+    <Container fluid className="user-profile-container p-0">
       <Card className="profile-card">
         <Card.Body>
           <Row>
-            <Col md={6}>
+            <Col md={5}>
               {isEditing ? (
                 <>
                   <Form.Group className="mb-4">
+                  <h4 className="mb-0 fw-bold">Editar cuenta</h4>
                     <Form.Label>Nombre completo</Form.Label>
                     <Form.Control
                       type="text"
@@ -126,21 +127,19 @@ const UserProfilePage = () => {
                     <h4 className="mb-0 fw-bold">
                       {`${user.firstName} ${user.lastName} ${user.motherLastName}`}
                     </h4>
-                    <Button variant="outline-primary" onClick={handleEdit} className="edit-profile-button"> <Pencil className="me-2"/> </Button>
+                    <Button variant="outline-primary" onClick={handleEdit} className="edit-profile-button"> <Pencil className="me-2"/> Editar</Button>
                   </div>
 
-                  <div className="profile-info mb-4">
+                  <div className="profile-info mb-4 py-2">
                     <div className="d-flex align-items-center mb-2">
                       <Envelope className="me-2 text-muted" />
                       <span>{user.email}</span>
                     </div>
-                    <div className="d-flex align-items-center mb-2">
-                      <Person className="me-2 text-muted" />
+                    <div className="d-flex align-items-center mb-2 py-2">
+                      <Person className="me-2 fw-semiboldfw-semibold" />
                       <span>{user.username}</span>
                     </div>
-                  </div>
-
-                  <div className="d-flex flex-column gap-2 mt-3 ps-2">
+                    <div className="d-flex align-items-center mb-2 py-2">
                     <Button 
                       variant="link" 
                       className="text-start p-0 text-decoration-none text-body"
@@ -150,7 +149,8 @@ const UserProfilePage = () => {
                         <span>Cambiar contraseña</span>
                       </div>
                     </Button>
-                    
+                    </div>
+                    <div className="d-flex align-items-center mb-2 py-2">
                     <Button 
                       variant="link" 
                       className="text-start p-0 text-decoration-none text-danger"
@@ -161,24 +161,49 @@ const UserProfilePage = () => {
                       </div>
                     </Button>
                   </div>
+                  </div>
+
                 </>
               )}
             </Col>
-
+            <Col md={1}></Col>
             <Col md={6}>
               <div className="incidents-section">
-                <h5 className="d-flex align-items-center">
-                  <ExclamationTriangle className="me-2 field-icon" /> Reporte de Incidentes
+                <h5 className="d-flex align-items-center mb-4">
+                  <ExclamationTriangle className="me-2 field-icon" /> Tus Reportes
                 </h5>
-                {user.incidents.length === 0 ? (
-                  <div className="no-incidents">
-                    No has reportado incidentes
-                  </div>
-                ) : (
-                  <div className="incidents-list">
-                    {/* Aquí iría la lista de incidentes */}
-                  </div>
-                )}
+                <Row className="mb-4 text-center"></Row>
+                {/* Sección de estadísticas */}
+                <Row className="mb-4 text-center">
+                  <Col md={4}>
+                    <div className="incident-stat-card">
+                      <h3 className="stat-number">0</h3>
+                      <p className="stat-label">Reportados</p>
+                    </div>
+                  </Col>
+                  <Col md={4}>
+                    <div className="incident-stat-card">
+                      <h3 className="stat-number">0</h3>
+                      <p className="stat-label">En revisión</p>
+                    </div>
+                  </Col>
+                  <Col md={4}>
+                    <div className="incident-stat-card">
+                      <h3 className="stat-number">0</h3>
+                      <p className="stat-label">Resueltos</p>
+                    </div>
+                  </Col>
+                </Row>
+                <Row className="mb-4 text-center"></Row>
+                
+                {/* Sección de lista de incidentes con scroll */}
+                <div className="incidents-list-scroll">
+                  <div className="incidents-list-container">
+                    <div className="no-incidents">
+                      No tienes incidentes reportados
+                    </div>
+                </div>
+                </div>
               </div>
             </Col>
           </Row>

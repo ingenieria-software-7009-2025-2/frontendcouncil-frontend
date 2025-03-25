@@ -21,9 +21,26 @@
   .menu-content {
     position: absolute;
     left: 50%;
-    transform: translateX(80%);
-    top: 110% !important; 
+    transform: translateX(85%);
+    top: 175% !important; 
     margin-top: 20px; 
     text-align: center; 
     width: 200px; 
   }
+
+
+  /* Estilo para el menú hamburguesa */
+.hamburger-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.hamburger-line {
+  height: 4px;
+  width: 100%;
+  background-color: #ffffff;
+}

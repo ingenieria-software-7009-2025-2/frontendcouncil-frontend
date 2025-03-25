@@ -36,7 +36,7 @@
 
 /* Cambiar el color del texto en hover */
 .login-button:hover {
-    color: #5bfff1 !important; 
+    color: #faffff !important; 
 }
 
 .menuH {
@@ -44,6 +44,16 @@
     left: 10px; 
     top: 50%;
     transform: translateY(-50%); 
+    width: 40px;
+    height: 40px;
+    border-radius: 80% !important;
+    background: #030436 !important; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s;    
 }
 
 /* Superposición del modal */

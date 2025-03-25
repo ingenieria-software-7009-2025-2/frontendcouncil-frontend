@@ -23,6 +23,7 @@ const UserDropdown = () => {
       <Dropdown show={showDropdown} onToggle={toggleDropdown}>
         <Dropdown.Toggle as="div" className="user-toggle">
           <div className="user-circle">
+            {/* Esto se cambia a la incial del usuario depende de la BD */}
             <span className="user-content">U</span>
             {/* Alternativa con ícono: */}
             {/* <PersonFill className="user-icon" /> */}
@@ -36,12 +37,12 @@ const UserDropdown = () => {
             <div className="user-email">{userData.email}</div>
           </div>
           <Dropdown.Divider/>
-          <Dropdown.Item href="#/action-2" className="dropdown-item-with-icon">
+          <Dropdown.Item href="/profile" className="dropdown-item-with-icon">
             <Gear className="dropdown-icon" />
             <span>Configuración de la cuenta</span>
           </Dropdown.Item>
           <Dropdown.Divider/>
-          <Dropdown.Item href="#/action-3" className="dropdown-item-with-icon">
+          <Dropdown.Item href="/" className="dropdown-item-with-icon">
             <BoxArrowRight className="dropdown-icon" />
             <span>Cerrar sesión</span>
           </Dropdown.Item>
