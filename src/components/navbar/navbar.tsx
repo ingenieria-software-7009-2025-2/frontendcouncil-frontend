@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Container, Button } from 'react-bootstrap';
 import ModalLoginRegister from '../auth/login-register';  // Importa tu modal
 import SearchBar from '../searchbar/searchbar';
@@ -9,10 +9,31 @@ import './navbar.css';
 const NavbarComponent = () => {
   // Estado para controlar la visibilidad del modal
   const [showModal, setShowModal] = useState(false);
+  // Autenticacion
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Verificar si el usuario está autenticado
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token); // Si hay token, el usuario está autenticado.
+  }, []);
 
   // Función para abrir y cerrar el modal
   const handleShowModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+  const handleCloseModal = (loggedIn = false) => {
+    setShowModal(false);
+    
+    if (loggedIn) { 
+      setIsAuthenticated(true);
+      window.location.reload(); 
+    }
+  };
+
+   // Función de logout para actualizar estado
+   const handleLogout = () => {
+    localStorage.clear();
+    setIsAuthenticated(false); // Ocultar UserDropdown
+  };
 
   return (
     <>
@@ -28,8 +49,10 @@ const NavbarComponent = () => {
           </div>*/}
 
           <div className="userMenu">
-            <UserDropdown />
-          </div>
+          {isAuthenticated ? (
+              <UserDropdown onLogout={handleLogout} /> // Pasamos handleLogout
+            ) : (
+          //</div>
           
           <Button
             variant="outline-light"
@@ -38,14 +61,16 @@ const NavbarComponent = () => {
           >
             Iniciar Sesión
           </Button>
+          )}
+          </div>
         </Container>
       </Navbar>
 
       {/* Mostrar el modal solo si `showModal` es true */}
       {showModal && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
+        <div className="modal-overlay" onClick={() => handleCloseModal()}>
           <div className="modal-wrapper" onClick={(e) => e.stopPropagation()}>
-            <ModalLoginRegister onClose={handleCloseModal} />
+            <ModalLoginRegister onClose={() => handleCloseModal(true)} />
           </div>
         </div>
       )}
