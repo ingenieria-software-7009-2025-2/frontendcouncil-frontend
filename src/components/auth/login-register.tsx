@@ -5,11 +5,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { CloseButton } from 'react-bootstrap';
 import './login-register.css'
 
-interface ModalLoginRegisterProps {
+interface ModalLoginRegister {
   onClose: () => void;
 }
 
-const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
+const ModalLoginRegister: React.FC<ModalLoginRegister> = ({ onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
   const { successMessage, errorMessage} = useSwalMessages();
   const [formData, setFormData] = useState({
@@ -120,17 +120,7 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
       console.error("Error de register:", error);
       errorMessage("datos invalidos");
     }
-    // Aquí puedes hacer la petición al backend con fetch o axios
-    // fetch('URL_DEL_BACKEND/register', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(user)
-    // }).then(response => response.json())
-    //   .then(data => console.log("Respuesta del backend:", data))
-    //   .catch(error => console.error("Error en el registro:", error));
   };
-
-
 
   return (
     <div className="modal fade show data-modal-close" tabIndex={-1} style={{ display: 'block' }} aria-labelledby="modalLabel" aria-hidden="true">
