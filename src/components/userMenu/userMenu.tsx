@@ -45,6 +45,29 @@ const UserDropdown = () => {
     }
   };
 
+  const handleLogout = async () => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    try {
+      const response = await fetch("http://localhost:8080/v1/users/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al cerrar sesión");
+      }
+      localStorage.clear();
+      navigate("/"); // Redirigir a la página principal
+      window.location.reload();
+    } catch (error) {
+      console.error("Error en el logout:", error);
+    }
+  };
+
   const toggleDropdown = (isOpen: boolean) => {
     setShowDropdown(isOpen);
     if (isOpen && !dataFetched) {
@@ -83,7 +106,7 @@ const UserDropdown = () => {
             <span>Configuración de la cuenta</span>
           </Dropdown.Item>
           <Dropdown.Divider/>
-          <Dropdown.Item href="#/action-3" className="dropdown-item-with-icon">
+          <Dropdown.Item onClick={handleLogout} className="dropdown-item-with-icon">
             <BoxArrowRight className="dropdown-icon" />
             <span>Cerrar sesión</span>
           </Dropdown.Item>

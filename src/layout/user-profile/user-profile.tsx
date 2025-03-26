@@ -66,6 +66,7 @@ const UserProfilePage = () => {
       localStorage.setItem("apPaterno", updatedUser.apPaterno);
       localStorage.setItem("apMaterno", updatedUser.apMaterno);
       localStorage.setItem("userName", updatedUser.userName);
+      window.location.reload();
     } catch (error) {
       console.error("Error en la actualización:", error);
     }
