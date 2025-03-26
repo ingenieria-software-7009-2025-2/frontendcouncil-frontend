@@ -13,12 +13,17 @@ type UserProfile = {
 };
 
 const UserProfilePage = () => {
+  const nombre = localStorage.getItem("nombre");
+  const apPaterno = localStorage.getItem("apPaterno");
+  const apMaterno = localStorage.getItem("apMaterno");
+  const correo = localStorage.getItem("correo");
+  const userName = localStorage.getItem("userName");
   const [user, setUser] = useState<UserProfile>({
-    username: 'username',
-    firstName: 'Nombre',
-    lastName: 'Apellido',
-    motherLastName: 'Apellido',
-    email: 'correo_ejemplo@gmail.com',
+    username: userName,
+    firstName: nombre,
+    lastName: apPaterno,
+    motherLastName: apMaterno,
+    email: correo,
     incidents: []
   });
 
@@ -30,9 +35,41 @@ const UserProfilePage = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    setUser({ ...tempUser });
-    setIsEditing(false);
+  const handleSave = async () => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    if (!token) {
+      console.error("No hay token disponible");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/v1/users/me", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(tempUser),
+      });
+    console.log(tempUser)
+      if (!response.ok) {
+        throw new Error("Error al actualizar el usuario");
+      }
+
+      const updatedUser = await response.json();
+      
+      setUser(updatedUser);
+      setIsEditing(false);
+      localStorage.setItem("correo", updatedUser.correo);
+      localStorage.setItem("nombre", updatedUser.nombre);
+      localStorage.setItem("apPaterno", updatedUser.apPaterno);
+      localStorage.setItem("apMaterno", updatedUser.apMaterno);
+      localStorage.setItem("userName", updatedUser.userName);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error en la actualización:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -170,7 +207,7 @@ const UserProfilePage = () => {
                 <h5 className="d-flex align-items-center">
                   <ExclamationTriangle className="me-2 field-icon" /> Reporte de Incidentes
                 </h5>
-                {user.incidents.length === 0 ? (
+                {/*user.incidents.length*/0 === 0 ? (
                   <div className="no-incidents">
                     No has reportado incidentes
                   </div>
