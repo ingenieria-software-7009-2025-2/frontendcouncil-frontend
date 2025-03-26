@@ -21,7 +21,7 @@ const ModalLoginRegister: React.FC<ModalLoginRegister> = ({ onClose }) => {
     password: '',
     confirmPassword: '',
   });
-
+  
   const [loginData, setLoginData] = useState({
     identifier: '',  // Puede ser un email o nombre de usuario
     password: '',
