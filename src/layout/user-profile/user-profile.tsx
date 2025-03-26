@@ -35,9 +35,40 @@ const UserProfilePage = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    setUser({ ...tempUser });
-    setIsEditing(false);
+  const handleSave = async () => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    if (!token) {
+      console.error("No hay token disponible");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/v1/users/me", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(tempUser),
+      });
+    console.log(tempUser)
+      if (!response.ok) {
+        throw new Error("Error al actualizar el usuario");
+      }
+
+      const updatedUser = await response.json();
+      
+      setUser(updatedUser);
+      setIsEditing(false);
+      localStorage.setItem("correo", updatedUser.correo);
+      localStorage.setItem("nombre", updatedUser.nombre);
+      localStorage.setItem("apPaterno", updatedUser.apPaterno);
+      localStorage.setItem("apMaterno", updatedUser.apMaterno);
+      localStorage.setItem("userName", updatedUser.userName);
+    } catch (error) {
+      console.error("Error en la actualización:", error);
+    }
   };
 
   const handleCancel = () => {
