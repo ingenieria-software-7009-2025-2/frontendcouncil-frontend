@@ -73,6 +73,8 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
 
       console.log("Usuario autenticado:", data);
       successMessage("Inicio de sesión exitoso");
+      setLoginData({ identifier: '', password: '' }); //
+      onClose(); //
     } catch (error) {
       console.error("Error de login:", error);
       errorMessage("Credenciales incorrectas");
@@ -116,6 +118,16 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
       const data = await response.json();
       console.log("Usuario Registrado:", data);
       successMessage("Exito");
+      setFormData({    //
+        firstName: '',
+        lastName: '',
+        motherLastName: '',
+        username: '',
+        correo: '',
+        password: '',
+        confirmPassword: '',
+      });
+      onClose(); //
     } catch (error) {
       console.error("Error de register:", error);
       errorMessage("datos invalidos");
