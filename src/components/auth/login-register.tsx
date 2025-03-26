@@ -64,12 +64,13 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
         },
         body: JSON.stringify(credentials),
       });
-      console.log(response)
       if (!response.ok) {
         throw new Error("Error en la autenticación");
       }
 
       const data = await response.json();
+      localStorage.setItem("token", data.token);
+
       console.log("Usuario autenticado:", data);
       successMessage("Inicio de sesión exitoso");
     } catch (error) {

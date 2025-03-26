@@ -13,12 +13,17 @@ type UserProfile = {
 };
 
 const UserProfilePage = () => {
+  const nombre = localStorage.getItem("nombre");
+  const apPaterno = localStorage.getItem("apPaterno");
+  const apMaterno = localStorage.getItem("apMaterno");
+  const correo = localStorage.getItem("correo");
+  const userName = localStorage.getItem("userName");
   const [user, setUser] = useState<UserProfile>({
-    username: 'username',
-    firstName: 'Nombre',
-    lastName: 'Apellido',
-    motherLastName: 'Apellido',
-    email: 'correo_ejemplo@gmail.com',
+    username: userName,
+    firstName: nombre,
+    lastName: apPaterno,
+    motherLastName: apMaterno,
+    email: correo,
     incidents: []
   });
 
