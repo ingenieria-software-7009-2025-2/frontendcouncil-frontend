@@ -20,7 +20,14 @@ const NavbarComponent = () => {
 
   // Función para abrir y cerrar el modal
   const handleShowModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+  const handleCloseModal = (loggedIn = false) => {
+    setShowModal(false);
+    
+    if (loggedIn) { 
+      setIsAuthenticated(true);
+      window.location.reload(); 
+    }
+  };
 
    // Función de logout para actualizar estado
    const handleLogout = () => {
@@ -61,9 +68,9 @@ const NavbarComponent = () => {
 
       {/* Mostrar el modal solo si `showModal` es true */}
       {showModal && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
+        <div className="modal-overlay" onClick={() => handleCloseModal()}>
           <div className="modal-wrapper" onClick={(e) => e.stopPropagation()}>
-            <ModalLoginRegister onClose={handleCloseModal} />
+            <ModalLoginRegister onClose={() => handleCloseModal(true)} />
           </div>
         </div>
       )}
