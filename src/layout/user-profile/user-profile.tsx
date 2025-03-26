@@ -206,7 +206,7 @@ const UserProfilePage = () => {
                 <h5 className="d-flex align-items-center">
                   <ExclamationTriangle className="me-2 field-icon" /> Reporte de Incidentes
                 </h5>
-                {user.incidents.length === 0 ? (
+                {/*user.incidents.length*/0 === 0 ? (
                   <div className="no-incidents">
                     No has reportado incidentes
                   </div>
