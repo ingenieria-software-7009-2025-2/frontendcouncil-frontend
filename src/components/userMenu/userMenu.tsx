@@ -3,7 +3,7 @@ import { Dropdown } from 'react-bootstrap';
 import { PersonFill, Gear, BoxArrowRight } from 'react-bootstrap-icons';
 import { useNavigate } from "react-router-dom";
 import './UserDropdown.css';
-const UserDropdown = () => {
+const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const [userData, setUserData] = useState<{ nombre: string; correo: string; userName:string; }>(null);
@@ -61,6 +61,7 @@ const UserDropdown = () => {
         throw new Error("Error al cerrar sesión");
       }
       localStorage.clear();
+      onLogout(); // el ususario cerro sesion
       navigate("/"); // Redirigir a la página principal
       window.location.reload();
     } catch (error) {
