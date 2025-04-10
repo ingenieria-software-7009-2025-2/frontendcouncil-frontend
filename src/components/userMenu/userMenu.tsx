@@ -83,7 +83,7 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
       <Dropdown show={showDropdown} onToggle={toggleDropdown}>
         <Dropdown.Toggle as="div" className="user-toggle">
           <div className="user-circle">
-            <span className="user-content">U</span>
+            <span className="user-content">{userData ? userData.nombre.charAt(0).toUpperCase() : 'P'}</span>
             {/* Alternativa con ícono: */}
             {/* <PersonFill className="user-icon" /> */}
           </div>

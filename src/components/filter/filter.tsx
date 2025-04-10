@@ -1,32 +1,39 @@
-import { Navbar, Nav, Button, Container, Dropdown } from 'react-bootstrap';
+import { Dropdown, Form } from 'react-bootstrap';
 import { useState } from 'react';
 import './filter.css';  
 
 const Filter = () => {
-  const [open, setOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    <Navbar expand="lg" variant="dark" className="navbar-filter">
-      <Container>
-        {/* Botón Circular del Menú de Hamburguesa */}
-        <Dropdown show={open} onToggle={() => setOpen(!open)}>
-          <Dropdown.Toggle 
-            as={Button} 
-            className={`menu-circle ${open ? 'active' : ''}`}
-            onClick={() => setOpen(!open)}
-          >
-            <span className="navbar-toggler-icon"></span>
-          </Dropdown.Toggle>
+    <div className="navbar-filter">
+      <Dropdown show={showDropdown} onToggle={() => setShowDropdown(!showDropdown)}>
+        {/* Botón Circular con el Menú Hamburguesa */}
+        <Dropdown.Toggle as="div" className="user-toggle" onClick={() => setShowDropdown(!showDropdown)}>
+          <div className="menu-circle">
+            <div className="hamburger-menu">
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+            </div>
+          </div>
+        </Dropdown.Toggle>
 
-          {/* Menú desplegable */}
-          <Dropdown.Menu align="end" className="menu-content">
-            <Dropdown.Item href="#home">Incidentes registrados</Dropdown.Item>
-            <Dropdown.Item href="#features">Incidentes en revisión</Dropdown.Item>
-            <Dropdown.Item href="#pricing">Incidentes resueltos</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </Container>
-    </Navbar>
+        {/* Menú desplegable */}
+        <Dropdown.Menu align="end" className="menu-content">
+          <Dropdown.Item>
+            Incidentes registrados 
+            <Form.Check
+            type="switch"
+            id="filter-registered"
+            onChange={() => { /* Aquí va la lógica para manejar registrados */ }}
+            label=""
+          /></Dropdown.Item>
+          <Dropdown.Item href="#features">Incidentes en revisión</Dropdown.Item>
+          <Dropdown.Item href="#pricing">Incidentes resueltos</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    </div>
   );
 };
 

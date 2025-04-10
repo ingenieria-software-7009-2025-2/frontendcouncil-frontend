@@ -94,11 +94,11 @@ const UserProfilePage = () => {
   };
 
   return (
-    <Container className="user-profile-container">
+    <Container fluid className="user-profile-container">
       <Card className="profile-card">
         <Card.Body>
           <Row>
-            <Col md={6}>
+            <Col md={4}>
               {isEditing ? (
                 <>
                   <Form.Group className="mb-4">
@@ -160,62 +160,86 @@ const UserProfilePage = () => {
               ) : (
                 <>
                   <div className="d-flex justify-content-between align-items-center mb-4">
+                  <div className="user-name-text me-3 text-start"> {/* Agregado text-start aquí */}
                     <h4 className="mb-0 fw-bold">
                       {`${user.firstName} ${user.lastName} ${user.motherLastName}`}
                     </h4>
-                    <Button variant="outline-primary" onClick={handleEdit} className="edit-profile-button"> <Pencil className="me-2"/> </Button>
                   </div>
-
-                  <div className="profile-info mb-4">
+                    <Button variant="outline-primary" onClick={handleEdit} className="edit-profile-button"> Editar <Pencil className="me-2"/> </Button>
+                  </div>
+                  <div className="profile-info mb-4 py-2">
                     <div className="d-flex align-items-center mb-2">
                       <Envelope className="me-2 text-muted" />
                       <span>{user.email}</span>
                     </div>
-                    <div className="d-flex align-items-center mb-2">
-                      <Person className="me-2 text-muted" />
+                    <div className="d-flex align-items-center mb-2 py-2">
+                      <Person className="me-2 fw-semiboldfw-semibold" />
                       <span>{user.username}</span>
                     </div>
-                  </div>
-
-                  <div className="d-flex flex-column gap-2 mt-3 ps-2">
-                    <Button 
-                      variant="link" 
-                      className="text-start p-0 text-decoration-none text-body"
-                      onClick={handleChangePassword}>
-                      <div className="d-flex align-items">
-                        <Lock className="me-2" />
-                        <span>Cambiar contraseña</span>
-                      </div>
-                    </Button>
-                    
-                    <Button 
-                      variant="link" 
-                      className="text-start p-0 text-decoration-none text-danger"
-                      onClick={handleDeleteAccount}>
-                      <div className="d-flex align-items-center">
-                        <Trash className="me-2" />
-                        <span>Eliminar cuenta</span>
-                      </div>
-                    </Button>
+                    <div className="d-flex align-items-center mb-2 py-2">
+                      <Button 
+                        variant="link" 
+                        className="text-start p-0 text-decoration-none text-body"
+                        onClick={handleChangePassword}>
+                        <div className="d-flex align-items">
+                          <Lock className="me-2" />
+                          <span>Cambiar contraseña</span>
+                        </div>
+                      </Button>
+                    </div>
+                    <div className="d-flex align-items-center mb-2 py-2">
+                      <Button 
+                        variant="link" 
+                        className="text-start p-0 text-decoration-none text-danger"
+                        onClick={handleDeleteAccount}>
+                        <div className="d-flex align-items-center">
+                          <Trash className="me-2" />
+                          <span>Eliminar cuenta</span>
+                        </div>
+                      </Button>
+                    </div>
                   </div>
                 </>
               )}
             </Col>
-
+            <Col md={1}></Col>
             <Col md={6}>
               <div className="incidents-section">
-                <h5 className="d-flex align-items-center">
-                  <ExclamationTriangle className="me-2 field-icon" /> Reporte de Incidentes
+                <h5 className="d-flex align-items-center mb-4">
+                  <ExclamationTriangle className="me-2 field-icon" /> Tus Reportes
                 </h5>
-                {/*user.incidents.length*/0 === 0 ? (
-                  <div className="no-incidents">
-                    No has reportado incidentes
+                <Row className="mb-4 text-center"></Row>
+                {/* Sección de estadísticas */}
+                <Row className="mb-4 text-center">
+                  <Col md={4}>
+                    <div className="incident-stat-card">
+                      <h3 className="stat-number">0</h3>
+                      <p className="stat-label">Reportados</p>
+                    </div>
+                  </Col>
+                  <Col md={4}>
+                    <div className="incident-stat-card">
+                      <h3 className="stat-number">0</h3>
+                      <p className="stat-label">En revisión</p>
+                    </div>
+                  </Col>
+                  <Col md={4}>
+                    <div className="incident-stat-card">
+                      <h3 className="stat-number">0</h3>
+                      <p className="stat-label">Resueltos</p>
+                    </div>
+                  </Col>
+                </Row>
+                <Row className="mb-4 text-center"></Row>
+                
+                {/* Sección de lista de incidentes con scroll */}
+                <div className="incidents-list-scroll">
+                  <div className="incidents-list-container">
+                    <div className="no-incidents">
+                      No tienes incidentes reportados
+                    </div>
                   </div>
-                ) : (
-                  <div className="incidents-list">
-                    {/* Aquí iría la lista de incidentes */}
-                  </div>
-                )}
+                </div>
               </div>
             </Col>
           </Row>

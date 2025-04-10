@@ -1,0 +1,83 @@
+.edit-profile-card {
+  border: none !important;
+}
+
+.edit-profile-form {
+  border-radius: 0%;
+}
+
+.edit-profile-form .form-group {
+  text-align: left !important;
+}
+
+.edit-profile-form .form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.edit-profile-form .form-control {
+  border-radius: 5px;
+  
+  border: 1px solid #ced4da;
+  transition: border-color 0.3s ease;
+}
+
+.edit-profile-form .form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.edit-profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.edit-profile-actions .btn {
+  min-width: 120px;
+      border-radius: 5px;
+  font-weight: 500;
+}
+
+/* Centrado del contenido */
+.edit-profile-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+}
+
+.edit-profile-main-content {
+  width: 50%;
+}
+
+/* Botón GUARDAR CAMBIOS */
+.edit-profile-actions .btn-save {
+  background-color: #030436; 
+  color: white;
+  border-color: #030436;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+
+/* Botón CANCELAR  */
+.edit-profile-actions .btn-cancel {
+  background-color: transparent;
+  color: #030436; 
+  border: 1.5px solid #030436;
+  border-radius: 8px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+
+
+
+
+
+

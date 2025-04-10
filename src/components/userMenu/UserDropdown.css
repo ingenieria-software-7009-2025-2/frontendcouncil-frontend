@@ -37,7 +37,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #3498db;
+    background-color: #030436;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,7 +48,7 @@
   }
   
   .user-circle:hover {
-    background-color: #2980b9;
+    background-color: #0c0d4e;
     transform: scale(1.05);
   }
   

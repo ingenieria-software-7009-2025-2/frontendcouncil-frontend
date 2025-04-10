@@ -1,3 +1,10 @@
+  .navbar-filter {
+    background: none !important;
+    width: 40px;
+    height: 40px;
+    border-radius: 80% !important;
+  }
+
 /* Botón circular */
   .menu-circle {
     width: 40px;
@@ -8,7 +15,7 @@
     align-items: center;
     justify-content: center;
     border: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
     transition: transform 0.3s;
   }
   
@@ -27,3 +34,20 @@
     text-align: center; 
     width: 200px; 
   }
+
+  /* Menú hamburguesa dentro del botón circular */
+.hamburger-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 18px;
+  background: none !important;
+}
+
+.hamburger-line {
+  width: 24px;
+  height: 4px;
+  background-color: white;
+  border-radius: 10px;
+  transition: 0.3s;
+}

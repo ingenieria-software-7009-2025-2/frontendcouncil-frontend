@@ -1,0 +1,7 @@
+.error-border {
+    border: 1px solid red !important;
+  }
+  
+  .error-shadow {
+    box-shadow: 0 0 5px red !important;
+  }
