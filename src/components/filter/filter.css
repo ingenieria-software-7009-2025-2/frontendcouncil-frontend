@@ -15,11 +15,10 @@
     align-items: center;
     justify-content: center;
     border: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.45);
     transition: transform 0.3s;
   }
   
-
   .menu-circle .navbar-toggler-icon {
     display: none;
   }
@@ -27,27 +26,49 @@
   /* Estilos para el menú desplegable */
   .menu-content {
     position: absolute;
-    left: 50%;
+    left: 80%;
     transform: translateX(80%);
-    top: 110% !important; 
+    top: 120% !important; 
     margin-top: 20px; 
     text-align: center; 
-    width: 200px; 
+    width: fit-content;
+    font-size: 15px !important;
+    border-radius: 12px !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
   }
 
-  /* Menú hamburguesa dentro del botón circular */
-.hamburger-menu {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 18px;
-  background: none !important;
-}
+  .menu-item {
+    padding-top: 12px !important;    
+    padding-bottom: 12px !important; 
+    align-items: center;  
+  }
 
-.hamburger-line {
-  width: 24px;
-  height: 4px;
-  background-color: white;
-  border-radius: 10px;
-  transition: 0.3s;
-}
+  /* Espacio entre texto y switch */
+  .menu-item span {
+    margin-right: 18px;
+  }
+
+  .menu-item:hover, 
+  .menu-item:focus {
+    background-color: transparent !important;
+    color: inherit !important;
+  }
+
+
+  /* Menú hamburguesa dentro del botón circular */
+  .hamburger-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 18px;
+    background: none !important;
+  }
+
+  .hamburger-line {
+    width: 24px;
+    height: 4px;
+    background-color: white;
+    border-radius: 10px;
+    transition: 0.3s;
+  }

@@ -1,0 +1,37 @@
+.toggle-switch {
+    width: 42px;
+    height: 20px;
+    border-radius: 12px;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .toggle-switch.off {
+    background-color: #ccc;
+  }
+  
+  .toggle-switch.on {
+    background-color: #030436; 
+  }
+  
+  .toggle-switch-slider {
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    border-color: #030436 !important;
+  }
+  
+  .toggle-switch.off .toggle-switch-slider {
+    transform: translateX(2px);
+  }
+  
+  .toggle-switch.on .toggle-switch-slider {
+    transform: translateX(25px);
+  }
