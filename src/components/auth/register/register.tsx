@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import './register.css';
 
 interface RegisterFormProps {
   onRegisterSuccess: () => void;
@@ -16,140 +18,114 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
     confirmPassword: '',
   });
 
-  const [errors, setErrors] = useState({
-    firstName: '',
-    lastName: '',
-    motherLastName: '',
-    username: '',
-    correo: '',
-    password: '',
-    confirmPassword: '',
-    formError: '',
-  });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [formError, setFormError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-
-    // Limpiar errores al escribir
-    setErrors(prev => ({
-      ...prev,
-      [e.target.name]: '',
-      formError: ''
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' }); // limpia error al escribir
+    setFormError('');
   };
 
-  const validateFields = () => {
-    let isValid = true;
-    const newErrors = {
-      firstName: '',
-      lastName: '',
-      motherLastName: '',
-      username: '',
-      correo: '',
-      password: '',
-      confirmPassword: '',
-      formError: ''
-    };
-
-    // Validar campos vacíos
-    if (formData.firstName.trim() === '') {
-      newErrors.firstName = 'Este campo es obligatorio';
-      isValid = false;
-    }
-    if (formData.lastName.trim() === '') {
-      newErrors.lastName = 'Este campo es obligatorio';
-      isValid = false;
-    }
-    if (formData.motherLastName.trim() === '') {
-      newErrors.motherLastName = 'Este campo es obligatorio';
-      isValid = false;
-    }
-    if (formData.username.trim() === '') {
-      newErrors.username = 'Este campo es obligatorio';
-      isValid = false;
-    }
-    if (formData.correo.trim() === '') {
-      newErrors.correo = 'Este campo es obligatorio';
-      isValid = false;
-    }
-    if (formData.password.trim() === '') {
-      newErrors.password = 'Este campo es obligatorio';
-      isValid = false;
-    }
-    if (formData.confirmPassword.trim() === '') {
-      newErrors.confirmPassword = 'Este campo es obligatorio';
-      isValid = false;
-    }
-
-    if (!isValid) {
-      newErrors.formError = 'Por favor llene todos los campos';
-    }
-
-    // Validar coincidencia de contraseñas
-    if (formData.password !== formData.confirmPassword && formData.password && formData.confirmPassword) {
-      newErrors.password = 'Las contraseñas no coinciden';
-      newErrors.confirmPassword = 'Las contraseñas no coinciden';
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
+  const validatePassword = (password: string) => {
+    const lengthOK = password.length >= 8;
+    const hasNumber = /\d/.test(password);
+    const hasUpper = /[A-Z]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    return lengthOK && hasNumber && hasUpper && hasSpecial;
   };
 
-  const checkExistingUser = async () => {
+  const validateEmail = (correo: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+  };
+
+  const checkEmailExists = async (correo: string) => {
+    if (!correo || !validateEmail(correo)) return false;
     try {
-      // Verificar si el usuario ya existe
-      const userResponse = await fetch(`http://localhost:8080/v1/users/check-username?username=${formData.username}`);
-      if (!userResponse.ok) {
-        throw new Error('Error al verificar usuario');
+      const response = await fetch(`http://localhost:8080/v1/users/check-email?email=${correo}`);
+      if (response.ok) {
+        return await response.json();
       }
-      const userData = await userResponse.json();
-      if (userData.exists) {
-        setErrors(prev => ({
-          ...prev,
-          username: 'El usuario ya está registrado',
-          formError: 'El usuario ya está registrado'
-        }));
-        return false;
-      }
-
-      // Verificar si el correo ya existe
-      const emailResponse = await fetch(`http://localhost:8080/v1/users/check-email?email=${formData.correo}`);
-      if (!emailResponse.ok) {
-        throw new Error('Error al verificar correo');
-      }
-      const emailData = await emailResponse.json();
-      if (emailData.exists) {
-        setErrors(prev => ({
-          ...prev,
-          correo: 'El correo está registrado',
-          formError: 'El correo está registrado'
-        }));
-        return false;
-      }
-
-      return true;
+      return false;
     } catch (error) {
-      onRegisterError('Error al verificar los datos');
+      console.error('Error checking email:', error);
+      return false;
+    }
+  };
+
+  const checkUsernameExists = async (username: string) => {
+    if (!username) return false;
+    try {
+      const response = await fetch(`http://localhost:8080/v1/users/check-username?username=${username}`);
+      if (response.ok) {
+        return await response.json();
+      }
+      return false;
+    } catch (error) {
+      console.error('Error checking username:', error);
       return false;
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newErrors: { [key: string]: string } = {};
 
-    if (!validateFields()) return;
-    if (!await checkExistingUser()) return;
+    // Validar campos vacíos excepto motherLastName
+    if (!formData.firstName.trim()) newErrors.firstName = 'Por favor ingrese un nombre';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Por favor ingrese un apellido paterno';
+    if (!formData.username.trim()) newErrors.username = 'Por favor ingrese un nombre de usuario';
+    if (!formData.correo.trim()) newErrors.correo = 'Por favor ingrese un correo';
+    if (!formData.password.trim()) newErrors.password = 'Por favor ingrese una contraseña';
+    if (!formData.confirmPassword.trim()) newErrors.confirmPassword = 'Por favor confirme su contraseña';
+
+    // Validar formato de correo
+    if (formData.correo && !validateEmail(formData.correo)) {
+      newErrors.correo = 'Ingrese un correo válido';
+    }
+
+    // Validar formato de contraseña
+    if (formData.password && !validatePassword(formData.password)) {
+      newErrors.password = 'Formato de contraseña no válido (mínimo 8 caracteres, un número, una mayúscula y un carácter especial)';
+    }
+
+    // Validar coincidencia de contraseñas
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.password = 'Las contraseñas no coinciden';
+      newErrors.confirmPassword = 'Las contraseñas no coinciden';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Verificar si el correo ya existe
+    const emailExists = await checkEmailExists(formData.correo);
+    if (emailExists) {
+      setErrors(prev => ({ ...prev, correo: 'Este correo ya está registrado' }));
+      return;
+    }
+
+    // Verificar si el usuario ya existe
+    const usernameExists = await checkUsernameExists(formData.username);
+    if (usernameExists) {
+      setErrors(prev => ({ ...prev, username: 'Este nombre de usuario ya está en uso' }));
+      return;
+    }
+
+    setErrors({});
+    setFormError('');
 
     const user = {
-      nombre: formData.firstName.trim(),
-      apPaterno: formData.lastName.trim(),
-      apMaterno: formData.motherLastName.trim(),
-      correo: formData.correo.trim(),
-      username: formData.username.trim(),
+      nombre: formData.firstName,
+      apPaterno: formData.lastName,
+      apMaterno: formData.motherLastName,
+      correo: formData.correo,
+      username: formData.username,
       password: formData.password,
     };
 
@@ -160,119 +136,124 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
         body: JSON.stringify(user),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error en el registro');
-      }
-
-      const data = await response.json();
+      if (!response.ok) throw new Error('Error en el registro');
+      await response.json();
       onRegisterSuccess();
     } catch (error) {
-      onRegisterError('Error al registrar el usuario');
+      onRegisterError('Datos inválidos');
     }
   };
+
+  const getInputClass = (field: string) =>
+    `form-control custom-input ${errors[field] ? 'is-invalid' : ''}`;
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-3">
-        <label htmlFor="username" className="form-label">Nombre de Usuario</label>
         <input
           type="text"
-          className={`form-control ${errors.username ? 'border-danger' : ''}`}
-          id="username"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          placeholder="Ingresa tu nuevo nombre de usuario"
-        />
-        {errors.username && <div className="text-danger small mt-1">{errors.username}</div>}
-      </div>
-      
-      <div className="mb-3">
-        <label htmlFor="emailRegister" className="form-label">Correo electrónico</label>
-        <input
-          type="email"
-          className={`form-control ${errors.correo ? 'border-danger' : ''}`}
-          id="emailRegister"
-          name="correo"
-          value={formData.correo}
-          onChange={handleChange}
-          placeholder="Ingresa tu correo"/>
-        {errors.correo && <div className="text-danger small mt-1">{errors.correo}</div>}
-      </div>  
-      
-      <div className="mb-3">
-        <label htmlFor="firstName" className="form-label">Nombre</label>
-        <input
-          type="text"
-          className={`form-control ${errors.firstName ? 'border-danger' : ''}`}
+          className={getInputClass('firstName')}
           id="firstName"
           name="firstName"
           value={formData.firstName}
           onChange={handleChange}
-          placeholder="Ingresa tu nombre" />
-        {errors.firstName && <div className="text-danger small mt-1">{errors.firstName}</div>}
+          placeholder="Nombre"/>
+        {errors.firstName && <div className="invalid-feedback">{errors.firstName}</div>}
       </div>
-      
+
       <div className="mb-3">
-        <label htmlFor="lastName" className="form-label">Apellido Paterno</label>
         <input
           type="text"
-          className={`form-control ${errors.lastName ? 'border-danger' : ''}`}
+          className={getInputClass('lastName')}
           id="lastName"
           name="lastName"
           value={formData.lastName}
           onChange={handleChange}
-          placeholder="Ingresa tu apellido paterno" />
-        {errors.lastName && <div className="text-danger small mt-1">{errors.lastName}</div>}
+          placeholder="Apellido paterno"/>
+        {errors.lastName && <div className="invalid-feedback">{errors.lastName}</div>}
       </div>
-      
+
       <div className="mb-3">
-        <label htmlFor="motherLastName" className="form-label">Apellido Materno</label>
         <input
           type="text"
-          className={`form-control ${errors.motherLastName ? 'border-danger' : ''}`}
+          className="form-control custom-input"
           id="motherLastName"
           name="motherLastName"
           value={formData.motherLastName}
           onChange={handleChange}
-          placeholder="Ingresa tu apellido materno"/>
-        {errors.motherLastName && <div className="text-danger small mt-1">{errors.motherLastName}</div>}
+          placeholder="Apellido materno"/>
       </div>
-      
+
       <div className="mb-3">
-        <label htmlFor="passwordRegister" className="form-label">Contraseña</label>
         <input
-          type="password"
-          className={`form-control ${errors.password ? 'border-danger' : ''}`}
-          id="passwordRegister"
-          name="password"
-          value={formData.password}
+          type="text"
+          className={getInputClass('username')}
+          id="username"
+          name="username"
+          value={formData.username}
           onChange={handleChange}
-          placeholder="Ingresa tu contraseña"/>
-        {errors.password && <div className="text-danger small mt-1">{errors.password}</div>}
+          onBlur={() => checkUsernameExists(formData.username).then(exists => {
+            if (exists) {
+              setErrors(prev => ({ ...prev, username: 'Este nombre de usuario ya está en uso' }));
+            }
+          })}
+          placeholder="Nombre de usuario"/>
+        {errors.username && <div className="invalid-feedback">{errors.username}</div>}
+      </div>
+
+      <div className="mb-3">
+        <input
+          type="text"
+          className={getInputClass('correo')}
+          id="emailRegister"
+          name="correo"
+          value={formData.correo}
+          onChange={handleChange}
+          onBlur={() => checkEmailExists(formData.correo).then(exists => {
+            if (exists) {
+              setErrors(prev => ({ ...prev, correo: 'Este correo ya está registrado' }));
+            }
+          })}
+          placeholder="Correo"/>
+        {errors.correo && <div className="invalid-feedback">{errors.correo}</div>}
       </div>
       
+      <div className="mb-3 position-relative">
+        <div className="position-relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            className={`${getInputClass('password')} pe-4`}
+            id="passwordRegister"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Contraseña"/>
+          <span
+            className="position-absolute top-50 end-0 translate-middle-y me-2"
+            style={{ 
+              cursor: 'pointer',
+              color: errors.password ? '#dc3545' : '#9aaaba'}}
+              onClick={togglePasswordVisibility}>
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
+        {errors.password && (<div className="invalid-feedback d-block mt-1"> {errors.password}</div>)}
+      </div>
+
       <div className="mb-3">
-        <label htmlFor="confirmPassword" className="form-label">Confirmar Contraseña</label>
         <input
-          type="password"
-          className={`form-control ${errors.confirmPassword ? 'border-danger' : ''}`}
+          type='password'
+          className={getInputClass('confirmPassword')}
           id="confirmPassword"
           name="confirmPassword"
           value={formData.confirmPassword}
           onChange={handleChange}
-          placeholder="Confirma tu contraseña"/>
-        {errors.confirmPassword && <div className="text-danger small mt-1">{errors.confirmPassword}</div>}
+          placeholder="Confirmar contraseña" />
+        {errors.confirmPassword && <div className="invalid-feedback">{errors.confirmPassword}</div>}
       </div>
-      
-      {/* Mensaje de error general */}
-      {errors.formError && (
-        <div className="text-danger mb-3" style={{ fontSize: '0.9rem' }}>
-          {errors.formError}
-        </div>
-      )}
-      
+
+      {formError && <div className="alert alert-danger">{formError}</div>}
+
       <div className="d-flex justify-content-end">
         <button type="submit" className="btn btn-log-primary text-white">
           Crear cuenta
