@@ -45,14 +45,14 @@
   padding: 1rem;
   text-align: left;
   flex-grow: 1; 
-  overflow-y: auto; /* Agrega scroll si el contenido es muy largo */
+  overflow-y: auto; 
 }
 
 .modal-footer {
   padding: 1rem;
   border-top: 1px solid #dee2e6;
   display: flex;
-  justify-content: flex-end; /* Alinea los botones a la derecha */
+  justify-content: flex-end; 
 }
 
 .custom-tab-active {
@@ -76,11 +76,4 @@
   transition: all 0.3s ease;
 }
 
-/* Agregar un borde rojo a los campos con errores */
-.has-error .form-control {
-  border-color: red;
-}
 
-.is-invalid {
-  border-color: red;
-}

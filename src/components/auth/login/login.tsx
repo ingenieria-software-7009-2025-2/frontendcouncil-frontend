@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash, FaExclamationCircle } from 'react-icons/fa';
+import './login.css'
 
 interface LoginFormProps {
   onLoginSuccess: () => void;
@@ -10,10 +13,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
     password: '',
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+
   const [errors, setErrors] = useState({
     identifier: false,
     password: false,
     formError: '',
+    identifierMessage: '',
+    passwordMessage: ''
   });
 
   const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +35,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
     setErrors(prev => ({
       ...prev,
       [e.target.name]: false,
-      formError: ''
+      formError: '',
+      [`${e.target.name}Message`]: '' // Limpiar el mensaje de error específico
     }));
   };
 
@@ -35,13 +45,27 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
 
     // Validar campos vacíos
     const hasEmptyFields = !loginData.identifier || !loginData.password;
-    
+
+    let newErrors = {
+      identifier: false,
+      password: false,
+      formError: '',
+      identifierMessage: '',
+      passwordMessage: ''
+    };
+
+    if (!loginData.identifier) {
+      newErrors.identifier = true;
+      newErrors.identifierMessage = 'Por favor ingrese correo o nombre de usuario';
+    }
+
+    if (!loginData.password) {
+      newErrors.password = true;
+      newErrors.passwordMessage = 'Por favor ingrese una contraseña';
+    }
+
     if (hasEmptyFields) {
-      setErrors({
-        identifier: !loginData.identifier,
-        password: !loginData.password,
-        formError: 'Todos los campos son obligatorios'
-      });
+      setErrors(newErrors);
       return;
     }
 
@@ -61,7 +85,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         setErrors({
           identifier: true,
           password: true,
-          formError: 'Credenciales incorrectas'
+          formError: 'Credenciales incorrectas',
+          identifierMessage: '',
+          passwordMessage: ''
         });
         return;
       }
@@ -73,7 +99,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       setErrors({
         identifier: true,
         password: true,
-        formError: 'Credenciales incorrectas'
+        formError: 'Credenciales incorrectas',
+        identifierMessage: '',
+        passwordMessage: ''
       });
     }
   };
@@ -81,38 +109,53 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   return (
     <form onSubmit={handleLogin}>
       <div className="mb-3">
-        <label htmlFor="identifier" className="form-label">Correo electrónico o Usuario</label>
         <input
           type="text"
-          className={`form-control ${errors.identifier ? 'border-danger' : ''}`}
+          className={`form-control custom-input pe-4 ${errors.password ? 'is-invalid' : ''}`}
           id="identifier"
           name="identifier"
           value={loginData.identifier}
           onChange={handleLoginChange}
           placeholder="Ingresa tu correo o nombre de usuario"
         />
+        {errors.identifierMessage && (
+          <div className="text-danger mt-1" style={{ fontSize: '0.75rem' }}>
+            {errors.identifierMessage}
+          </div>
+        )}
       </div>
-
-      <div className="mb-3">
-        <label htmlFor="password" className="form-label">Contraseña</label>
-        <input
-          type="password"
-          className={`form-control ${errors.password ? 'border-danger' : ''}`}
-          id="password"
-          name="password"
-          value={loginData.password}
-          onChange={handleLoginChange}
-          placeholder="Ingresa tu contraseña"
-        />
-      </div>
-
+      <div className="mb-3 position-relative">
+        <div className="position-relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            className={`form-control custom-input pe-4 ${errors.password ? 'is-invalid' : ''}`}
+            id="passwordLogin"
+            name="password"
+            value={loginData.password}
+            onChange={handleLoginChange}
+            placeholder="Ingresa tu contraseña"/>
+          <span
+            className="position-absolute top-50 end-0 translate-middle-y me-2"
+            style={{cursor: 'pointer', color: errors.password ? '#dc3545' : '#9aaaba'}} onClick={togglePasswordVisibility}>
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
+        {errors.passwordMessage && (
+          <div className="text-danger mt-1" style={{ fontSize: '0.75rem' }}>
+            {errors.passwordMessage}
+          </div>
+        )}
+      </div>  
+      
       {/* Mensaje de error general (texto rojo sin fondo) */}
       {errors.formError && (
         <div className="text-danger mt-2 mb-3" style={{ fontSize: '0.9rem' }}>
           {errors.formError}
         </div>
       )}
-
+      <div className="d-flex justify-content-end">
+        <Link to="/recuperar" className="forgot-password-link">¿Olvidaste tu contraseña?</Link>
+      </div>
       <div className="d-flex justify-content-end">
         <button type="submit" className="btn btn-log-primary text-white">
           Iniciar sesión
