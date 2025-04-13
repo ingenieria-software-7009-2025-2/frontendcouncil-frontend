@@ -7,6 +7,8 @@
   margin: 0;
   border: none !important;
   box-shadow: none;
+  margin-top: 30px !important;
+  background-color: transparent !important;
 }
 
 .profile-header-container {
@@ -22,17 +24,11 @@
   .profile-name {
     margin: 0;
     font-weight: 700;
-    font-size: 1.5rem;
     line-height: 1.2;
     color: #212529;
   }
 
-  .user-name-text {
-    flex: 1 1 auto; 
-    min-width: 0;
-    margin-right: 1rem;
-    word-break: break-word; 
-  }
+  
 
   .edit-profile-button {
     min-width: auto;
@@ -96,7 +92,6 @@
     margin-bottom: 0 !important;
     padding: 0.5rem 0;
     border-bottom: 1px solid #eee; 
-    margin-bottom: 20px !important;
   }
   
   /* Ajuste para el nombre */
@@ -120,4 +115,85 @@
 
   .incidents-section {
     margin-top: 2%;
+  }
+
+  .report-title {
+    font-weight: bold;
+    font-size: 1.5rem; 
+  }
+
+  .stats-wrapper {
+    background-color: rgba(154, 170, 186, 0.15);
+    border-radius: 15px;
+    border: none;
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 2px;
+  }
+
+
+  /* INFORMACIÓN DEL USUARIO */
+  .user-info-item {
+    margin-bottom: 5px;
+    color: #030436;
+    font-size: 15px;
+  }
+
+  /* NOMBRE COMPLETO DEL USUARIO */
+  .name-text {
+    color: #030436;
+    font-size: 1.75rem;
+    margin-top: 0.7rem !important;
+  }
+
+  .profile-info {
+    margin-bottom: 0 !important;
+  }
+
+  /* ESTILOS DE LOS LINKS DE CONFIGURACIÓN */
+  /* Estilo para los botones de perfil */
+  .profile-info .btn-link {
+    font-weight: bold !important;
+    color: #6B7783 !important;
+    width: 100%;
+    text-align: left;
+    font-size: 15px !important;
+  }
+
+  .profile-info .btn-link:hover {
+    color: #00A5C2 !important;
+  }
+
+  /* Estilo específico para el botón de eliminar cuenta */
+  .profile-info .btn-link.text-danger {
+    color: #6B7783 !important;
+  }
+
+  .profile-info .btn-link.text-danger:hover {
+    color: #bb2d3b !important;
+  }
+
+  /* ESTILO NO INCIDENTS*/
+  .no-incidents {
+    margin-top: 6rem !important;
+    color: #6B7783 !important;
+  }
+
+  /* ESTILO DEL LOGO*/
+  .logo-picture {
+    width: 10rem;  
+    display: inline-block;
+    overflow: hidden;
+    right: 0;
+    float: left;
+    margin-bottom: 20px;
+    margin-top: 15px
+
+  }
+
+  .logo-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+    display: block;
   }

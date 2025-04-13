@@ -116,11 +116,13 @@
   .user-name {
     font-size: large;
     font-weight: bold;
+    color: #030436;
   }
 
   .user-email {
     font-size: 14px;
     margin-top: 5px;
+    color: #030436;
   }
 
   .user-info-section {

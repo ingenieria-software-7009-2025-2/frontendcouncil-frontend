@@ -5,22 +5,12 @@ import HomePage from './layout/homepage/homepage';
 import NavbarComponent from './components/navbar/navbar';
 import UserProfilePage from './layout/user-profile/user-profile';
 import EditProfile from './layout/user-profile/edit-profile/edit-profile';
+import JoinTeam from './layout/user-profile/join-team/join-team';
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    //<div className="App h-screen flex flex-col">
-      //<div className="w-full">
-        //{/** 
-        //<NavbarComponent />*/}
-        //<NavbarComponent />
-      //</div>
-      //<div className="flex-1 bg-gray-200 p-4 overflow-y-auto">
-        //<HomePage />
-      //</div>
-    //</div>
-
     <Router>
       <div className="App h-screen flex flex-col">
         <div className="w-full">
@@ -31,6 +21,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/profile" element={<UserProfilePage />} />
             <Route path="/edit-profile" element={<EditProfile />} />
+            <Route path="/join-team" element={<JoinTeam />} />
           </Routes>
         </div>
       </div>

@@ -1,5 +1,6 @@
 .edit-profile-card {
   border: none !important;
+  background-color: transparent !important;
 }
 
 .edit-profile-form {
@@ -76,8 +77,6 @@
 }
 
 
-
-
-
-
-
+.edit-profile-container {
+  background-color: transparent !important;
+}

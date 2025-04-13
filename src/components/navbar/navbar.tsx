@@ -56,7 +56,7 @@ const NavbarComponent = () => {
             <div className="d-flex align-items-center gap-2">
             {currentPath === '/profile' && (
               <Button variant="outline-light" className="backHomeButton" onClick={() => navigate('/')}>
-                Mapa
+                Ir al mapa
               </Button>
             )}
             <div className="userMenu">

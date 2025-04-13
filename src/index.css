@@ -17,17 +17,12 @@ body, html {
   width: 100%;
   right: 0 !important;
   left: 0 !important;
+  background: linear-gradient(to bottom, #F3F9FF, white);
 }
 
  /* Asegura que el contenido ocupe todo el espacio restante después del navbar */
  .main-content {
   margin-top: 70px; 
   padding: 0px;
-  height: calc(100vh - 60px); /* Ajusta el alto para que ocupe toda la pantalla menos el alto del navbar */
-  overflow-y: auto; /* Agrega barra de desplazamiento si el contenido excede la altura */
+  overflow-y: auto; 
 }
-
-
-
-
-

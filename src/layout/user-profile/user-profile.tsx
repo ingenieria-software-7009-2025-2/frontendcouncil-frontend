@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { Card, Form, Button, Row, Col, Container } from 'react-bootstrap';
-import { Pencil, Envelope, Person, Lock, ExclamationTriangle, Trash } from 'react-bootstrap-icons';
+import { Card, Button, Row, Col, Container } from 'react-bootstrap';
+import { ExclamationTriangle } from 'react-bootstrap-icons';
+import { useNavigate } from 'react-router-dom';
+import logo from '../../assets/logo.png';
+import ModalDeleteAccount from './delete-account/delete-account';
+import { ChangePasswordModal } from './change-password/change-password';
 import './user-profile.css';
 
 type UserProfile = {
@@ -27,12 +31,14 @@ const UserProfilePage = () => {
     incidents: []
   });
 
-  const [isEditing, setIsEditing] = useState(false);
   const [tempUser, setTempUser] = useState<UserProfile>({ ...user });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleEdit = () => {
-    setTempUser({ ...user });
-    setIsEditing(true);
+    navigate('/edit-profile');
+    //setTempUser({ ...user });
   };
 
   const handleSave = async () => {
@@ -60,7 +66,6 @@ const UserProfilePage = () => {
       const updatedUser = await response.json();
       
       setUser(updatedUser);
-      setIsEditing(false);
       localStorage.setItem("correo", updatedUser.correo);
       localStorage.setItem("nombre", updatedUser.nombre);
       localStorage.setItem("apPaterno", updatedUser.apPaterno);
@@ -72,18 +77,20 @@ const UserProfilePage = () => {
     }
   };
 
-  const handleCancel = () => {
-    setIsEditing(false);
-  };
-
   const handleChangePassword = () => {
-    // Lógica para cambiar contraseña
-    console.log('Cambiar contraseña');
+    setShowChangePasswordModal(true);
+  };
+  
+  const handleCloseChangePasswordModal = () => {
+    setShowChangePasswordModal(false);
   };
 
   const handleDeleteAccount = () => {
-    // Lógica para eliminar cuenta
-    console.log('Eliminar cuenta');
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,84 +104,37 @@ const UserProfilePage = () => {
     <Container fluid className="user-profile-container">
       <Card className="profile-card">
         <Card.Body>
+        <div className="logo-picture">
+          <img src={logo} alt="Logo" onError={(e) => { e.currentTarget.src = '/default-logo.png';}}
+        />
+        </div>
           <Row>
-            <Col md={4}>
-              {isEditing ? (
-                <>
-                  <Form.Group className="mb-4">
-                    <Form.Label>Nombre completo</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="firstName"
-                      value={tempUser.firstName}
-                      onChange={handleChange}
-                      placeholder="Nombre"
-                      className="mb-2"
-                    />
-                    <Form.Control
-                      type="text"
-                      name="lastName"
-                      value={tempUser.lastName}
-                      onChange={handleChange}
-                      placeholder="Apellido paterno"
-                      className="mb-2"
-                    />
-                    <Form.Control
-                      type="text"
-                      name="motherLastName"
-                      value={tempUser.motherLastName}
-                      onChange={handleChange}
-                      placeholder="Apellido materno"
-                    />
-                  </Form.Group>
-
-                  <Form.Group className="mb-4">
-                    <Form.Label>Nombre de usuario</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="username"
-                      value={tempUser.username}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-
-                  <Form.Group className="mb-4">
-                    <Form.Label>Correo electrónico</Form.Label>
-                    <Form.Control
-                      type="email"
-                      name="email"
-                      value={tempUser.email}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-
-                  <div className="d-flex mt-4">
-                    <Button variant="success" className="me-2" onClick={handleSave}>
-                      Guardar
-                    </Button>
-                    <Button variant="outline-secondary" onClick={handleCancel}>
-                      Cancelar
-                    </Button>
+            <Col md={3}>
+              <div className="user-name-text  text-start"> 
+                <h4 className="mb-0 fw-bold name-text">
+                  {`${user.firstName} ${user.lastName} ${user.motherLastName}`}
+                </h4>
+                <div className="profile-info py-2">
+                  <div className="user-info-item">
+                    <span>{user.email}</span>
                   </div>
-                </>
-              ) : (
-                <>
-                  <div className="d-flex justify-content-between align-items-center mb-4">
-                  <div className="user-name-text me-3 text-start"> {/* Agregado text-start aquí */}
-                    <h4 className="mb-0 fw-bold">
-                      {`${user.firstName} ${user.lastName} ${user.motherLastName}`}
-                    </h4>
+                  <div className="user-info-item">
+                    <span>{user.username}</span>
                   </div>
-                    <Button variant="outline-primary" onClick={handleEdit} className="edit-profile-button"> Editar <Pencil className="me-2"/> </Button>
-                  </div>
-                  <div className="profile-info mb-4 py-2">
-                    <div className="d-flex align-items-center mb-2">
-                      <Envelope className="me-2 text-muted" />
-                      <span>{user.email}</span>
-                    </div>
-                    <div className="d-flex align-items-center mb-2 py-2">
-                      <Person className="me-2 fw-semiboldfw-semibold" />
-                      <span>{user.username}</span>
+                  <hr className="my-2" />
+                </div>
+              </div>
+
+              <div className="profile-info  py-2">
+                <div className="d-flex align-items-center mb-2 py-2">
+                    <Button 
+                        variant="link" 
+                        className="text-start p-0 text-decoration-none text-body"
+                        onClick={handleEdit}>
+                        <div className="d-flex align-items">
+                          <span>Editar perfil</span>
+                        </div>
+                      </Button>
                     </div>
                     <div className="d-flex align-items-center mb-2 py-2">
                       <Button 
@@ -182,8 +142,17 @@ const UserProfilePage = () => {
                         className="text-start p-0 text-decoration-none text-body"
                         onClick={handleChangePassword}>
                         <div className="d-flex align-items">
-                          <Lock className="me-2" />
                           <span>Cambiar contraseña</span>
+                        </div>
+                      </Button>
+                    </div>
+                    <div className="d-flex align-items-center mb-2 py-2">
+                      <Button 
+                        variant="link" 
+                        className="text-start p-0 text-decoration-none text-body"
+                        onClick={() => navigate('/join-team')}>
+                        <div className="d-flex align-items">
+                          <span>Unete a nuestro equipo</span>
                         </div>
                       </Button>
                     </div>
@@ -193,43 +162,43 @@ const UserProfilePage = () => {
                         className="text-start p-0 text-decoration-none text-danger"
                         onClick={handleDeleteAccount}>
                         <div className="d-flex align-items-center">
-                          <Trash className="me-2" />
                           <span>Eliminar cuenta</span>
                         </div>
                       </Button>
                     </div>
                   </div>
-                </>
-              )}
             </Col>
             <Col md={1}></Col>
-            <Col md={6}>
+            <Col md={8}>
               <div className="incidents-section">
-                <h5 className="d-flex align-items-center mb-4">
-                  <ExclamationTriangle className="me-2 field-icon" /> Tus Reportes
+                <h5 className="d-flex align-items-center mb-4 report-title">
+                  <ExclamationTriangle className="me-2 field-icon" /> 
+                  Tus Reportes
                 </h5>
                 <Row className="mb-4 text-center"></Row>
                 {/* Sección de estadísticas */}
-                <Row className="mb-4 text-center">
-                  <Col md={4}>
-                    <div className="incident-stat-card">
-                      <h3 className="stat-number">0</h3>
-                      <p className="stat-label">Reportados</p>
-                    </div>
-                  </Col>
-                  <Col md={4}>
-                    <div className="incident-stat-card">
-                      <h3 className="stat-number">0</h3>
-                      <p className="stat-label">En revisión</p>
-                    </div>
-                  </Col>
-                  <Col md={4}>
-                    <div className="incident-stat-card">
-                      <h3 className="stat-number">0</h3>
-                      <p className="stat-label">Resueltos</p>
-                    </div>
-                  </Col>
-                </Row>
+                <div className="stats-wrapper">
+                  <Row className="mb-4 text-center">
+                    <Col md={4}>
+                      <div className="incident-stat-card">
+                        <h3 className="stat-number">0</h3>
+                        <p className="stat-label">Reportados</p>
+                      </div>
+                    </Col>
+                    <Col md={4}>
+                      <div className="incident-stat-card">
+                        <h3 className="stat-number">0</h3>
+                        <p className="stat-label">En revisión</p>
+                      </div>
+                    </Col>
+                    <Col md={4}>
+                      <div className="incident-stat-card">
+                        <h3 className="stat-number">0</h3>
+                        <p className="stat-label">Resueltos</p>
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
                 <Row className="mb-4 text-center"></Row>
                 
                 {/* Sección de lista de incidentes con scroll */}
@@ -245,6 +214,16 @@ const UserProfilePage = () => {
           </Row>
         </Card.Body>
       </Card>
+
+      {/* Modal de eliminación de cuenta */}
+      <ModalDeleteAccount 
+        mostrar={showDeleteModal}
+        onCancelar={handleCloseDeleteModal}/>
+
+      <ChangePasswordModal 
+        show={showChangePasswordModal}
+        onHide={handleCloseChangePasswordModal}
+        onSubmit={async () => {}}/>
     </Container>
   );
 };
