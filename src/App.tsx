@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './style.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from './layout/homepage/homepage';
@@ -9,7 +9,18 @@ import JoinTeam from './layout/user-profile/join-team/join-team';
 import NotFoundPage from './layout/page-not-found/page-not-found';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0);  
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // Podríamos implementar la del backend pero esto sirve
+      localStorage.removeItem('authToken');
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <Router>
