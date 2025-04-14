@@ -22,7 +22,5 @@ body, html {
 
  /* Asegura que el contenido ocupe todo el espacio restante después del navbar */
  .main-content {
-  margin-top: 70px; 
   padding: 0px;
-  overflow-y: auto; 
 }

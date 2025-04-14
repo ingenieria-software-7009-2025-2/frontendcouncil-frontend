@@ -43,20 +43,22 @@
     font-weight: bold !important;
     border: none !important;
     position: absolute !important;
-    top: 50%;
+    top: 45%;
     transform: translateY(-50%);
     white-space: nowrap !important;
     font-size: 16px !important;
-    padding: 2px 8px!important;
+    padding: 3px 8px!important;
     /*right: 70px !important;*/
     left: 10px !important;
     color: #030436 !important;
+    transition: all 0.3s ease;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
 }
 
 .backHomeButton:hover {
-    color: #ffffff !important; 
-    background-color: #030436 !important;
+    color: #030436 !important; 
+    top: 45%;
+    transform: translateY(-50%) scale(1.03);
     border: none !important;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
 }

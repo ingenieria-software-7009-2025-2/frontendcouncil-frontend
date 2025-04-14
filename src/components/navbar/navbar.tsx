@@ -42,37 +42,39 @@ const NavbarComponent = () => {
   return (
     <>
       <Navbar collapseOnSelect expand="lg" variant="dark" className="navbar-custom">
-        <Container>
-        {currentPath === '/' && (
+      <Container>
+          {currentPath === '/' && (
             <div className="menuH">
               <Filter />
             </div>
           )}
-         {/* Corrigiendo estilos del navbar, aunque creo que vamos a utiliar la de la api de mapas
-         <div className="searchbar">
-            <SearchBar />
-          </div>*/}          
-          {isAuthenticated ? (
-            <div className="d-flex align-items-center gap-2">
-            {currentPath === '/profile' && (
+          {currentPath !== '/' && (
               <Button variant="outline-light" className="backHomeButton" onClick={() => navigate('/')}>
                 Ir al mapa
               </Button>
             )}
-            <div className="userMenu">
-              <UserDropdown onLogout={handleLogout} />
+          {/* Mostrar botón de "Ir al mapa" solo si no estamos en la ruta raíz */}
+          {isAuthenticated ? (
+            <div className="d-flex align-items-center gap-2">
+              {currentPath !== '/' && (
+                <Button variant="outline-light" className="backHomeButton" onClick={() => navigate('/')}>
+                  Ir al mapa
+                </Button>
+              )}
+              <div className="userMenu">
+                <UserDropdown onLogout={handleLogout} />
+              </div>
             </div>
-          </div>
-            ) : (
-          <Button
-            variant="outline-light"
-            className="login-button w-auto px-3"
-            onClick={handleShowModal}>
-            Iniciar Sesión
-          </Button>
+          ) : (
+            currentPath === '/' && (
+              <Button
+                variant="outline-light"
+                className="login-button w-auto px-3"
+                onClick={handleShowModal}>
+                Iniciar Sesión
+              </Button>
+            )
           )}
-          
-          
         </Container>
       </Navbar>
 

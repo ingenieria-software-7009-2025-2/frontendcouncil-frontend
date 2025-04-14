@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import './App.css';
+import './style.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from './layout/homepage/homepage';
 import NavbarComponent from './components/navbar/navbar';
 import UserProfilePage from './layout/user-profile/user-profile';
 import EditProfile from './layout/user-profile/edit-profile/edit-profile';
 import JoinTeam from './layout/user-profile/join-team/join-team';
+import NotFoundPage from './layout/page-not-found/page-not-found';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -16,12 +17,13 @@ function App() {
         <div className="w-full">
           <NavbarComponent />
         </div>
-        <div className="flex-1 bg-gray-200 p-4 overflow-y-auto">
+        <div className="flex-1 bg-gray-200 p-4 ">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/profile" element={<UserProfilePage />} />
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/join-team" element={<JoinTeam />} />
+            <Route path="/*" element={<NotFoundPage />} />
           </Routes>
         </div>
       </div>
