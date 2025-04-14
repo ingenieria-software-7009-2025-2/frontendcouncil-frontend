@@ -12,6 +12,9 @@ const NavbarComponent = () => {
   const [showModal, setShowModal] = useState(false);
   // Autenticacion
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Rol
+  const [userRole, setUserRole] = useState<string | null>(null);
+
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
@@ -19,16 +22,18 @@ const NavbarComponent = () => {
   // Verificar si el usuario está autenticado
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token); // Si hay token, el usuario está autenticado.
+    const rol = localStorage.getItem("rol"); // Agregue esto para el rol (TEMPORAL)
+    setIsAuthenticated(!!token); 
+    setUserRole(rol); // Agregue esto para el rol (TEMPORAL)
   }, []);
 
   // Función para abrir y cerrar el modal
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = (loggedIn = false) => {
     setShowModal(false);
-    
     if (loggedIn) { 
       setIsAuthenticated(true);
+      setUserRole(localStorage.getItem("rol")); // Agregue esto para el rol (TEMPORAL)
       window.location.reload(); 
     }
   };
@@ -36,7 +41,8 @@ const NavbarComponent = () => {
    // Función de logout para actualizar estado
    const handleLogout = () => {
     localStorage.clear();
-    setIsAuthenticated(false); // Ocultar UserDropdown
+    setIsAuthenticated(false); 
+    setUserRole(null); // Agregue esto para el rol (TEMPORAL)
   };
 
   return (
@@ -60,6 +66,22 @@ const NavbarComponent = () => {
                 <Button variant="outline-light" className="backHomeButton" onClick={() => navigate('/')}>
                   Ir al mapa
                 </Button>
+              )}
+              {userRole === 'admin' && (
+                <>
+                  <Button
+                    variant="outline-warning"
+                    className={`manageIncidentsButton ${currentPath === '/manage-incidents' ? 'active' : ''}`}
+                    onClick={() => navigate('/manage-incidents')}>
+                    Incidentes
+                  </Button>
+                  <Button
+                    variant="outline-info"
+                    className={`manageUsersButton ${currentPath === '/manage-users' ? 'active' : ''}`}
+                    onClick={() => navigate('/manage-users')}>
+                    Usuarios
+                  </Button>
+                </>
               )}
               <div className="userMenu">
                 <UserDropdown onLogout={handleLogout} />

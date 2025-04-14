@@ -96,5 +96,63 @@
     position: relative;
 }
   
+/* BOTÓN DE APARTADOS DE MANEJO DE INCIDENTES Y USUARIOS */
+.manageIncidentsButton {
+    border-radius: 30px !important;
+    background-color: #fbfbfb !important;
+    font-weight: bold !important;
+    border: none !important;
+    position: absolute !important;
+    top: 45%;
+    transform: translateY(-50%);
+    white-space: nowrap !important;
+    font-size: 16px !important;
+    padding: 3px 8px!important;
+    right: 70px !important;
+    color: #030436 !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
 
- 
+.manageIncidentsButton:hover {
+    color: #030436 !important; 
+    top: 45%;
+    transform: translateY(-50%) scale(1.03);
+    border: none !important;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.manageIncidentsButton.active {
+    background-color: #00A5C2 !important; 
+    color: rgb(255, 255, 255) !important;            
+  }
+
+.manageUsersButton {
+    border-radius: 30px !important;
+    background-color: #fbfbfb !important;
+    font-weight: bold !important;
+    border: none !important;
+    position: absolute !important;
+    top: 45%;
+    transform: translateY(-50%);
+    white-space: nowrap !important;
+    font-size: 16px !important;
+    padding: 3px 8px!important;
+    right: 180px !important;
+    color: #030436 !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.manageUsersButton:hover {
+    color: #030436 !important; 
+    top: 45%;
+    transform: translateY(-50%) scale(1.03);
+    border: none !important;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.manageUsersButton.active {
+    background-color: #00A5C2 !important; 
+    color: rgb(255, 255, 255) !important; 
+}

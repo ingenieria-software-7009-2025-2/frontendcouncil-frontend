@@ -6,6 +6,8 @@ import NavbarComponent from './components/navbar/navbar';
 import UserProfilePage from './layout/user-profile/user-profile';
 import EditProfile from './layout/user-profile/edit-profile/edit-profile';
 import JoinTeam from './layout/user-profile/join-team/join-team';
+import ManageIncidents from './layout/admin-panel/manage-incidents.tsx/manage-incidents';
+import ManageUsers from './layout/admin-panel/manage-users/manage-users';
 import NotFoundPage from './layout/page-not-found/page-not-found';
 
 function App() {
@@ -35,6 +37,8 @@ function App() {
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/join-team" element={<JoinTeam />} />
             <Route path="/*" element={<NotFoundPage />} />
+            <Route path="/manage-incidents" element={<ManageIncidents />} />
+            <Route path="/manage-users" element={<ManageUsers />} />
           </Routes>
         </div>
       </div>

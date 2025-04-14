@@ -94,6 +94,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
 
       const data = await response.json();
       localStorage.setItem('token', data.token);
+      // Modificar esto de acuerdo al backend
+      // localStorage.setItem('rol', data.user.rol);
+      // IMPLEMENTACIÓN TEMPORAL DE ROL:
+      if (loginData.identifier === 'admin@admin.com') {
+        localStorage.setItem('rol', 'admin');
+      } else {
+        localStorage.setItem('rol', 'user');
+      }
       onLoginSuccess();
     } catch (error) {
       setErrors({

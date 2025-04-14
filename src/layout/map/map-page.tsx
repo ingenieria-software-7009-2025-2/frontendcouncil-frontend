@@ -1,25 +1,24 @@
 import './map-page.css';
-import fotoFondo from '../../assets/mapa.jpg';
+import Map from '../../components/maps/map';
+import logo from '../../assets/logo.png';
+import { Container } from 'react-bootstrap';
 
 const Mapa = () => {
     return (
-        <div
-            style={{
-                backgroundImage: `url(${fotoFondo})`,
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                height: '100vh',              // Usa viewport height en lugar de porcentaje
-                width: '100vw',               // Usa viewport width para consistencia
-                margin: 0,
-                padding: 0,
-                position: 'fixed',
-                top: 0,
-                left: 0
-            }}
-        >
-        </div>
+        <Container fluid className='map-container'>
+            <Map/>
+            <div className="logo-picture-map">
+                <img src={logo} alt="Logo" onError={(e) => { e.currentTarget.src = '/default-logo.png';}}/>
+            </div>
+            <div className="incident-button-wrapper">
+                <button className="incident-button">+</button>
+                <span className="incident-tooltip">Agregar incidente</span>
+            </div>
+        </Container>
     );
 };
 
 export default Mapa;
+
+
+
