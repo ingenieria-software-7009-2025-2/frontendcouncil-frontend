@@ -5,7 +5,7 @@ const ManageIncidents = () => {
 
   return (
     <div className="manage-incidents-container">
-      <h2 className="manage-incidents-title">Incidentes</h2>
+      <h2 className="manage-incidents-title">Administración de Incidentes</h2>
     </div>
   );
 };
