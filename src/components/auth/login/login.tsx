@@ -73,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) =
     const isEmail = loginData.identifier.includes('@');
     const credentials = isEmail
       ? { correo: loginData.identifier, password: loginData.password }
-      : { username: loginData.identifier, password: loginData.password };
+      : { correo: loginData.identifier, password: loginData.password };
 
     try {
       const response = await fetch('http://localhost:8080/v1/users/login', {
