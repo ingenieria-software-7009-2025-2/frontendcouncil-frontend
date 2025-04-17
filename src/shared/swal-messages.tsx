@@ -1,4 +1,3 @@
-// useSwalMessages.js
 import Swal from "sweetalert2";
 
 export function useSwalMessages() {
@@ -10,7 +9,7 @@ export function useSwalMessages() {
       text: message,
       background: '#E8F8F8',
       showConfirmButton: false,
-      timer: 2000
+      timer: 4000,
     });
   };
 

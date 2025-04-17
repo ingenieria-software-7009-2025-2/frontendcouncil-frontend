@@ -5,9 +5,10 @@ import './login.css'
 
 interface LoginFormProps {
   onLoginSuccess: () => void;
+  onLoginError: (message: string) => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) => {
   const [loginData, setLoginData] = useState({
     identifier: '',
     password: '',
@@ -81,18 +82,39 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         body: JSON.stringify(credentials),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        setErrors({
-          identifier: true,
-          password: true,
-          formError: 'Credenciales incorrectas',
-          identifierMessage: '',
-          passwordMessage: ''
-        });
+        if (response.status === 404) {
+          // Usuario no encontrado
+          setErrors({
+            identifier: true,
+            password: false,
+            formError: 'Usuario o correo no encontrado',
+            identifierMessage: 'Usuario o correo no registrado',
+            passwordMessage: ''
+          });
+        } else if (response.status === 401) {
+          // Contraseña incorrecta
+          setErrors({
+            identifier: false,
+            password: true,
+            formError: 'Contraseña incorrecta',
+            identifierMessage: '',
+            passwordMessage: 'La contraseña ingresada no es correcta'
+          });
+        } else {
+          // Otro tipo de error
+          setErrors({
+            identifier: true,
+            password: true,
+            formError: data.message || 'Error al iniciar sesión',
+            identifierMessage: '',
+            passwordMessage: ''
+          });
+        }
         return;
       }
-
-      const data = await response.json();
       localStorage.setItem('token', data.token);
       // Modificar esto de acuerdo al backend
       // localStorage.setItem('rol', data.user.rol);
@@ -104,13 +126,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       }
       onLoginSuccess();
     } catch (error) {
-      setErrors({
-        identifier: true,
-        password: true,
-        formError: 'Credenciales incorrectas',
-        identifierMessage: '',
-        passwordMessage: ''
-      });
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        onLoginError('⚠️ Lo sentimos, no se pudo conectar con el servidor. Intentalo más tarde.');
+      }
+      else {
+        setErrors({
+          identifier: true,
+          password: true,
+          formError: 'Credenciales incorrectas',
+          identifierMessage: '',
+          passwordMessage: ''
+        });
+      }
     }
   };
 

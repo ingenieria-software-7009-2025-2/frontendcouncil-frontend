@@ -14,14 +14,21 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
 
   const handleLoginSuccess = () => {
     onClose();
+    window.location.reload(); 
+  };
+
+  const handleLoginError = (message: string) => {
+    onClose();
+    errorMessage(message);
   };
 
   const handleRegisterSuccess = () => {
-    successMessage('¡Cuenta registrada exitosamente!');
     onClose();
+    successMessage('¡Cuenta registrada exitosamente!');
   };
 
   const handleRegisterError = (message: string) => {
+    onClose();
     errorMessage(message);
   };
 
@@ -64,7 +71,7 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
           </div>
           <div className="modal-body">
             {isLogin ? (
-              <LoginForm onLoginSuccess={handleLoginSuccess}  />
+              <LoginForm onLoginSuccess={handleLoginSuccess} onLoginError={handleLoginError} />
             ) : (
               <RegisterForm onRegisterSuccess={handleRegisterSuccess} onRegisterError={handleRegisterError} />
             )}

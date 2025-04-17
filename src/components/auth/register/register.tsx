@@ -140,7 +140,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
       await response.json();
       onRegisterSuccess();
     } catch (error) {
-      onRegisterError('Datos inválidos');
+      onRegisterError('⚠️ Lo sentimos, no se pudo conectar con el servidor. Intentalo más tarde.');
     }
   };
 

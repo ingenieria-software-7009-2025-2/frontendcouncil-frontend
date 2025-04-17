@@ -29,12 +29,13 @@ const NavbarComponent = () => {
 
   // Función para abrir y cerrar el modal
   const handleShowModal = () => setShowModal(true);
+
   const handleCloseModal = (loggedIn = false) => {
     setShowModal(false);
-    if (loggedIn) { 
+    if (loggedIn) {
       setIsAuthenticated(true);
       setUserRole(localStorage.getItem("rol")); // Agregue esto para el rol (TEMPORAL)
-      window.location.reload(); 
+      window.location.reload();
     }
   };
 
@@ -104,7 +105,7 @@ const NavbarComponent = () => {
       {showModal && (
         <div className="modal-overlay" onClick={() => handleCloseModal()}>
           <div className="modal-wrapper" onClick={(e) => e.stopPropagation()}>
-            <ModalLoginRegister onClose={() => handleCloseModal(true)} />
+            <ModalLoginRegister onClose={(loggedIn = false) => handleCloseModal(loggedIn)} />
           </div>
         </div>
       )}
