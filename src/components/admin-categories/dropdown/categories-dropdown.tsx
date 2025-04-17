@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Plus } from "lucide-react";
 import './categories-dropdown.css';
+import AddCategoryModal from "../modal/add-category";
 
 const categoriasTemporales = [
   { id: 1, nombre: "Accidentes\ntransito" },
@@ -23,12 +24,25 @@ const categoriasTemporales = [
 
 const DropdownCategories = () => {
   const [open, setOpen] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [categories, setCategories] = useState(categoriasTemporales);
 
   const toggleDropdown = () => setOpen(!open);
 
   const handleAddClick = () => {
-    console.log("Botón ADD clickeado");
-    // Lógica para añadir nueva categoría
+    setShowAddModal(true);
+  };
+
+  const handleSaveCategory = (categoryName: string, imageFile: File | null) => {
+    // Aquí puedes manejar la lógica para guardar la nueva categoría
+    const newCategory = {
+      id: categories.length + 1,
+      nombre: categoryName,
+      // Puedes agregar más propiedades según necesites, como la URL de la imagen
+    };
+    
+    setCategories([...categories, newCategory]);
+    setShowAddModal(false);
   };
 
   return (
@@ -46,8 +60,8 @@ const DropdownCategories = () => {
             {/* Contenedor de categorías con scroll horizontal */}
             <div className="categories-scroll-container">
               <div className="categories-scroll">
-                {categoriasTemporales.map((cat) => (
-                  <div key={cat.id} className="category-item">
+                {categories.map((cat, index) => (
+                  <div key={`${cat.id}-${index}`} className="category-item">
                     <div className="category-circle">
                       {/* Aquí irá la imagen */}
                     </div>
@@ -71,6 +85,13 @@ const DropdownCategories = () => {
           </div>
         </div>
       )}
+
+      {/* Modal para agregar nueva categoría */}
+      <AddCategoryModal 
+        show={showAddModal}
+        onHide={() => setShowAddModal(false)}
+        onSave={handleSaveCategory}
+      />
     </div>
   );
 };
