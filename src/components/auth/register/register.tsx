@@ -105,14 +105,14 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
 
     // Verificar si el correo ya existe
     const emailExists = await checkEmailExists(formData.correo);
-    if (emailExists) {
+    if (!emailExists) {
       setErrors(prev => ({ ...prev, correo: 'Este correo ya está registrado' }));
       return;
     }
 
     // Verificar si el usuario ya existe
     const usernameExists = await checkUsernameExists(formData.username);
-    if (usernameExists) {
+    if (!usernameExists) {
       setErrors(prev => ({ ...prev, username: 'Este nombre de usuario ya está en uso' }));
       return;
     }
