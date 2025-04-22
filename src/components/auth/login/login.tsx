@@ -119,7 +119,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) =
       // Modificar esto de acuerdo al backend
       // localStorage.setItem('rol', data.user.rol);
       // IMPLEMENTACIÓN TEMPORAL DE ROL:
-      if (loginData.identifier === 'admin@admin.com') {
+      if (loginData.identifier === 'admin@admin.com' ||  loginData.identifier === 'admin') {
         localStorage.setItem('rol', 'admin');
       } else {
         localStorage.setItem('rol', 'user');

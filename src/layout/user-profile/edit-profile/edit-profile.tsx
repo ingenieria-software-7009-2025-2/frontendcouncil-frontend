@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, Form, Button, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import './edit-profile.css';
@@ -14,16 +14,90 @@ type UserProfile = {
 const EditProfile = () => {
   const navigate = useNavigate();
   const [tempUser, setTempUser] = useState<UserProfile>({
-    username: 'username',
-    firstName: 'Nombre',
-    lastName: 'Apellido',
-    motherLastName: 'Apellido',
-    email: 'correo_ejemplo@gmail.com',
+    username: '',
+    firstName: '',
+    lastName: '',
+    motherLastName: '',
+    email: '',
   });
 
-  const handleSave = () => {
-    console.log('Guardando cambios:', tempUser);
-    navigate('/profile');
+  // Cargar datos del usuario al montar el componente
+  useEffect(() => {
+    const loadUserData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No hay token disponible");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8080/v1/users/me", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Error al obtener los datos del usuario");
+        }
+
+        const userData = await response.json();
+        setTempUser({
+          username: userData.userName || '',
+          firstName: userData.nombre || '',
+          lastName: userData.apPaterno || '',
+          motherLastName: userData.apMaterno || '',
+          email: userData.correo || '',
+        });
+      } catch (error) {
+        console.error("Error al cargar los datos del usuario:", error);
+      }
+    };
+
+    loadUserData();
+  }, []);
+
+  const handleSave = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No hay token disponible");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/v1/users/me", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userName: tempUser.username,
+          nombre: tempUser.firstName,
+          apPaterno: tempUser.lastName,
+          apMaterno: tempUser.motherLastName,
+          correo: tempUser.email
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el usuario");
+      }
+
+      const updatedUser = await response.json();
+      
+      // Actualizar localStorage si es necesario
+      localStorage.setItem("correo", updatedUser.correo);
+      localStorage.setItem("nombre", updatedUser.nombre);
+      localStorage.setItem("apPaterno", updatedUser.apPaterno);
+      localStorage.setItem("apMaterno", updatedUser.apMaterno);
+      localStorage.setItem("userName", updatedUser.userName);
+      
+      navigate('/profile');
+    } catch (error) {
+      console.error("Error en la actualización:", error);
+    }
   };
 
   const handleCancel = () => {
