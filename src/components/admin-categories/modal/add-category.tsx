@@ -46,7 +46,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ show, onHide, onSav
   };
 
   return (
-    <Modal show={show} onHide={onHide} centered>
+    <Modal show={show} onHide={onHide} centered style={{ zIndex: 900000 }}>
       <Modal.Header closeButton> </Modal.Header>
       <Modal.Body className="text-center">
         {/* Contenedor del círculo con la imagen */}

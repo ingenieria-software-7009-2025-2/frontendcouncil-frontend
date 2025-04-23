@@ -14,7 +14,7 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
   onCancelar
 }) => {
   return (
-    <Modal show={mostrar} onHide={onCancelar} centered backdrop="static" dialogClassName="modal-superior">
+    <Modal show={mostrar} onHide={onCancelar} centered backdrop="static" dialogClassName="modal-superior" style={{ zIndex: 900000 }}>
       <Modal.Header closeButton className="border-0 pb-0">
         <Modal.Title className="w-100 text-center">
         </Modal.Title>

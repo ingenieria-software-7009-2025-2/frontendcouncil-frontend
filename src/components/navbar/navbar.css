@@ -8,7 +8,7 @@
     top: 2% !important;
     left: 50% !important;
     transform: translateX(-50%)!important;
-    z-index: 9999;
+    z-index: 250;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
 }
 
@@ -28,7 +28,7 @@
     transform: translateY(-50%);
     white-space: nowrap !important;
     font-size: 20px !important;
-    padding: 1.5px 0 !important;
+    padding: 1.5px 5px !important;
     right: 10px !important;
 }
 

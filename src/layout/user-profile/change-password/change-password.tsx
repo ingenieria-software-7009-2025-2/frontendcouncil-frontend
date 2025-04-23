@@ -48,7 +48,7 @@ export const ChangePasswordModal = ({ show, onHide, onSubmit }: ChangePasswordMo
   };
 
   return (
-    <Modal show={show} onHide={onHide} centered backdrop="static">
+    <Modal show={show} onHide={onHide} centered backdrop="static" style={{ zIndex: 900000 }}>
       <Modal.Header closeButton className="border-0 pb-0">
         <Modal.Title className="w-100 text-center">
           <Lock size={32} className="text-primary mb-3" />
