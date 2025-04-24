@@ -51,9 +51,13 @@ const NavbarComponent = () => {
       <Navbar collapseOnSelect expand="lg" variant="dark" className="navbar-custom">
       <Container>
           {currentPath === '/' && (
+            <>
             <div className="menuH">
               <Filter />
             </div>
+            
+            <SearchBar />
+          </>
           )}
           {currentPath !== '/' && (
               <Button variant="outline-light" className="backHomeButton" onClick={() => navigate('/')}>

@@ -85,3 +85,9 @@
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
   }
+  
+  .leaflet-tile {
+    filter: none !important; /* Elimina filtros que pueden ralentizar */
+  }
+
+  

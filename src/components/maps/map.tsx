@@ -1,140 +1,174 @@
-import React, { useState, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents, CircleMarker, ZoomControl } from 'react-leaflet';
-import L, { LatLngLiteral } from 'leaflet';
+// src/components/map/MapComponent.tsx
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, ZoomControl, useMap } from 'react-leaflet';
+import L, { LatLngLiteral, Icon } from 'leaflet';
+import ReportIncidentModal from '../../layout/report-incident/report-incident';
 import 'leaflet/dist/leaflet.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import pin from './../../assets/pin.png'
+import SearchBar from '../searchbar/searchbar';
 import './map.css';
-import ReportIncidentModal from '../../layout/report-incident/report-incident';
 
-// Configuración del icono para el marcador arrastrable que no sirve aún y lo voy a cambiar con algo diseñado en figma
-const draggableIcon = new L.DivIcon({
-  className: 'custom-draggable-icon',
-  html: `<div style="font-size: 24px; filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));">👤</div>`,
-  iconSize: [32, 32],
-  iconAnchor: [16, 32]
-});
-
-// Icono para incidentes reportados
-const incidentIcon = new L.DivIcon({
-  className: 'incident-icon',
-  html: `<div style="
-    background: red;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
-  "></div>`,
-  iconSize: [20, 20],
-  iconAnchor: [10, 10]
-});
+type IncidentStatus = 'activo' | 'en_proceso' | 'resuelto';
 
 interface Incident {
-  id: number;
-  position: LatLngLiteral;
-  category?: string;
-  description?: string;
+  incidenteID: number;
+  clienteID: number;
+  categoriaID: number;
+  nombre: string;
+  descripcion: string;
+  fecha: string;
+  hora: string;
+  longitud: number;
+  latitud: number;
+  estado: IncidentStatus;
 }
 
-const MapComponent: React.FC = () => {
-  const [incidents, setIncidents] = useState<Incident[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [newPosition, setNewPosition] = useState<LatLngLiteral | null>(null);
-  const [dragging, setDragging] = useState(false);
+// Componente para manejar el viewport inicial
+const SetInitialView = ({ center, zoom }: { center: LatLngLiteral; zoom: number }) => {
+  const map = useMap();
 
-  const draggableMarkerRef = useRef<L.Marker<any>>(null);
-  const mapRef = useRef<L.Map>(null);
-
-  const handleDragEnd = () => {
-    const marker = draggableMarkerRef.current;
-    if (marker) {
-      const position = marker.getLatLng();
-      setNewPosition(position);
-      setShowModal(true);
-      setDragging(false);
-    }
-  };
-
-  const handleIncidentCreated = (incidentData: {
-    category: string;
-    description: string;
-    location: LatLngLiteral;
-  }) => {
-    setIncidents(prev => [
-      ...prev, 
-      {
-        id: Date.now(),
-        position: incidentData.location,
-        category: incidentData.category,
-        description: incidentData.description
-      }
-    ]);
-    setNewPosition(null);
-    setShowModal(false);
-  };
-
-  const MapClickHandler = () => {
-    useMapEvents({
-      click: (e) => {
-        if (!dragging) {
-          setNewPosition(e.latlng);
-          setShowModal(true);
-        }
-      }
+  useEffect(() => {
+    map.setView(center, zoom, {
+      animate: true,
+      duration: 1
     });
-    return null;
-  };
+  }, [center, zoom, map]);
+
+  return null;
+};
+
+// Clase encargada de manejar íconos personalizados para los incidentes
+class IncidentManager {
+  static getIcon(estado: IncidentStatus): Icon {
+    const colorMap: Record<IncidentStatus, string> = {
+      activo: 'red',
+      en_proceso: 'yellow',
+      resuelto: 'green'
+    };
+
+    const circleColor = colorMap[estado];
+    const pinUrl = new URL(pin, import.meta.url).href;
+
+    return L.divIcon({
+      className: '',
+      html: `
+        <div style="position: relative; width: 32px; height: 32px;">
+          <img src="${pinUrl}" style="width: 100%; height: 100%;" />
+          <div style="
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 12px;
+            height: 12px;
+            background-color: ${circleColor};
+            border-radius: 50%;
+            border: 1px solid white;
+          "></div>
+        </div>
+      `,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32]
+    });
+  }
+
+  static async fetchIncidents(): Promise<Incident[]> {
+    // Aquí va tu implementación del backend
+    return [
+      {
+        incidenteID: 1,
+        clienteID: 101,
+        categoriaID: 5,
+        nombre: "Fuga de agua",
+        descripcion: "Se detectó una fuga cerca del parque",
+        fecha: "2025-04-24",
+        hora: "10:00",
+        latitud: 19.4065,
+        longitud: -99.1632,
+        estado: "activo"
+      },
+      {
+        incidenteID: 2,
+        clienteID: 102,
+        categoriaID: 3,
+        nombre: "Corte eléctrico",
+        descripcion: "Zona sin luz por varias horas",
+        fecha: "2025-04-24",
+        hora: "09:30",
+        latitud: 19.4060,
+        longitud: -99.1635,
+        estado: "en_proceso"
+      },
+      {
+        incidenteID: 3,
+        clienteID: 103,
+        categoriaID: 2,
+        nombre: "Semáforo descompuesto",
+        descripcion: "Semáforo fuera de servicio en la esquina",
+        fecha: "2025-04-23",
+        hora: "18:20",
+        latitud: 19.4068,
+        longitud: -99.1630,
+        estado: "resuelto"
+      }
+    ];
+  }
+}
+
+
+const MapComponent: React.FC = () => {
+  const [showIncidentModal, setShowIncidentModal] = useState(false);
+  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [mapReady, setMapReady] = useState(false);
+
+  const initialCenter: LatLngLiteral = { lat: 19.4063, lng: -99.1631 };
+  const initialZoom = 18;
+  const maxZoom = 22;
+
+  useEffect(() => {
+    const loadIncidents = async () => {
+      const data = await IncidentManager.fetchIncidents();
+      setIncidents(data);
+    };
+
+    loadIncidents();
+  }, []);
 
   return (
     <div className="map-container">
       <MapContainer
-        ref={mapRef}
-        center={[23.6345, -102.5528]}
-        zoom={5}
+        center={initialCenter}
+        zoom={initialZoom}
+        maxZoom={maxZoom}
         className="h-100 w-100"
         zoomControl={false}
-        doubleClickZoom={false}  
-        zoomSnap={0.5} >
+        doubleClickZoom={false}
+        zoomSnap={0.5}
+        whenReady={() => setMapReady(true)}
+      >
+        {mapReady && <SetInitialView center={initialCenter} zoom={initialZoom} />}
 
         <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        detectRetina={true}
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          detectRetina={true}
+          maxZoom={maxZoom}
         />
-
-
-        {/* QUITAR ESTOS DOS SI SE TARDA MUCHO EN CARGAR EL MAPA PARA HACER ZOOM */}
-        <TileLayer
-        url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=TU_API_KEY`}
-        attribution='© <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'/>
-        <TileLayer
-        url="https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png"
-        attribution='Map tiles by <a href="http://stamen.com">Stamen Design</a>'/>
-        {/* HASTA AQUI */}
-
-        <MapClickHandler />
 
         <ZoomControl position="bottomright" />
 
-        {newPosition && (
-          <Marker
-            draggable
-            eventHandlers={{
-              dragstart: () => setDragging(true),
-              dragend: handleDragEnd,
-            }}
-            position={newPosition}
-            icon={draggableIcon}
-            ref={draggableMarkerRef}
-            zIndexOffset={1000}
-          />
-        )}
+        <div className="incident-button-wrapper" style={{ zIndex: 900000 }}>
+          <button className="incident-button" onClick={() => setShowIncidentModal(true)}>
+            +
+          </button>
+          <span className="incident-tooltip">Agregar incidente</span>
+        </div>
 
         {incidents.map((incident) => (
           <Marker
-            key={incident.id}
-            position={incident.position}
-            icon={incidentIcon}
+            key={incident.incidenteID}
+            position={{ lat: incident.latitud, lng: incident.longitud }}
+            icon={IncidentManager.getIcon(incident.estado)}
             eventHandlers={{
               click: () => {
                 console.log('Incidente:', incident);
@@ -142,17 +176,12 @@ const MapComponent: React.FC = () => {
             }}
           />
         ))}
-      </MapContainer>
 
-      <ReportIncidentModal
-        show={showModal}
-        onHide={() => {
-          setShowModal(false);
-          setNewPosition(null);
-        }}
-        onIncidentCreated={handleIncidentCreated}
-        initialLocation={newPosition}
-      />
+        <ReportIncidentModal
+          show={showIncidentModal}
+          onHide={() => setShowIncidentModal(false)}
+        />
+      </MapContainer>
     </div>
   );
 };
