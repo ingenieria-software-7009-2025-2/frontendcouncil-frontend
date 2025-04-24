@@ -1,9 +1,9 @@
- .join-team-container {
-    margin-top: 50px;
-    width: 100% !important;
+.join-team-container {
+   margin-top: 50px;
+   width: 100% !important;
 }
 
-.header {
+.header-join {
    display: flex;
    justify-content: space-between;
    align-items: center;
@@ -13,19 +13,19 @@
 }
 
 
-.logo {
-   width: 50px;
+.logo-join {
+   width: 150px;
    height: auto;
 }
 
-h1 {
+h1-join{
    font-size: 2.5em;
    margin-top: 40px;
    color: #222;
 }
 
 
-.container-card {
+.container-card-join {
    display: flex;
    justify-content: center;
    gap: 30px;
@@ -34,7 +34,7 @@ h1 {
    column-gap: 20px; /* Espacio entre columnas */
 }
 
-.card {
+.card-join {
    width: 280px;
    padding: 30px 20px;
    border-radius: 16px;
@@ -49,12 +49,12 @@ h1 {
    flex-basis: 33%; /* Ancho de cada columna */
 }
 
-.card h2 {
+.card-join h2 {
    margin-bottom: 10px;
    font-size: 1.2em;
 }
 
-.card p {
+.card-join p {
    font-size: 1em;
    margin-bottom: 20px;
 }
