@@ -7,46 +7,52 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1050;
+  z-index: 1000;
 }
 
 .modal-dialog {
-  max-width: 1800px !important; /* Aumentamos el ancho máximo */
-  width: 33% !important; /* Ocupa el 95% del viewport */
+  max-width: 5000px !important; 
+  width: 34% !important; 
   margin: 0 auto;
 }
+
 .modal-content {
-  width: 100%; /* Ocupa todo el ancho disponible del modal-dialog */
+  width: 100%; 
   display: flex;
   flex-direction: column;
+  border-radius: 20px !important;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
 }
 
 .modal-header {
   padding: 1rem;
   display: flex;
-  justify-content: center; /* Centra el contenido del encabezado */
+  justify-content: center; 
   align-items: center;
   border-bottom: 1px solid #dee2e6;
+  margin-top: 5px !important;
 }
 
 .modal-title {
-  text-align: center; /* Asegura que el texto del título esté centrado */
+  text-align: center; 
   width: 100%;
 }
 
 .modal-body {
+  margin-left: 5px !important;
+  margin-right: 5px !important;
+  margin-bottom: 5px !important;
   padding: 1rem;
-  text-align: left; /* Justifica el texto a la izquierda */
-  flex-grow: 1; /* Ocupa el espacio disponible */
-  overflow-y: auto; /* Agrega scroll si el contenido es muy largo */
+  text-align: left;
+  flex-grow: 1; 
+  overflow-y: auto; 
 }
 
 .modal-footer {
   padding: 1rem;
   border-top: 1px solid #dee2e6;
   display: flex;
-  justify-content: flex-end; /* Alinea los botones a la derecha */
+  justify-content: flex-end; 
 }
 
 .custom-tab-active {
@@ -63,10 +69,11 @@
 
 
 .btn-close-modal {
-  border: none;
+  border: none !important;
   font-size: 1.5rem;
   color: #666;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid #eee;
 }
+
+

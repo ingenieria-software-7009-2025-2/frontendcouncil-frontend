@@ -1,0 +1,41 @@
+/* PLACE HOLDERS REGISTER */
+ .form-control.custom-input {
+    height: 35px;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    border-radius: 0% !important;
+    border-color: #9aaaba !important;
+    border-width: 0.9px !important;
+  }
+  
+  .form-control.custom-input::placeholder {
+    font-size: 0.8rem;
+    color:#48515a;
+  }
+  
+  .form-control.custom-input:focus {
+    color: #212529; 
+  }
+
+  /* ESTILOS DE ERROR */
+  .custom-input.is-invalid {
+    border-color: #dc3545 !important;
+    color: #dc3545 !important;
+  }
+
+  .custom-input.is-invalid:focus {
+    box-shadow: 0 0 0 0.25rem #dc354540 !important;
+    color: #dc3545 !important;
+  }
+
+  .invalid-feedback {
+    font-size: 0.75rem !important; 
+    margin-top: 4px;    
+    color: #dc3545 !important;
+  }
+
+  /* Ocultar el icono de error (!) solo para el campo de password */
+  #passwordRegister.is-invalid {
+    background-image: none !important;
+    padding-right: 12px !important;
+  }

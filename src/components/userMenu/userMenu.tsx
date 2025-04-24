@@ -1,23 +1,36 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { PersonFill, Gear, BoxArrowRight } from 'react-bootstrap-icons';
 import { useNavigate } from "react-router-dom";
 import './UserDropdown.css';
+
 const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
-  const [userData, setUserData] = useState<{ nombre: string; correo: string; userName:string; }>(null);
+  const [userData, setUserData] = useState<{ 
+    nombre: string; 
+    apPaterno: string | null; 
+    apMaterno: string | null; 
+    correo: string; 
+    userName: string;
+  }>(null);
   const [dataFetched, setDataFetched] = useState(false);
-  const navigate = useNavigate(); //hook de navegacion
+  const navigate = useNavigate();
+
+  // Cargar datos del usuario cuando el componente se monte
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token && !dataFetched) {
+      fetchUserData();
+    }
+  }, []); 
+
   const fetchUserData = async () => {
     const token = localStorage.getItem("token");
-    console.log(token);
     if (!token) {
       console.error("No hay token disponible");
       return;
     }
-
-
     try {
       const response = await fetch("http://localhost:8080/v1/users/me", {
         method: "GET",
@@ -26,20 +39,23 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
           "Content-Type": "application/json",
         },
       });
-
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
-
       const data = await response.json();
       localStorage.setItem("correo", data.correo);
       localStorage.setItem("nombre", data.nombre);
       localStorage.setItem("apPaterno", data.apPaterno);
       localStorage.setItem("apMaterno", data.apMaterno);
       localStorage.setItem("userName", data.userName);
-
-      setUserData({nombre: data.nombre, correo:data.correo, userName:data.userName}); // Guardar datos en el estado
-      setDataFetched(true); // Marcar que ya hicimos la petición
+      setUserData({
+        nombre: data.nombre, 
+        apPaterno: data.apPaterno,
+        apMaterno: data.apMaterno,
+        correo: data.correo, 
+        userName: data.userName
+      });
+      setDataFetched(true);
     } catch (error) {
       console.error("Error al obtener datos del usuario:", error);
     }
@@ -47,7 +63,6 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
 
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
-    console.log(token);
     try {
       const response = await fetch("http://localhost:8080/v1/users/logout", {
         method: "POST",
@@ -56,13 +71,12 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
           "Content-Type": "application/json",
         },
       });
-
       if (!response.ok) {
         throw new Error("Error al cerrar sesión");
       }
       localStorage.clear();
-      onLogout(); // el ususario cerro sesion
-      navigate("/"); // Redirigir a la página principal
+      onLogout();
+      navigate("/");
       window.location.reload();
     } catch (error) {
       console.error("Error en el logout:", error);
@@ -76,25 +90,36 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
     }
   };
 
-  // Cambiar esto con el auth y la bd
+  // Obtener la inicial del nombre (o 'P' si no hay datos)
+  const getUserInitial = () => {
+    if (userData?.nombre) {
+      return userData.nombre.charAt(0).toUpperCase();
+    }
+    const storedName = localStorage.getItem("nombre");
+    if (storedName) {
+      return storedName.charAt(0).toUpperCase();
+    }
+    return 'P';
+  };
 
   return (
     <div className="user-dropdown-container" ref={dropdownRef}>
       <Dropdown show={showDropdown} onToggle={toggleDropdown}>
         <Dropdown.Toggle as="div" className="user-toggle">
           <div className="user-circle">
-            <span className="user-content">U</span>
-            {/* Alternativa con ícono: */}
-            {/* <PersonFill className="user-icon" /> */}
+            <span className="user-content">{getUserInitial()}</span>
           </div>
         </Dropdown.Toggle>
 
         <Dropdown.Menu className="user-dropdown-menu">
-          {/* Sección de información del usuario (no clickeable) */}
           <div className="user-info-section">
             {userData ? (
                 <>
-                  <div className="user-name">{userData.nombre}</div>
+                  <div className="user-name">
+                    {userData.nombre} 
+                    {userData.apPaterno ? ` ${userData.apPaterno}` : ''}
+                    {userData.apMaterno ? ` ${userData.apMaterno}` : ''}
+                  </div>
                   <div className="user-email">{userData.correo}</div>
                 </>
             ) : (

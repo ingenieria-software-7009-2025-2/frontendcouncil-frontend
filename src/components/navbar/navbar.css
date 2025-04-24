@@ -8,10 +8,10 @@
     top: 2% !important;
     left: 50% !important;
     transform: translateX(-50%)!important;
-    z-index: 9999;
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    z-index: 250;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
 }
-  
+
 .navbar-custom .navbar-brand, 
 .navbar-custom .navbar-nav .nav-link {
     color: rgb(0, 0, 0) !important; 
@@ -19,31 +19,61 @@
   
 /* STYLES BOTÓN LOGIN */
 .login-button {
-    border-radius: 20px !important;
-    background-color: #030436 !important;
+    border-radius: 30px !important;
+    background-color: hsl(239, 89%, 11%) !important;
     font-weight: bold !important;
     border-color: #030436 !important;
     position: absolute !important;
-    right: 20px; /* Alineado a la derecha */
     top: 50%;
     transform: translateY(-50%);
-}
-
-.userMenu{
-    position: absolute !important;
-    right: 20px; 
+    white-space: nowrap !important;
+    font-size: 20px !important;
+    padding: 1.5px 5px !important;
+    right: 10px !important;
 }
 
 /* Cambiar el color del texto en hover */
 .login-button:hover {
-    color: #5bfff1 !important; 
+    color: #d6ffff !important; 
+}
+
+.backHomeButton {
+    border-radius: 30px !important;
+    background-color: #fbfbfb !important;
+    font-weight: bold !important;
+    border: none !important;
+    position: absolute !important;
+    top: 45%;
+    transform: translateY(-50%);
+    white-space: nowrap !important;
+    font-size: 16px !important;
+    padding: 3px 8px!important;
+    /*right: 70px !important;*/
+    left: 10px !important;
+    color: #030436 !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.backHomeButton:hover {
+    color: #030436 !important; 
+    top: 45%;
+    transform: translateY(-50%) scale(1.03);
+    border: none !important;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.userMenu{
+    position: absolute !important;
+    right: 10px !important; 
 }
 
 .menuH {
     position: absolute !important;
-    left: 10px; 
+    left: 10px !important; 
     top: 50%;
     transform: translateY(-50%); 
+    background: none !important;
 }
 
 /* Superposición del modal */
@@ -66,5 +96,63 @@
     position: relative;
 }
   
+/* BOTÓN DE APARTADOS DE MANEJO DE INCIDENTES Y USUARIOS */
+.manageIncidentsButton {
+    border-radius: 30px !important;
+    background-color: #fbfbfb !important;
+    font-weight: bold !important;
+    border: none !important;
+    position: absolute !important;
+    top: 45%;
+    transform: translateY(-50%);
+    white-space: nowrap !important;
+    font-size: 16px !important;
+    padding: 3px 8px!important;
+    right: 70px !important;
+    color: #030436 !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
 
- 
+.manageIncidentsButton:hover {
+    color: #030436 !important; 
+    top: 45%;
+    transform: translateY(-50%) scale(1.03);
+    border: none !important;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.manageIncidentsButton.active {
+    background-color: #00A5C2 !important; 
+    color: rgb(255, 255, 255) !important;            
+  }
+
+.manageUsersButton {
+    border-radius: 30px !important;
+    background-color: #fbfbfb !important;
+    font-weight: bold !important;
+    border: none !important;
+    position: absolute !important;
+    top: 45%;
+    transform: translateY(-50%);
+    white-space: nowrap !important;
+    font-size: 16px !important;
+    padding: 3px 8px!important;
+    right: 180px !important;
+    color: #030436 !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.manageUsersButton:hover {
+    color: #030436 !important; 
+    top: 45%;
+    transform: translateY(-50%) scale(1.03);
+    border: none !important;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.manageUsersButton.active {
+    background-color: #00A5C2 !important; 
+    color: rgb(255, 255, 255) !important; 
+}
