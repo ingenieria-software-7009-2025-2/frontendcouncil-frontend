@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './map.css';
 import { IncidentService } from '../../services/incident.service';
 import { IncidentDTO } from '../../models/dto-incident';
+import { IncidentPopup } from './incident-popup/incident-popup';
 import { IncidentPin } from './pin/pin';
 
 // Componente para manejar el viewport inicial (igual que antes)
@@ -22,6 +23,7 @@ const SetInitialView = ({ center, zoom }: { center: LatLngLiteral; zoom: number 
 const MapComponent: React.FC = () => {
   const [showIncidentModal, setShowIncidentModal] = useState(false);
   const [incidents, setIncidents] = useState<IncidentDTO[]>([]);
+  const [selectedIncident, setSelectedIncident] = useState<IncidentDTO | null>(null);
   const [mapReady, setMapReady] = useState(false);
 
   const initialCenter: LatLngLiteral = { lat: 19.4063, lng: -99.1631 };
@@ -66,15 +68,25 @@ const MapComponent: React.FC = () => {
           <span className="incident-tooltip">Agregar incidente</span>
         </div>
 
-        {incidents.map((incident) => (
+        
+
+
+{incidents.map((incident) => (
           <Marker
             key={incident.incidenteID}
-            position={{ lat: incident.latitud, lng: incident.longitud }}
+            position={[incident.latitud, incident.longitud]}
             icon={IncidentPin.getIcon(incident.estado)}
             eventHandlers={{
-              click: () => console.log('Incidente:', incident)
+              click: () => setSelectedIncident(incident)
             }}
-          />
+          >
+            {selectedIncident?.incidenteID === incident.incidenteID && (
+              <IncidentPopup 
+                incident={incident}
+                onClose={() => setSelectedIncident(null)}
+              />
+            )}
+          </Marker>
         ))}
 
         <ReportIncidentModal
