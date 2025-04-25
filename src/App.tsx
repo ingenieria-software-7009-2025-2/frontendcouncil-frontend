@@ -12,7 +12,8 @@ import NotFoundPage from './layout/page-not-found/page-not-found';
 
 function App() {
   const [count, setCount] = useState(0);  
-
+  
+  // Si se cierra la venta se cierra sesión 
   useEffect(() => {
     const handleBeforeUnload = () => {
       // Podríamos implementar la del backend pero esto sirve
