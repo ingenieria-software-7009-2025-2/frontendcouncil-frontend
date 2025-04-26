@@ -1,6 +1,5 @@
-// src/components/map/MapComponent.tsx
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, ZoomControl, useMap } from 'react-leaflet';
+import React, { useState, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl, useMap } from 'react-leaflet';
 import L, { LatLngLiteral } from 'leaflet';
 import ReportIncidentModal from '../../layout/report-incident/report-incident';
 import 'leaflet/dist/leaflet.css';
@@ -10,8 +9,8 @@ import { IncidentService } from '../../services/incident.service';
 import { IncidentDTO } from '../../models/dto-incident';
 import { IncidentPopup } from './incident-popup/incident-popup';
 import { IncidentPin } from './pin/pin';
+import SelectLocationPin from '../figures/select-location-pin/select-location-pin';
 
-// Componente para manejar el viewport inicial (igual que antes)
 const SetInitialView = ({ center, zoom }: { center: LatLngLiteral; zoom: number }) => {
   const map = useMap();
   useEffect(() => {
@@ -26,6 +25,10 @@ const MapComponent: React.FC = () => {
   const [selectedIncident, setSelectedIncident] = useState<IncidentDTO | null>(null);
   const [mapReady, setMapReady] = useState(false);
 
+  const [dragMode, setDragMode] = useState(false);
+  const [dragMarkerPosition, setDragMarkerPosition] = useState<LatLngLiteral | null>(null);
+  const dragTimer = useRef<NodeJS.Timeout | null>(null);
+
   const initialCenter: LatLngLiteral = { lat: 19.4063, lng: -99.1631 };
   const initialZoom = 18;
   const maxZoom = 22;
@@ -37,6 +40,42 @@ const MapComponent: React.FC = () => {
     };
     loadIncidents();
   }, []);
+
+  const handleMouseDown = () => {
+    dragTimer.current = setTimeout(() => {
+      setDragMode(true);
+    }, 500); 
+  };
+
+  const handleMouseUp = () => {
+    if (dragTimer.current) {
+      clearTimeout(dragTimer.current);
+      dragTimer.current = null;
+    }
+    if (!dragMode) {
+      setShowIncidentModal(true);
+    }
+  };
+
+  const handleMapClick = (e: L.LeafletMouseEvent) => {
+    if (dragMode) {
+      setDragMode(false);
+      setDragMarkerPosition(e.latlng);
+      setShowIncidentModal(true);
+    }
+  };
+
+  const MapClickHandler = () => {
+    useMapEvents({
+      click: handleMapClick,
+      mousemove: (e) => {
+        if (dragMode) {
+          setDragMarkerPosition(e.latlng);
+        }
+      }
+    });
+    return null;
+  };
 
   return (
     <div className="map-container">
@@ -51,7 +90,6 @@ const MapComponent: React.FC = () => {
         whenReady={() => setMapReady(true)}
       >
         {mapReady && <SetInitialView center={initialCenter} zoom={initialZoom} />}
-
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -62,16 +100,18 @@ const MapComponent: React.FC = () => {
         <ZoomControl position="bottomright" />
 
         <div className="incident-button-wrapper" style={{ zIndex: 900000 }}>
-          <button className="incident-button" onClick={() => setShowIncidentModal(true)}>
-            +
+          <button
+            className="incident-button"
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp} // Para cancelar si suelta fuera del botón
+          >
+            <SelectLocationPin size={40} />
           </button>
           <span className="incident-tooltip">Agregar incidente</span>
         </div>
 
-        
-
-
-{incidents.map((incident) => (
+        {incidents.map((incident) => (
           <Marker
             key={incident.incidenteID}
             position={[incident.latitud, incident.longitud]}
@@ -81,13 +121,28 @@ const MapComponent: React.FC = () => {
             }}
           >
             {selectedIncident?.incidenteID === incident.incidenteID && (
-              <IncidentPopup 
+              <IncidentPopup
                 incident={incident}
                 onClose={() => setSelectedIncident(null)}
               />
             )}
           </Marker>
         ))}
+
+        {/* Manejador de clicks y movimientos */}
+        <MapClickHandler />
+
+        {/* Mostrar el pin flotante mientras arrastra */}
+        {dragMode && dragMarkerPosition && (
+          <Marker
+            position={dragMarkerPosition}
+            icon={L.icon({
+              iconUrl: '/path-to-your-pin-icon.svg', 
+              iconSize: [40, 40],
+              iconAnchor: [20, 40]
+            })}
+          />
+        )}
 
         <ReportIncidentModal
           show={showIncidentModal}

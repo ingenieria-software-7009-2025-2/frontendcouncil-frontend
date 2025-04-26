@@ -31,7 +31,7 @@
     align-items: center;
     justify-content: center;
   }
-  
+
   /* Estilos para los iconos del mapa */
   .custom-draggable-icon {
     transition: transform 0.2s ease;
@@ -89,5 +89,8 @@
   .leaflet-tile {
     filter: none !important; /* Elimina filtros que pueden ralentizar */
   }
+
+  
+
 
   

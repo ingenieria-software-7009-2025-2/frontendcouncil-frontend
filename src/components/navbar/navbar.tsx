@@ -55,7 +55,6 @@ const NavbarComponent = () => {
             <div className="menuH">
               <Filter />
             </div>
-            
             <SearchBar />
           </>
           )}

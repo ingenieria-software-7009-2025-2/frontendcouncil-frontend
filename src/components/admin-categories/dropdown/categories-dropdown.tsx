@@ -1,17 +1,10 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { Col, Row } from "react-bootstrap"
 import './categories-dropdown.css';
 import AddCategoryModal from "../modal/add-category";
 
 const categoriasTemporales = [
-  { id: 1, nombre: "Accidentes\ntransito" },
-  { id: 2, nombre: "Categoría 2" },
-  { id: 3, nombre: "Categoría 3" },
-  { id: 4, nombre: "Categoría 4" },
-  { id: 5, nombre: "Categoría 5" },
-  { id: 6, nombre: "Categoría 6" },
-  { id: 7, nombre: "Categoría 7" },
-  { id: 8, nombre: "Categoría 8" },
   { id: 1, nombre: "Accidentes\ntransito" },
   { id: 2, nombre: "Categoría 2" },
   { id: 3, nombre: "Categoría 3" },
@@ -57,31 +50,33 @@ const DropdownCategories = () => {
       {open && (
         <div className="dropdown-content-wrapper">
           <div className="dropdown-content">
-            {/* Contenedor de categorías con scroll horizontal */}
-            <div className="categories-scroll-container">
-              <div className="categories-scroll">
-                {categories.map((cat, index) => (
-                  <div key={`${cat.id}-${index}`} className="category-item">
-                    <div className="category-circle">
-                      {/* Aquí irá la imagen */}
-                    </div>
-                    <span className="category-name">
-                      {cat.nombre}
-                    </span>
+          <Col xs={11} className="pe-2">
+                <div className="categories-scroll-container">
+                  <div className="categories-scroll">
+                    {categories.map((cat, index) => (
+                      <div key={`${cat.id}-${index}`} className="category-item">
+                        <div className="category-circle">
+                          {/* Aquí irá la imagen */}
+                        </div>
+                        <span className="category-name">
+                          {cat.nombre}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Botón ADD fijo a la derecha */}
-            <div className="add-button-container">
-              <button className="add-button" onClick={handleAddClick}>
-                <div className="add-circle">
-                  <Plus size={32} />
                 </div>
-                <span className="add-text">ADD</span>
-              </button>
-            </div>
+              </Col>
+              {/* Columna para el botón ADD */}
+              <Col xs={1} className="d-flex justify-content-center">
+                <div className="add-button-container">
+                  <button className="add-button" onClick={handleAddClick}>
+                    <div className="add-circle">
+                      <Plus size={32} />
+                    </div>
+                    <span className="add-text">ADD</span>
+                  </button>
+                </div>
+              </Col>
           </div>
         </div>
       )}

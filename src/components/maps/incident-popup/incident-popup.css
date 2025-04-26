@@ -19,27 +19,27 @@
     display: flex;
     justify-content: flex-end; 
     align-items: center;
-    padding: 0.5rem;
   }
   
   .popup-title {
     position: relative;
-    margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: #333;
+    color: #030436;
     max-width: 180px;
     word-wrap: break-word;
   }
   
   .popup-close-btn {
-    padding: 0.25em 0.25em;
+    right: 0 !important;
     font-size: 0.75rem;
     background-color: transparent;
     border: 0;
     border-radius: 0.25rem;
     opacity: 0.7;
-    margin-left: 8px;
+    width: 6px !important;
+    height: 6px !important;
+    margin-top: 1px;
   }
   
   .popup-close-btn:hover {
@@ -49,7 +49,7 @@
   .popup-content {
     width: 100% !important;
     font-size: 13px;
-    margin-bottom: 10px;
+    margin-top: 15px !important;
   }
   
   .popup-content p {
@@ -66,7 +66,16 @@
   .popup-report-link {
     color: #00A5C2 !important;
     text-decoration: underline;
-    font-size: 14px;
+    font-size: 12px;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+
+  .change-status-report {
+    color: #00A5C2 !important;
+    text-decoration: underline;
+    font-size: 12px;
     cursor: pointer;
     background: none;
     border: none;
@@ -78,3 +87,48 @@
     color: #030436;
     font-size: 16px;
   }
+
+  .popup-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .popup-icons-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .like-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+  }
+  
+  .like-count {
+    font-size: 14px;
+  }
+  
+  .incident-popup-like, .incident-popup-comment {
+    font-size: 14px;
+    color: #030436;
+  }
+  
+  .category-link {
+    position: relative;
+    font-size: 16px;
+    font-weight: 600;
+    color: #030436 !important;
+    text-decoration: none; 
+    transition: all 0.3s ease; 
+  }
+  
+  .category-link:hover {
+    color: #030436;
+    text-decoration: underline; 
+    text-underline-offset: 3px; 
+  }
+  

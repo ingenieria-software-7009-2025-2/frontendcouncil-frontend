@@ -1,6 +1,11 @@
 import Swal from "sweetalert2";
+import './swal-message.css';
 
 export function useSwalMessages() {
+  const toastStyles = {
+    marginTop: '70px', 
+  };
+
   const successMessage = (message:string) => {
     Swal.fire({
       position: 'top-end',
@@ -10,6 +15,7 @@ export function useSwalMessages() {
       background: '#E8F8F8',
       showConfirmButton: false,
       timer: 4000,
+      customClass: {popup: 'custom-toast'}
     });
   };
 
@@ -21,7 +27,8 @@ export function useSwalMessages() {
       text: message,
       background: '#F8E8F8',
       showConfirmButton: false,
-      timer: 2000
+      timer: 2000,
+      customClass: {popup: 'custom-toast'}
     });
   };
 
