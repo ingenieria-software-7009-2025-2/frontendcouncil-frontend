@@ -23,7 +23,7 @@ const UserSchema = z.object({
       };
   
       if (requiresAuth) {
-        const token = localStorage.getItem("authToken");
+        const token = sessionStorage.getItem("authToken");
         if (!token) {
           throw new Error("No authentication token found");
         }

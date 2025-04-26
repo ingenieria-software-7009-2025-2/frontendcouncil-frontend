@@ -115,14 +115,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) =
         }
         return;
       }
-      localStorage.setItem('token', data.token);
+      sessionStorage.setItem('token', data.token);
       // Modificar esto de acuerdo al backend
-      // localStorage.setItem('rol', data.user.rol);
+      // sessionStorage.setItem('rol', data.user.rol);
       // IMPLEMENTACIÓN TEMPORAL DE ROL:
       if (loginData.identifier === 'admin@admin.com' ||  loginData.identifier === 'admin') {
-        localStorage.setItem('rol', 'admin');
+        sessionStorage.setItem('rol', 'admin');
       } else {
-        localStorage.setItem('rol', 'user');
+        sessionStorage.setItem('rol', 'user');
       }
       onLoginSuccess();
     } catch (error) {

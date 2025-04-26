@@ -19,14 +19,14 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
 
   // Cargar datos del usuario cuando el componente se monte
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (token && !dataFetched) {
       fetchUserData();
     }
   }, []); 
 
   const fetchUserData = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (!token) {
       console.error("No hay token disponible");
       return;
@@ -43,11 +43,11 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
       const data = await response.json();
-      localStorage.setItem("correo", data.correo);
-      localStorage.setItem("nombre", data.nombre);
-      localStorage.setItem("apPaterno", data.apPaterno);
-      localStorage.setItem("apMaterno", data.apMaterno);
-      localStorage.setItem("userName", data.userName);
+      sessionStorage.setItem("correo", data.correo);
+      sessionStorage.setItem("nombre", data.nombre);
+      sessionStorage.setItem("apPaterno", data.apPaterno);
+      sessionStorage.setItem("apMaterno", data.apMaterno);
+      sessionStorage.setItem("userName", data.userName);
       setUserData({
         nombre: data.nombre, 
         apPaterno: data.apPaterno,
@@ -62,7 +62,7 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
   };
 
   const handleLogout = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     try {
       const response = await fetch("http://localhost:8080/v1/users/logout", {
         method: "POST",
@@ -74,7 +74,7 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
       if (!response.ok) {
         throw new Error("Error al cerrar sesión");
       }
-      localStorage.clear();
+      sessionStorage.clear();
       onLogout();
       navigate("/");
       window.location.reload();
@@ -95,7 +95,7 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
     if (userData?.nombre) {
       return userData.nombre.charAt(0).toUpperCase();
     }
-    const storedName = localStorage.getItem("nombre");
+    const storedName = sessionStorage.getItem("nombre");
     if (storedName) {
       return storedName.charAt(0).toUpperCase();
     }
