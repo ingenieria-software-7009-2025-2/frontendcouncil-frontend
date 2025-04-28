@@ -136,6 +136,7 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
             <BoxArrowRight className="dropdown-icon" />
             <span>Cerrar sesión</span>
           </Dropdown.Item>
+          <Dropdown.Divider className='transparent-divider'/>
         </Dropdown.Menu>
       </Dropdown>
     </div>

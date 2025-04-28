@@ -116,11 +116,12 @@
   .user-name {
     font-size: large;
     font-weight: bold;
+    margin-bottom: 0 !important;
   }
 
   .user-email {
     font-size: 14px;
-    margin-top: 5px;
+    margin-top: 1px !important;
     color: #030436;
   }
 
@@ -128,5 +129,11 @@
     padding: 14px 14px 12px 14px;
     cursor: default;
     margin-bottom: 4px; 
+  }
 
+  .user-dropdown-menu .transparent-divider {
+    margin: 4px auto; 
+    width: 90%; 
+    border-top: transparent !important;
+    position: relative;
   }
