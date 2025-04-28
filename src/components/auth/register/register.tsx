@@ -106,7 +106,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
     // Verificar si el correo ya existe
     const emailExists = await checkEmailExists(formData.correo);
     if (emailExists) {
-      setErrors(prev => ({ ...prev, correo: 'Este correo ya está registrado' }));
+     setErrors(prev => ({ ...prev, correo: 'Este correo ya está registrado' }));
       return;
     }
 
@@ -135,12 +135,16 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user),
       });
-
-      if (!response.ok) throw new Error('Error en el registro');
+      if(!response.ok) throw new Error("error de login")
       await response.json();
       onRegisterSuccess();
     } catch (error) {
-      onRegisterError('⚠️ Lo sentimos, no se pudo conectar con el servidor. Intentalo más tarde.');
+      if (error instanceof RangeError){
+        onRegisterError('⚠️ Lo sentimos, este correo ya esta en uso.');
+      } else if (error instanceof TypeError ){
+        onRegisterError('⚠️ Lo sentimos, este usuario ya esta en uso.');
+      }
+      onRegisterError('⚠️ Lo sentimos, el servidor fuera de servicio');
     }
   };
 
