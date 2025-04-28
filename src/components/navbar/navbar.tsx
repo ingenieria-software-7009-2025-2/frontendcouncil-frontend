@@ -71,7 +71,7 @@ const NavbarComponent = () => {
                   Ir al mapa
                 </Button>
               )}
-              {userRole === 'admin' && (
+              {(userRole === '3' ||userRole === '4' ) && (
                 <>
                   <Button
                     variant="outline-warning"

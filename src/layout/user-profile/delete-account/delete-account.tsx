@@ -23,7 +23,7 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
   // Obtener el correo del usuario del localStorage o del estado de la aplicación
-  const userEmail = localStorage.getItem('userEmail') || '';
+  const userEmail = sessionStorage.getItem('correo');
 
   useEffect(() => {
     // Resetear estados cuando el modal se muestra/oculta
@@ -44,22 +44,23 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
 
     setIsChecking(true);
     try {
-      const response = await fetch('http://localhost:8080/v1/users/verify-password', {
+      const response = await fetch('http://localhost:8080/v1/users/toolkit/verify-password', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
         body: JSON.stringify({
           email: userEmail,
           password: password
         }),
       });
-
+      console.log("mande la peticion")
       const data = await response.json();
 
-      if (response.ok && data.isValid) {
+      if (response.ok ) {
         setError('');
+        console.log("entre")
         setIsPasswordCorrect(true);
       } else {
         setError('La contraseña es incorrecta');
@@ -92,6 +93,33 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
     }
   };
 
+  const eliminarCuenta = async (password: string) => {
+        const token = sessionStorage.getItem("token")
+    try {
+      const response = await fetch('http://localhost:8080/v1/users', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+        body: JSON.stringify({
+          token: token,
+          correo: userEmail,
+          password: password
+        }),
+      });
+
+      if (response.ok) {
+        console.log('Cuenta eliminada');
+        sessionStorage.clear()
+        window.location.href = '/'; // o lo que quieras hacer después
+      } else {
+        console.error('Error al eliminar la cuenta');
+      }
+    } catch (e){
+          console.log("fallo el borrado")
+    }
+  };
   return (
     <Modal show={mostrar} onHide={onCancelar} centered backdrop="static" style={{ zIndex: 900000 }}>
       <Modal.Header closeButton className="border-0 pb-0">
@@ -140,7 +168,7 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
               <Button variant="outline-secondary" onClick={onCancelar} className="px-4">
                 Cancelar
               </Button>
-              <Button variant="danger" onClick={onConfirmar} className="px-4">
+              <Button variant="danger" onClick={() => eliminarCuenta(password)} className="px-4">
                 Sí, eliminar cuenta
               </Button>
             </div>

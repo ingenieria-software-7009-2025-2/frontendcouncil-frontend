@@ -2,9 +2,33 @@ import React from 'react';
 import './join-team.css';
 
 const JoinTeam = () => {
-  const handleButtonClick = () => {
-    console.log("Solicitud enviada");
-    // Aquí va la logica para notificar al admin SUDO
+  const handleButtonClick = async () => {
+      console.log("Solicitud enviada");
+
+      try {
+          const username = sessionStorage.getItem("userName")
+          const token = sessionStorage.getItem("token");
+
+          const peticion = {
+              username: username,
+              rolid: 2
+          }
+
+          const response = await fetch("http://localhost:8080/v1/users/toolkit", {
+              method: "PUT",
+              headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify(peticion)
+          });
+          if (!response.ok) {
+              throw new Error("no se pudo cambiar");
+          }
+      } catch (error) {
+          console.log(error)
+      }
+      // Aquí va la logica para notificar al admin SUDO
   };
 
   return (
