@@ -21,8 +21,8 @@ const NavbarComponent = () => {
 
   // Verificar si el usuario está autenticado
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const rol = localStorage.getItem("rol"); // Agregue esto para el rol (TEMPORAL)
+    const token = sessionStorage.getItem("token");
+    const rol = sessionStorage.getItem("rol"); // Agregue esto para el rol (TEMPORAL)
     setIsAuthenticated(!!token); 
     setUserRole(rol); // Agregue esto para el rol (TEMPORAL)
   }, []);
@@ -34,16 +34,16 @@ const NavbarComponent = () => {
     setShowModal(false);
     if (loggedIn) {
       setIsAuthenticated(true);
-      setUserRole(localStorage.getItem("rol")); // Agregue esto para el rol (TEMPORAL)
+      setUserRole(sessionStorage.getItem("rol")); // Agregue esto para el rol (TEMPORAL)
       window.location.reload();
     }
   };
 
    // Función de logout para actualizar estado
    const handleLogout = () => {
-    localStorage.clear();
-    setIsAuthenticated(false); 
-    setUserRole(null); // Agregue esto para el rol (TEMPORAL)
+        sessionStorage.clear();
+        setIsAuthenticated(false);
+        setUserRole(null); // Agregue esto para el rol (TEMPORAL)
   };
 
   return (
@@ -51,9 +51,12 @@ const NavbarComponent = () => {
       <Navbar collapseOnSelect expand="lg" variant="dark" className="navbar-custom">
       <Container>
           {currentPath === '/' && (
+            <>
             <div className="menuH">
               <Filter />
             </div>
+            <SearchBar />
+          </>
           )}
           {currentPath !== '/' && (
               <Button variant="outline-light" className="backHomeButton" onClick={() => navigate('/')}>

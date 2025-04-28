@@ -1,7 +1,5 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './join-team.css';
-import logo from '../../../assets/SISREP_LOGO_BLACK.svg';
 
 const JoinTeam = () => {
   const handleButtonClick = () => {
@@ -11,13 +9,9 @@ const JoinTeam = () => {
 
   return (
     <div className="join-team-container">
-        <div className="header-join">
-          <h1 className="h1-join">Únete a nuestro equipo</h1>
-          <img src={logo} alt="Logo" className="logo-join"></img>
-        </div>
-
+      <h2 className="join-team-title">Únete a nuestro equipo</h2>
       <div className="container-card-join">
-        <div className="card-join card-blue columna">
+      <div className="card-join card-blue columna">
           <h2>Participa activamente en la seguridad </h2>
           <p>¿Te gustaría asumir un rol más activo dentro de la plataforma?</p>
         </div>
@@ -30,14 +24,11 @@ const JoinTeam = () => {
           <p>Tendrás la posibilidad de actualizar el estado de cada incidente, colaborar en su resolución y asegurarte de que la información fluya correctamente.</p>
         </div>
       </div>
-
-      <div className="d-grid gap-2 col-6 mx-auto">
-        <button 
-          className="btn btn-primary"
-          onClick={handleButtonClick}>
-          Enviar solicitud
-        </button>
-      </div>
+      <button 
+        className="join-team-button"
+        onClick={handleButtonClick}>
+        Enviar solicitud
+      </button>
     </div>
   );
 };

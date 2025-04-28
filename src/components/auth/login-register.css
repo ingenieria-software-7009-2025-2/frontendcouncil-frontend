@@ -64,7 +64,8 @@
   background-color: #030436 !important;
   font-weight: bold !important;
   border-color: #030436 !important;
-  font-size: 12px;
+  font-size: 14px;
+  padding: 4px 6px;
 }
 
 
@@ -75,5 +76,3 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
-

@@ -1,5 +1,5 @@
 import './map-page.css';
-import Map from '../../components/maps/map';
+import Maps from '../../components/maps/map';
 import logo from '../../assets/logo.png';
 import { Container } from 'react-bootstrap';
 import ReportIncidentModal from '../report-incident/report-incident';
@@ -10,21 +10,23 @@ const Mapa = () => {
 
     return (
         <Container fluid className='map-container'>
-            <Map/>
+            <Maps/>
             <div className="logo-picture-map">
                 <img src={logo} alt="Logo" onError={(e) => { e.currentTarget.src = '/default-logo.png';}}/>
             </div>
+
+            {/*
             <div className="incident-button-wrapper">
                 <button className="incident-button" onClick={() => setShowIncidentModal(true)}>
                     +
                 </button>
                 <span className="incident-tooltip">Agregar incidente</span>
-            </div>
+            </div>*/}
 
-            {/* Modal de reporte de incidente */}
+            {/* Modal de reporte de incidente 
             <ReportIncidentModal 
                 show={showIncidentModal} 
-                onHide={() => setShowIncidentModal(false)}/>
+                onHide={() => setShowIncidentModal(false)}/>*/}
         </Container>
     );
 };

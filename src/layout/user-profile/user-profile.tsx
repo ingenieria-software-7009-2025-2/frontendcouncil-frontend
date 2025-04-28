@@ -17,11 +17,11 @@ type UserProfile = {
 };
 
 const UserProfilePage = () => {
-  const nombre = localStorage.getItem("nombre");
-  const apPaterno = localStorage.getItem("apPaterno");
-  const apMaterno = localStorage.getItem("apMaterno");
-  const correo = localStorage.getItem("correo");
-  const userName = localStorage.getItem("userName");
+  const nombre = sessionStorage.getItem("nombre");
+  const apPaterno = sessionStorage.getItem("apPaterno");
+  const apMaterno = sessionStorage.getItem("apMaterno");
+  const correo = sessionStorage.getItem("correo");
+  const userName = sessionStorage.getItem("userName");
   const [user, setUser] = useState<UserProfile>({
     username: userName,
     firstName: nombre,
@@ -42,7 +42,7 @@ const UserProfilePage = () => {
   };
 
   const handleSave = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     console.log(token);
     if (!token) {
       console.error("No hay token disponible");
@@ -66,11 +66,11 @@ const UserProfilePage = () => {
       const updatedUser = await response.json();
       
       setUser(updatedUser);
-      localStorage.setItem("correo", updatedUser.correo);
-      localStorage.setItem("nombre", updatedUser.nombre);
-      localStorage.setItem("apPaterno", updatedUser.apPaterno);
-      localStorage.setItem("apMaterno", updatedUser.apMaterno);
-      localStorage.setItem("userName", updatedUser.userName);
+      sessionStorage.setItem("correo", updatedUser.correo);
+      sessionStorage.setItem("nombre", updatedUser.nombre);
+      sessionStorage.setItem("apPaterno", updatedUser.apPaterno);
+      sessionStorage.setItem("apMaterno", updatedUser.apMaterno);
+      sessionStorage.setItem("userName", updatedUser.userName);
       window.location.reload();
     } catch (error) {
       console.error("Error en la actualización:", error);

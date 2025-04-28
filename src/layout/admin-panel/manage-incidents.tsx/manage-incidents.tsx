@@ -210,6 +210,7 @@ interface Incident {
                         <th onClick={() => requestSort('estado')}>
                             Estado {sortConfig?.key === 'estado' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
                         </th>
+                        <th> Solicitud(es) de cambio de estado </th>
                         <th>Más</th>
                         </tr>
                     </thead>
@@ -259,6 +260,7 @@ interface Incident {
                                         </Dropdown>
                                     </div>
                                 </td>
+                                <td>Por implementar</td>
                                 <td>
                                     <Dropdown show={moreDropdownOpen === incident.id} onToggle={() => toggleMoreDropdown(incident.id)}>
                                         <Dropdown.Toggle 

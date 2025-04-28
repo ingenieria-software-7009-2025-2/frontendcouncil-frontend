@@ -31,7 +31,7 @@
     align-items: center;
     justify-content: center;
   }
-  
+
   /* Estilos para los iconos del mapa */
   .custom-draggable-icon {
     transition: transform 0.2s ease;
@@ -85,3 +85,12 @@
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
   }
+  
+  .leaflet-tile {
+    filter: none !important; /* Elimina filtros que pueden ralentizar */
+  }
+
+  
+
+
+  

@@ -1,0 +1,15 @@
+/* ESTILOS DE LOS RADIO BUTTONS */
+ .form-check-input:checked {
+    background-color: #030436;
+    border-color: #030436;
+  }
+  
+  /* Estilo para el label cuando está seleccionado */
+  .form-check-input:checked + .form-check-label {
+    color: #030436;
+  }
+  
+  /* Espaciado entre opciones */
+  .form-check {
+    padding-bottom: 0.2rem;
+  }

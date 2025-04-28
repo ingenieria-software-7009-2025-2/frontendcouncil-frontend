@@ -1,84 +1,76 @@
-import React, { useState, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents, CircleMarker, ZoomControl } from 'react-leaflet';
+import React, { useState, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, useMapEvents, ZoomControl, useMap } from 'react-leaflet';
 import L, { LatLngLiteral } from 'leaflet';
+import ReportIncidentModal from '../../layout/report-incident/report-incident';
 import 'leaflet/dist/leaflet.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './map.css';
-import ReportIncidentModal from '../../layout/report-incident/report-incident';
+import { IncidentService } from '../../services/incident.service';
+import { IncidentDTO } from '../../models/dto-incident';
+import { IncidentPopup } from './incident-popup/incident-popup';
+import { IncidentPin } from './pin/pin';
+import SelectLocationPin from '../figures/select-location-pin/select-location-pin';
 
-// Configuración del icono para el marcador arrastrable que no sirve aún y lo voy a cambiar con algo diseñado en figma
-const draggableIcon = new L.DivIcon({
-  className: 'custom-draggable-icon',
-  html: `<div style="font-size: 24px; filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));">👤</div>`,
-  iconSize: [32, 32],
-  iconAnchor: [16, 32]
-});
-
-// Icono para incidentes reportados
-const incidentIcon = new L.DivIcon({
-  className: 'incident-icon',
-  html: `<div style="
-    background: red;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
-  "></div>`,
-  iconSize: [20, 20],
-  iconAnchor: [10, 10]
-});
-
-interface Incident {
-  id: number;
-  position: LatLngLiteral;
-  category?: string;
-  description?: string;
-}
+const SetInitialView = ({ center, zoom }: { center: LatLngLiteral; zoom: number }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, zoom, { animate: true, duration: 1 });
+  }, [center, zoom, map]);
+  return null;
+};
 
 const MapComponent: React.FC = () => {
-  const [incidents, setIncidents] = useState<Incident[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [newPosition, setNewPosition] = useState<LatLngLiteral | null>(null);
-  const [dragging, setDragging] = useState(false);
+  const [showIncidentModal, setShowIncidentModal] = useState(false);
+  const [incidents, setIncidents] = useState<IncidentDTO[]>([]);
+  const [selectedIncident, setSelectedIncident] = useState<IncidentDTO | null>(null);
+  const [mapReady, setMapReady] = useState(false);
 
-  const draggableMarkerRef = useRef<L.Marker<any>>(null);
-  const mapRef = useRef<L.Map>(null);
+  const [dragMode, setDragMode] = useState(false);
+  const [dragMarkerPosition, setDragMarkerPosition] = useState<LatLngLiteral | null>(null);
+  const dragTimer = useRef<NodeJS.Timeout | null>(null);
 
-  const handleDragEnd = () => {
-    const marker = draggableMarkerRef.current;
-    if (marker) {
-      const position = marker.getLatLng();
-      setNewPosition(position);
-      setShowModal(true);
-      setDragging(false);
+  const initialCenter: LatLngLiteral = { lat: 19.4063, lng: -99.1631 };
+  const initialZoom = 18;
+  const maxZoom = 22;
+
+  useEffect(() => {
+    const loadIncidents = async () => {
+      const data = await IncidentService.fetchIncidents();
+      setIncidents(data);
+    };
+    loadIncidents();
+  }, []);
+
+  const handleMouseDown = () => {
+    dragTimer.current = setTimeout(() => {
+      setDragMode(true);
+    }, 500); 
+  };
+
+  const handleMouseUp = () => {
+    if (dragTimer.current) {
+      clearTimeout(dragTimer.current);
+      dragTimer.current = null;
+    }
+    if (!dragMode) {
+      setShowIncidentModal(true);
     }
   };
 
-  const handleIncidentCreated = (incidentData: {
-    category: string;
-    description: string;
-    location: LatLngLiteral;
-  }) => {
-    setIncidents(prev => [
-      ...prev, 
-      {
-        id: Date.now(),
-        position: incidentData.location,
-        category: incidentData.category,
-        description: incidentData.description
-      }
-    ]);
-    setNewPosition(null);
-    setShowModal(false);
+  const handleMapClick = (e: L.LeafletMouseEvent) => {
+    if (dragMode) {
+      setDragMode(false);
+      setDragMarkerPosition(e.latlng);
+      setShowIncidentModal(true);
+    }
   };
 
   const MapClickHandler = () => {
     useMapEvents({
-      click: (e) => {
-        if (!dragging) {
-          setNewPosition(e.latlng);
-          setShowModal(true);
+      click: handleMapClick,
+      mousemove: (e) => {
+        if (dragMode) {
+          setDragMarkerPosition(e.latlng);
         }
       }
     });
@@ -88,71 +80,75 @@ const MapComponent: React.FC = () => {
   return (
     <div className="map-container">
       <MapContainer
-        ref={mapRef}
-        center={[23.6345, -102.5528]}
-        zoom={5}
+        center={initialCenter}
+        zoom={initialZoom}
+        maxZoom={maxZoom}
         className="h-100 w-100"
         zoomControl={false}
-        doubleClickZoom={false}  
-        zoomSnap={0.5} >
-
+        doubleClickZoom={false}
+        zoomSnap={0.5}
+        whenReady={() => setMapReady(true)}
+      >
+        {mapReady && <SetInitialView center={initialCenter} zoom={initialZoom} />}
         <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        detectRetina={true}
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          detectRetina={true}
+          maxZoom={maxZoom}
         />
-
-
-        {/* QUITAR ESTOS DOS SI SE TARDA MUCHO EN CARGAR EL MAPA PARA HACER ZOOM */}
-        <TileLayer
-        url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=TU_API_KEY`}
-        attribution='© <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'/>
-        <TileLayer
-        url="https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png"
-        attribution='Map tiles by <a href="http://stamen.com">Stamen Design</a>'/>
-        {/* HASTA AQUI */}
-
-        <MapClickHandler />
 
         <ZoomControl position="bottomright" />
 
-        {newPosition && (
-          <Marker
-            draggable
-            eventHandlers={{
-              dragstart: () => setDragging(true),
-              dragend: handleDragEnd,
-            }}
-            position={newPosition}
-            icon={draggableIcon}
-            ref={draggableMarkerRef}
-            zIndexOffset={1000}
-          />
-        )}
+        <div className="incident-button-wrapper" style={{ zIndex: 900000 }}>
+          <button
+            className="incident-button"
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp} // Para cancelar si suelta fuera del botón
+          >
+            <SelectLocationPin size={40} />
+          </button>
+          <span className="incident-tooltip">Agregar incidente</span>
+        </div>
 
         {incidents.map((incident) => (
           <Marker
-            key={incident.id}
-            position={incident.position}
-            icon={incidentIcon}
+            key={incident.incidenteID}
+            position={[incident.latitud, incident.longitud]}
+            icon={IncidentPin.getIcon(incident.estado)}
             eventHandlers={{
-              click: () => {
-                console.log('Incidente:', incident);
-              }
+              click: () => setSelectedIncident(incident)
             }}
-          />
+          >
+            {selectedIncident?.incidenteID === incident.incidenteID && (
+              <IncidentPopup
+                incident={incident}
+                onClose={() => setSelectedIncident(null)}
+              />
+            )}
+          </Marker>
         ))}
-      </MapContainer>
 
-      <ReportIncidentModal
-        show={showModal}
-        onHide={() => {
-          setShowModal(false);
-          setNewPosition(null);
-        }}
-        onIncidentCreated={handleIncidentCreated}
-        initialLocation={newPosition}
-      />
+        {/* Manejador de clicks y movimientos */}
+        <MapClickHandler />
+
+        {/* Mostrar el pin flotante mientras arrastra */}
+        {dragMode && dragMarkerPosition && (
+          <Marker
+            position={dragMarkerPosition}
+            icon={L.icon({
+              iconUrl: '/path-to-your-pin-icon.svg', 
+              iconSize: [40, 40],
+              iconAnchor: [20, 40]
+            })}
+          />
+        )}
+
+        <ReportIncidentModal
+          show={showIncidentModal}
+          onHide={() => setShowIncidentModal(false)}
+        />
+      </MapContainer>
     </div>
   );
 };

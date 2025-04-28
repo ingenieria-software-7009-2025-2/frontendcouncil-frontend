@@ -24,7 +24,7 @@ const EditProfile = () => {
   // Cargar datos del usuario al montar el componente
   useEffect(() => {
     const loadUserData = async () => {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       if (!token) {
         console.error("No hay token disponible");
         return;
@@ -59,7 +59,7 @@ const EditProfile = () => {
   }, []);
 
   const handleSave = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (!token) {
       console.error("No hay token disponible");
       return;
@@ -87,12 +87,12 @@ const EditProfile = () => {
 
       const updatedUser = await response.json();
       
-      // Actualizar localStorage si es necesario
-      localStorage.setItem("correo", updatedUser.correo);
-      localStorage.setItem("nombre", updatedUser.nombre);
-      localStorage.setItem("apPaterno", updatedUser.apPaterno);
-      localStorage.setItem("apMaterno", updatedUser.apMaterno);
-      localStorage.setItem("userName", updatedUser.userName);
+      // Actualizar sessionStorage si es necesario
+      sessionStorage.setItem("correo", updatedUser.correo);
+      sessionStorage.setItem("nombre", updatedUser.nombre);
+      sessionStorage.setItem("apPaterno", updatedUser.apPaterno);
+      sessionStorage.setItem("apMaterno", updatedUser.apMaterno);
+      sessionStorage.setItem("userName", updatedUser.userName);
       
       navigate('/profile');
     } catch (error) {

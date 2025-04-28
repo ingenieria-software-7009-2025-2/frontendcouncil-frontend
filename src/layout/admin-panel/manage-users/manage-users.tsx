@@ -298,6 +298,7 @@ const ManageUsers = () => {
                             sortConfig.direction === 'ascending' ? '↑' : '↓'
                             )}
                         </th>
+                        <th>Solicitud cambio de rol</th>
                         <th>Más</th>
                         </tr>
                     </thead>
@@ -342,7 +343,7 @@ const ManageUsers = () => {
                                     </Dropdown>
                                 </div>
                             </td>
-
+                            <td>True / False </td>
                             <td>
                             <Dropdown show={moreDropdownOpen === user.id} onToggle={() => toggleMoreDropdown(user.id)}>
                                     <Dropdown.Toggle 

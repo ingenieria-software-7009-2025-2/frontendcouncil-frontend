@@ -185,10 +185,7 @@
     display: inline-block;
     overflow: hidden;
     right: 0;
-    float: left;
-    margin-bottom: 20px;
-    margin-top: 15px
-
+    margin-top: 25px
   }
 
   .logo-picture img {
