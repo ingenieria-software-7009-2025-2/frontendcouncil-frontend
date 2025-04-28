@@ -153,7 +153,7 @@ const ManageUsers = () => {
   const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newValue = Number(e.target.value);
     setItemsPerPage(newValue);
-    // Resetear a la primera página cuando cambia el número de items por página
+    // Resetear a la primera página cuando cambia el número de items por 
     setCurrentPage(1);
   };
 

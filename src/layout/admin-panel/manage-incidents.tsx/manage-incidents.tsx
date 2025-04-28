@@ -5,8 +5,10 @@ import DropdownCategories from '../../../components/admin-categories/dropdown/ca
 import './manage-incidents.css'
 
 interface Incident {
-    id: number;
-    categoria: string;
+    incidenteid: number;
+    clienteid: number;
+    categoriaid: string;
+    nombre: string;
     descripcion: string;
     fecha: string;
     hora: string;
@@ -30,13 +32,17 @@ interface Incident {
       const fetchData = async () => {
         try {
           // Simulando retraso de red
-          await new Promise(resolve => setTimeout(resolve, 500));
-          
+          //await new Promise(resolve => setTimeout(resolve, 500));
+          const fetchedIncidents = await fetchIncidentsFromBackend();
+          setIncidents(fetchedIncidents);
           // Datos temporales de ejemplo
+          /*
           const tempIncidents: Incident[] = [
             {
-              id: 1,
-              categoria: 'Infraestructura',
+              incidenteid: 56478,
+              clienteid: 24323,
+              categoriaid: 'Infraestructura',
+              nombre: 'trivial',
               descripcion: 'Bache en la calle principal',
               fecha: '2023-05-15',
               hora: '14:30',
@@ -45,8 +51,10 @@ interface Incident {
               estado: 'Creado'
             },
             {
-              id: 2,
-              categoria: 'Seguridad',
+              incidenteid: 2,
+              clienteid: 24323,
+              nombre: 'trivial',
+              categoriaid: 'Seguridad',
               descripcion: 'Alumbrado público dañado',
               fecha: '2023-05-16',
               hora: '20:15',
@@ -55,8 +63,9 @@ interface Incident {
               estado: 'En revisión'
             },
           ];
-          
-          setIncidents(tempIncidents);
+          */
+
+          //setIncidents(tempIncidents);
           setLoading(false);
         } catch (err) {
           setError('Error de conexión con la BD');
@@ -70,7 +79,23 @@ interface Incident {
     // Métodos para el backend (sin implementar) IMPLEMENTAR DTO Y SERVICES
     const fetchIncidentsFromBackend = async (): Promise<Incident[]> => {
       // Implementación pendiente
-      return [];
+      const token = sessionStorage.getItem("token");
+      const response = await fetch("http://localhost:8080/v1/incident/toolkit", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al obtener usuarios');
+    }
+
+    const incidents: Incident[] = await response.json();
+    return incidents;
+
+    // return [];
     };
   
     const updateIncidentStatus = async (incidentId: number, newStatus: 'Creado' | 'En revisión' | 'Resuelto'): Promise<boolean> => {
@@ -89,8 +114,8 @@ interface Incident {
     const filteredIncidents = incidents.filter(incident => {
       const searchLower = searchTerm.toLowerCase();
       return (
-        incident.id.toString().includes(searchLower) ||
-        incident.categoria.toLowerCase().includes(searchLower) ||
+        incident.incidenteid.toString().includes(searchLower) ||
+        incident.categoriaid.toLowerCase().includes(searchLower) ||
         incident.descripcion.toLowerCase().includes(searchLower) ||
         incident.fecha.toLowerCase().includes(searchLower) ||
         incident.hora.toLowerCase().includes(searchLower) ||
@@ -186,11 +211,11 @@ interface Incident {
                 <table className="users-table">
                     <thead>
                         <tr>
-                        <th onClick={() => requestSort('id')}>
-                            ID {sortConfig?.key === 'id' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+                        <th onClick={() => requestSort('incidenteid')}>
+                            ID {sortConfig?.key === 'incidenteid' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
                         </th>
-                        <th onClick={() => requestSort('categoria')}>
-                            Categoría {sortConfig?.key === 'categoria' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+                        <th onClick={() => requestSort('categoriaid')}>
+                            Categoría {sortConfig?.key === 'categoriaid' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
                         </th>
                         <th onClick={() => requestSort('descripcion')}>
                             Descripción {sortConfig?.key === 'descripcion' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
@@ -210,15 +235,14 @@ interface Incident {
                         <th onClick={() => requestSort('estado')}>
                             Estado {sortConfig?.key === 'estado' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
                         </th>
-                        <th> Solicitud(es) de cambio de estado </th>
                         <th>Más</th>
                         </tr>
                     </thead>
                     <tbody>
                         {paginatedIncidents.length > 0 ? (paginatedIncidents.map(incident => (
-                            <tr key={incident.id}>
-                                <td>{incident.id}</td>
-                                <td>{incident.categoria}</td>
+                            <tr key={incident.incidenteid}>
+                                <td>{incident.incidenteid}</td>
+                                <td>{incident.categoriaid}</td>
                                 <td>{incident.descripcion}</td>
                                 <td>{incident.fecha}</td>
                                 <td>{incident.hora}</td>
@@ -237,21 +261,21 @@ interface Incident {
                                             <Dropdown.Menu className="dropdown-menu">
                                                 <Dropdown.Item onClick={(e) => {
                                                     e.stopPropagation();
-                                                    updateIncidentStatus(incident.id, 'Creado');
+                                                    updateIncidentStatus(incident.incidenteid, 'Creado');
                                                     closeDropdowns();
                                                 }}>
                                                     Creado
                                                 </Dropdown.Item>
                                                 <Dropdown.Item onClick={(e) => {
                                                     e.stopPropagation();
-                                                    updateIncidentStatus(incident.id, 'En revisión');
+                                                    updateIncidentStatus(incident.incidenteid, 'En revisión');
                                                     closeDropdowns();
                                                 }}>
                                                     En revisión
                                                 </Dropdown.Item>
                                                 <Dropdown.Item onClick={(e) => {
                                                     e.stopPropagation();
-                                                    updateIncidentStatus(incident.id, 'Resuelto');
+                                                    updateIncidentStatus(incident.incidenteid, 'Resuelto');
                                                     closeDropdowns();
                                                 }}>
                                                     Resuelto
@@ -260,36 +284,35 @@ interface Incident {
                                         </Dropdown>
                                     </div>
                                 </td>
-                                <td>Por implementar</td>
                                 <td>
-                                    <Dropdown show={moreDropdownOpen === incident.id} onToggle={() => toggleMoreDropdown(incident.id)}>
+                                    <Dropdown show={moreDropdownOpen === incident.incidenteid} onToggle={() => toggleMoreDropdown(incident.incidenteid)}>
                                         <Dropdown.Toggle 
                                         className="more-toggle" 
                                         as="button" 
                                         onClick={(e: any) => {
                                             e.stopPropagation();
-                                            toggleMoreDropdown(incident.id);
+                                            toggleMoreDropdown(incident.incidenteid);
                                         }}>
                                         ⋮
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu className="more-dropdown">
                                         <Dropdown.Item onClick={(e) => {
                                         e.stopPropagation();
-                                        console.log('Editar', incident.id);
+                                        console.log('Editar', incident.incidenteid);
                                         closeDropdowns();
                                         }}>
                                             Editar
                                         </Dropdown.Item>
                                         <Dropdown.Item onClick={(e) => {
                                         e.stopPropagation();
-                                        deleteIncident(incident.id);
+                                        deleteIncident(incident.incidenteid);
                                         closeDropdowns();
                                         }}>
                                             Eliminar
                                         </Dropdown.Item>
                                         <Dropdown.Item onClick={(e) => {
                                         e.stopPropagation();
-                                        console.log('Ver detalles', incident.id);
+                                        console.log('Ver detalles', incident.incidenteid);
                                         closeDropdowns();
                                         }}>
                                             Ver detalles
