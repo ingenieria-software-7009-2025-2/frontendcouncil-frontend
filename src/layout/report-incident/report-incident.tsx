@@ -18,6 +18,8 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
   const [photos, setPhotos] = useState<File[]>([]);
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [address, setAddress] = useState('');
+  const [latitud, setLatitud] = useState('');
+  const [longitud, setLongitud] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   
@@ -67,8 +69,12 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
+            setLatitud(latitude.toString()); // Guarda latitud
+            setLongitud(longitude.toString()); // Guarda longitud
+            /** 
             const coordsText = `${latitude}, ${longitude}`;
-            setAddress(coordsText); 
+            setAddress(coordsText); */
+            setAddress(`${latitude}, ${longitude}`);
           },
           (error) => {
             console.error('Error obteniendo ubicación:', error);
@@ -81,7 +87,9 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
         setUseCurrentLocation(false);
       }
     } else {
-      setAddress(''); 
+      setLatitud('');
+      setLongitud('');
+      setAddress('');
     }
   };
   
@@ -105,8 +113,8 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
       descripcion: description,
       fecha: date, 
       hora: hour, 
-      latitud: lat?.toString() || '',
-      longitud: lon?.toString() || ''
+      latitud: latitud || '', 
+      longitud: longitud || '',
     };
   
     try {
@@ -143,6 +151,8 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     setPhotos([]);
     setUseCurrentLocation(false);
     setAddress('');
+    setLatitud(''); 
+    setLongitud('');
 
     const now = new Date();
     setDate(now.toISOString().split('T')[0]);
@@ -260,6 +270,28 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
             <Form.Group className="mb-3">
               <Form.Label>Ubicación</Form.Label>
               <div className="d-flex flex-column gap-2">
+              {/* Fila para latitud y longitud */}
+              <div className="row g-2">
+                <div className="col-md-6">
+                  <Form.Control
+                    type="number"
+                    value={latitud}
+                    onChange={(e) => setLatitud(e.target.value)}
+                    placeholder="Latitud (ej: 19.4326)"
+                    step="any" // Permite decimales
+                  />
+                </div>
+                <div className="col-md-6">
+                  <Form.Control
+                    type="number"
+                    value={longitud}
+                    onChange={(e) => setLongitud(e.target.value)}
+                    placeholder="Longitud (ej: -99.1332)"
+                    step="any"
+                  />
+                </div>
+              </div>
+                {/** 
                 <Button
                   variant={useCurrentLocation ? 'primary' : 'outline-primary'}
                   onClick={handleToggleUseCurrentLocation}
@@ -277,6 +309,7 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
                   placeholder="Ingresar una dirección"
                   disabled={useCurrentLocation}
                 />
+                */}
               </div>
             </Form.Group>
           </div>
