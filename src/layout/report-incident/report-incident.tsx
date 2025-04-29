@@ -58,32 +58,32 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
   };
 
   //Obtener latitud y longitud de la ubicación
-  const handleToggleUseCurrentLocation = () => {
-    const newUseCurrentLocation = !useCurrentLocation;
-    setUseCurrentLocation(newUseCurrentLocation);
+  // const handleToggleUseCurrentLocation = () => {
+  //   const newUseCurrentLocation = !useCurrentLocation;
+  //   setUseCurrentLocation(newUseCurrentLocation);
   
-    if (newUseCurrentLocation) {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            const coordsText = `${latitude}, ${longitude}`;
-            setAddress(coordsText); 
-          },
-          (error) => {
-            console.error('Error obteniendo ubicación:', error);
-            alert('No se pudo obtener la ubicación. Por favor permite acceso a tu ubicación.');
-            setUseCurrentLocation(false); 
-          }
-        );
-      } else {
-        alert('La geolocalización no es soportada en este navegador.');
-        setUseCurrentLocation(false);
-      }
-    } else {
-      setAddress(''); 
-    }
-  };
+  //   if (newUseCurrentLocation) {
+  //     if (navigator.geolocation) {
+  //       navigator.geolocation.getCurrentPosition(
+  //         (position) => {
+  //           const { latitude, longitude } = position.coords;
+  //           const coordsText = `${latitude}, ${longitude}`;
+  //           setAddress(coordsText); 
+  //         },
+  //         (error) => {
+  //           console.error('Error obteniendo ubicación:', error);
+  //           alert('No se pudo obtener la ubicación. Por favor permite acceso a tu ubicación.');
+  //           setUseCurrentLocation(false); 
+  //         }
+  //       );
+  //     } else {
+  //       alert('La geolocalización no es soportada en este navegador.');
+  //       setUseCurrentLocation(false);
+  //     }
+  //   } else {
+  //     setAddress(''); 
+  //   }
+  // };
   
 
   // Enviar reporte
@@ -100,7 +100,7 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     }
   
     const reportData = {
-      token: '04740e3d-29a9-4a09-89a1-d6d5e685027a', 
+      token: 'ab7c802c-786f-441b-a3de-268ebff005cc', 
       nombre: name,
       descripcion: description,
       fecha: date, 
@@ -108,6 +108,8 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
       latitud: lat?.toString() || '',
       longitud: lon?.toString() || ''
     };
+
+    console.log(reportData);
   
     try {
       const response = await fetch('http://localhost:8080/v1/incident', {
