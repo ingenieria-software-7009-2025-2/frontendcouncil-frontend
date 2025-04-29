@@ -14,7 +14,7 @@ interface Incident {
     hora: string;
     longitud: number;
     latitud: number;
-    estado: 'Creado' | 'En revisión' | 'Resuelto';
+    estatus: 'creado' | 'en revisión' | 'resuelto';
   }
   
   const ManageIncidents = () => {
@@ -98,15 +98,72 @@ interface Incident {
     // return [];
     };
   
-    const updateIncidentStatus = async (incidentId: number, newStatus: 'Creado' | 'En revisión' | 'Resuelto'): Promise<boolean> => {
-      // Implementación pendiente
+    const updateIncidentStatus = async (incidentId: number, newStatus: 'creado' | 'en revisión' | 'resuelto'): Promise<boolean> => {
+      try {
+        const token = sessionStorage.getItem("token");
+        const peticion = {
+
+          incidenteid: incidentId,
+          clienteid: 24323,
+          categoriaid: 'Infraestructura',
+          nombre: 'trivial',
+          descripcion: 'Bache en la calle principal',
+          fecha: '2023-05-15',
+          hora: '14:30',
+          longitud: -99.1332,
+          latitud: 19.4326,
+          estatus: newStatus
+
+
+        }
+
+        const response = await fetch("http://localhost:8080/v1/incident/toolkit", {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            incidenteid: peticion.incidenteid,
+            estatus: peticion.estatus
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error("no se pudo cambiar");
+        }
+      } catch (error) {
+        console.log("fallo")
+      }
       console.log(`Actualizando estado del incidente ${incidentId} a ${newStatus}`);
+      window.location.reload();
       return true;
     };
   
     const deleteIncident = async (incidentId: number): Promise<boolean> => {
-      // Implementación pendiente
+      try {
+        const token = sessionStorage.getItem("token");
+
+        const response = await fetch("http://localhost:8080/v1/incident/toolkit", {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            incidenteid: incidentId,
+            estatus: "resuelto"
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error("no se pudo cambiar");
+        }
+      } catch (error) {
+        console.log("fallo")
+      }
       console.log(`Eliminando incidente ${incidentId}`);
+      window.location.reload();
       return true;
     };
   
@@ -261,21 +318,21 @@ interface Incident {
                                             <Dropdown.Menu className="dropdown-menu">
                                                 <Dropdown.Item onClick={(e) => {
                                                     e.stopPropagation();
-                                                    updateIncidentStatus(incident.incidenteid, 'Creado');
+                                                    updateIncidentStatus(incident.incidenteid, 'creado');
                                                     closeDropdowns();
                                                 }}>
                                                     Creado
                                                 </Dropdown.Item>
                                                 <Dropdown.Item onClick={(e) => {
                                                     e.stopPropagation();
-                                                    updateIncidentStatus(incident.incidenteid, 'En revisión');
+                                                    updateIncidentStatus(incident.incidenteid, 'en revisión');
                                                     closeDropdowns();
                                                 }}>
                                                     En revisión
                                                 </Dropdown.Item>
                                                 <Dropdown.Item onClick={(e) => {
                                                     e.stopPropagation();
-                                                    updateIncidentStatus(incident.incidenteid, 'Resuelto');
+                                                    updateIncidentStatus(incident.incidenteid, 'resuelto');
                                                     closeDropdowns();
                                                 }}>
                                                     Resuelto
@@ -296,13 +353,6 @@ interface Incident {
                                         ⋮
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu className="more-dropdown">
-                                        <Dropdown.Item onClick={(e) => {
-                                        e.stopPropagation();
-                                        console.log('Editar', incident.incidenteid);
-                                        closeDropdowns();
-                                        }}>
-                                            Editar
-                                        </Dropdown.Item>
                                         <Dropdown.Item onClick={(e) => {
                                         e.stopPropagation();
                                         deleteIncident(incident.incidenteid);
