@@ -1,17 +1,17 @@
- .join-team-container {
-    margin-top: 90px;
-    width: 100% !important;
+.join-team-container {
+   margin-top: 90px;
+   width: 100% !important;
 
- }
+}
 
- .join-team-title {
-    text-align: left;      
-    font-size: 2.5rem;    
-    font-weight: bold;    
-    margin-bottom: 0.5rem;
-  }
+.join-team-title {
+   text-align: left;      
+   font-size: 2.5rem;    
+   font-weight: bold;    
+   margin-bottom: 0.5rem;
+}
 
-  h1-join{
+h1-join{
    font-size: 2.5em;
    margin-top: 40px;
    color: #222;

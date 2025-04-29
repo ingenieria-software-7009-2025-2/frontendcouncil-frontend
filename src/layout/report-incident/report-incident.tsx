@@ -60,62 +60,64 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
   };
 
   //Obtener latitud y longitud de la ubicación
-  const handleToggleUseCurrentLocation = () => {
-    const newUseCurrentLocation = !useCurrentLocation;
-    setUseCurrentLocation(newUseCurrentLocation);
+  // const handleToggleUseCurrentLocation = () => {
+  //   const newUseCurrentLocation = !useCurrentLocation;
+  //   setUseCurrentLocation(newUseCurrentLocation);
   
-    if (newUseCurrentLocation) {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            setLatitud(latitude.toString()); // Guarda latitud
-            setLongitud(longitude.toString()); // Guarda longitud
-            /** 
-            const coordsText = `${latitude}, ${longitude}`;
-            setAddress(coordsText); */
-            setAddress(`${latitude}, ${longitude}`);
-          },
-          (error) => {
-            console.error('Error obteniendo ubicación:', error);
-            alert('No se pudo obtener la ubicación. Por favor permite acceso a tu ubicación.');
-            setUseCurrentLocation(false); 
-          }
-        );
-      } else {
-        alert('La geolocalización no es soportada en este navegador.');
-        setUseCurrentLocation(false);
-      }
-    } else {
-      setLatitud('');
-      setLongitud('');
-      setAddress('');
-    }
-  };
+  //   if (newUseCurrentLocation) {
+  //     if (navigator.geolocation) {
+  //       navigator.geolocation.getCurrentPosition(
+  //         (position) => {
+  //           const { latitude, longitude } = position.coords;
+  //           setLatitud(latitude.toString()); // Guarda latitud
+  //           setLongitud(longitude.toString()); // Guarda longitud
+  //           /** 
+  //           const coordsText = `${latitude}, ${longitude}`;
+  //           setAddress(coordsText); */
+  //           setAddress(`${latitude}, ${longitude}`);
+  //         },
+  //         (error) => {
+  //           console.error('Error obteniendo ubicación:', error);
+  //           alert('No se pudo obtener la ubicación. Por favor permite acceso a tu ubicación.');
+  //           setUseCurrentLocation(false); 
+  //         }
+  //       );
+  //     } else {
+  //       alert('La geolocalización no es soportada en este navegador.');
+  //       setUseCurrentLocation(false);
+  //     }
+  //   } else {
+  //     setLatitud('');
+  //     setLongitud('');
+  //     setAddress('');
+  //   }
+  // };
   
 
   // Enviar reporte
   const handleSubmit = async () => {
     setIsLoading(true);
   
-    let lat: number | null = null;
-    let lon: number | null = null;
+    // let lat: number | null = null;
+    // let lon: number | null = null;
   
-    if (address) {
-      const [latStr, lonStr] = address.split(',').map(item => item.trim());
-      lat = parseFloat(latStr);
-      lon = parseFloat(lonStr);
-    }
+    // if (address) {
+    //   const [latStr, lonStr] = address.split(',').map(item => item.trim());
+    //   lat = parseFloat(latStr);
+    //   lon = parseFloat(lonStr);
+    // }
   
     const reportData = {
-      token: '04740e3d-29a9-4a09-89a1-d6d5e685027a', 
+      token: '043fbb63-e370-40ea-a0b0-50889681f546', 
       nombre: name,
       descripcion: description,
       fecha: date, 
       hora: hour, 
-      latitud: latitud || '', 
-      longitud: longitud || '',
+      latitud: latitud, 
+      longitud: longitud,
     };
+
+    console.log(reportData);
   
     try {
       const response = await fetch('http://localhost:8080/v1/incident', {
@@ -334,7 +336,6 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
         ) : (
           <Button 
             variant="primary" 
-            disabled={!description || (!useCurrentLocation && !address)}
             onClick={handleSubmit}
           >
             {isLoading ? (
