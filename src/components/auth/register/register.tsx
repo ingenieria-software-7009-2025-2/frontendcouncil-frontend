@@ -103,20 +103,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
       return;
     }
 
-    // Verificar si el correo ya existe
-    const emailExists = await checkEmailExists(formData.correo);
-    if (emailExists) {
-     setErrors(prev => ({ ...prev, correo: 'Este correo ya está registrado' }));
-      return;
-    }
-
-    // Verificar si el usuario ya existe
-    const usernameExists = await checkUsernameExists(formData.username);
-    if (usernameExists) {
-      setErrors(prev => ({ ...prev, username: 'Este nombre de usuario ya está en uso' }));
-      return;
-    }
-
     setErrors({});
     setFormError('');
 
@@ -135,7 +121,17 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user),
       });
-      if(!response.ok) throw new Error("error de login")
+      if (!response.ok) {
+        const errorData = await response.text(); 
+        if (response.status === 406) {
+          setErrors(prev => ({ ...prev, username: 'Este nombre de usuario ya está en uso' }));
+        } else if (response.status === 407) {
+          setErrors(prev => ({ ...prev, correo: 'Este correo ya está registrado' }));
+        } else {
+          onRegisterError('⚠️ Ocurrió un error inesperado');
+        }
+        return;
+      }
       await response.json();
       onRegisterSuccess();
     } catch (error) {
