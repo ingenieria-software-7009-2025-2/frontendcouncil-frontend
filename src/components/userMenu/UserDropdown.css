@@ -8,15 +8,17 @@
   .user-dropdown-menu {
     margin-top: 10px;
     border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-radius: 8px;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.35);
     padding: 8px 0;
-    min-width: 240px;
+    min-width: 265px !important;
     position: absolute !important;
-    top: 110% !important; 
+    top: 120% !important; 
     right: 0 !important; 
     left: auto !important;
     transform: none !important; 
+    border-radius: 12px !important;
+    border-color: transparent !important;
+    font-size: 15px !important;
   }
   
   
@@ -36,8 +38,8 @@
   .user-circle {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-    background-color: #3498db;
+    border-radius: 80%;
+    background-color: #030436;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,10 +47,11 @@
     font-weight: bold;
     font-size: 18px;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.45);
   }
   
   .user-circle:hover {
-    background-color: #2980b9;
+    background-color: #0c0d4e;
     transform: scale(1.05);
   }
   
@@ -113,16 +116,24 @@
   .user-name {
     font-size: large;
     font-weight: bold;
+    margin-bottom: 0 !important;
   }
 
   .user-email {
     font-size: 14px;
-    margin-top: 5px;
+    margin-top: 1px !important;
+    color: #030436;
   }
 
   .user-info-section {
     padding: 14px 14px 12px 14px;
     cursor: default;
     margin-bottom: 4px; 
+  }
 
+  .user-dropdown-menu .transparent-divider {
+    margin: 4px auto; 
+    width: 90%; 
+    border-top: transparent !important;
+    position: relative;
   }

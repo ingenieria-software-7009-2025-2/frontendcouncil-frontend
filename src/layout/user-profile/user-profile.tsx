@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { Card, Form, Button, Row, Col, Container } from 'react-bootstrap';
-import { Pencil, Envelope, Person, Lock, ExclamationTriangle, Trash } from 'react-bootstrap-icons';
+import { Card, Button, Row, Col, Container } from 'react-bootstrap';
+import { ExclamationTriangle } from 'react-bootstrap-icons';
+import { useNavigate } from 'react-router-dom';
+import logo from '../../assets/logo.png';
+import ModalDeleteAccount from './delete-account/delete-account';
+import { ChangePasswordModal } from './change-password/change-password';
 import './user-profile.css';
 
 type UserProfile = {
@@ -13,11 +17,11 @@ type UserProfile = {
 };
 
 const UserProfilePage = () => {
-  const nombre = localStorage.getItem("nombre");
-  const apPaterno = localStorage.getItem("apPaterno");
-  const apMaterno = localStorage.getItem("apMaterno");
-  const correo = localStorage.getItem("correo");
-  const userName = localStorage.getItem("userName");
+  const nombre = sessionStorage.getItem("nombre");
+  const apPaterno = sessionStorage.getItem("apPaterno");
+  const apMaterno = sessionStorage.getItem("apMaterno");
+  const correo = sessionStorage.getItem("correo");
+  const userName = sessionStorage.getItem("userName");
   const [user, setUser] = useState<UserProfile>({
     username: userName,
     firstName: nombre,
@@ -27,16 +31,18 @@ const UserProfilePage = () => {
     incidents: []
   });
 
-  const [isEditing, setIsEditing] = useState(false);
   const [tempUser, setTempUser] = useState<UserProfile>({ ...user });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleEdit = () => {
-    setTempUser({ ...user });
-    setIsEditing(true);
+    navigate('/edit-profile');
+    //setTempUser({ ...user });
   };
 
   const handleSave = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     console.log(token);
     if (!token) {
       console.error("No hay token disponible");
@@ -60,30 +66,31 @@ const UserProfilePage = () => {
       const updatedUser = await response.json();
       
       setUser(updatedUser);
-      setIsEditing(false);
-      localStorage.setItem("correo", updatedUser.correo);
-      localStorage.setItem("nombre", updatedUser.nombre);
-      localStorage.setItem("apPaterno", updatedUser.apPaterno);
-      localStorage.setItem("apMaterno", updatedUser.apMaterno);
-      localStorage.setItem("userName", updatedUser.userName);
+      sessionStorage.setItem("correo", updatedUser.correo);
+      sessionStorage.setItem("nombre", updatedUser.nombre);
+      sessionStorage.setItem("apPaterno", updatedUser.apPaterno);
+      sessionStorage.setItem("apMaterno", updatedUser.apMaterno);
+      sessionStorage.setItem("userName", updatedUser.userName);
       window.location.reload();
     } catch (error) {
       console.error("Error en la actualización:", error);
     }
   };
 
-  const handleCancel = () => {
-    setIsEditing(false);
-  };
-
   const handleChangePassword = () => {
-    // Lógica para cambiar contraseña
-    console.log('Cambiar contraseña');
+    setShowChangePasswordModal(true);
+  };
+  
+  const handleCloseChangePasswordModal = () => {
+    setShowChangePasswordModal(false);
   };
 
   const handleDeleteAccount = () => {
-    // Lógica para eliminar cuenta
-    console.log('Eliminar cuenta');
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,133 +101,129 @@ const UserProfilePage = () => {
   };
 
   return (
-    <Container className="user-profile-container">
+    <Container fluid className="user-profile-container">
       <Card className="profile-card">
         <Card.Body>
+        <div className="logo-picture">
+          <img src={logo} alt="Logo" onError={(e) => { e.currentTarget.src = '/default-logo.png';}}
+        />
+        </div>
           <Row>
-            <Col md={6}>
-              {isEditing ? (
-                <>
-                  <Form.Group className="mb-4">
-                    <Form.Label>Nombre completo</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="firstName"
-                      value={tempUser.firstName}
-                      onChange={handleChange}
-                      placeholder="Nombre"
-                      className="mb-2"
-                    />
-                    <Form.Control
-                      type="text"
-                      name="lastName"
-                      value={tempUser.lastName}
-                      onChange={handleChange}
-                      placeholder="Apellido paterno"
-                      className="mb-2"
-                    />
-                    <Form.Control
-                      type="text"
-                      name="motherLastName"
-                      value={tempUser.motherLastName}
-                      onChange={handleChange}
-                      placeholder="Apellido materno"
-                    />
-                  </Form.Group>
-
-                  <Form.Group className="mb-4">
-                    <Form.Label>Nombre de usuario</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="username"
-                      value={tempUser.username}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-
-                  <Form.Group className="mb-4">
-                    <Form.Label>Correo electrónico</Form.Label>
-                    <Form.Control
-                      type="email"
-                      name="email"
-                      value={tempUser.email}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-
-                  <div className="d-flex mt-4">
-                    <Button variant="success" className="me-2" onClick={handleSave}>
-                      Guardar
-                    </Button>
-                    <Button variant="outline-secondary" onClick={handleCancel}>
-                      Cancelar
-                    </Button>
+            <Col md={3}>
+              <div className="user-name-text  text-start"> 
+                <h4 className="mb-0 fw-bold name-text">
+                  {`${user.firstName} ${user.lastName} ${user.motherLastName}`}
+                </h4>
+                <div className="profile-info py-2">
+                  <div className="user-info-item">
+                    <span>{user.email}</span>
                   </div>
-                </>
-              ) : (
-                <>
-                  <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h4 className="mb-0 fw-bold">
-                      {`${user.firstName} ${user.lastName} ${user.motherLastName}`}
-                    </h4>
-                    <Button variant="outline-primary" onClick={handleEdit} className="edit-profile-button"> <Pencil className="me-2"/> </Button>
+                  <div className="user-info-item">
+                    <span>{user.username}</span>
                   </div>
+                  <hr className="my-2" />
+                </div>
+              </div>
 
-                  <div className="profile-info mb-4">
-                    <div className="d-flex align-items-center mb-2">
-                      <Envelope className="me-2 text-muted" />
-                      <span>{user.email}</span>
+              <div className="profile-info  py-2">
+                <div className="d-flex align-items-center mb-2 py-2">
+                    <Button 
+                        variant="link" 
+                        className="text-start p-0 text-decoration-none text-body"
+                        onClick={handleEdit}>
+                        <div className="d-flex align-items">
+                          <span>Editar perfil</span>
+                        </div>
+                      </Button>
                     </div>
-                    <div className="d-flex align-items-center mb-2">
-                      <Person className="me-2 text-muted" />
-                      <span>{user.username}</span>
+                    <div className="d-flex align-items-center mb-2 py-2">
+                      <Button 
+                        variant="link" 
+                        className="text-start p-0 text-decoration-none text-body"
+                        onClick={handleChangePassword}>
+                        <div className="d-flex align-items">
+                          <span>Cambiar contraseña</span>
+                        </div>
+                      </Button>
+                    </div>
+                    <div className="d-flex align-items-center mb-2 py-2">
+                      <Button 
+                        variant="link" 
+                        className="text-start p-0 text-decoration-none text-body"
+                        onClick={() => navigate('/join-team')}>
+                        <div className="d-flex align-items">
+                          <span>Unete a nuestro equipo</span>
+                        </div>
+                      </Button>
+                    </div>
+                    <div className="d-flex align-items-center mb-2 py-2">
+                      <Button 
+                        variant="link" 
+                        className="text-start p-0 text-decoration-none text-danger"
+                        onClick={handleDeleteAccount}>
+                        <div className="d-flex align-items-center">
+                          <span>Eliminar cuenta</span>
+                        </div>
+                      </Button>
                     </div>
                   </div>
-
-                  <div className="d-flex flex-column gap-2 mt-3 ps-2">
-                    <Button 
-                      variant="link" 
-                      className="text-start p-0 text-decoration-none text-body"
-                      onClick={handleChangePassword}>
-                      <div className="d-flex align-items">
-                        <Lock className="me-2" />
-                        <span>Cambiar contraseña</span>
-                      </div>
-                    </Button>
-                    
-                    <Button 
-                      variant="link" 
-                      className="text-start p-0 text-decoration-none text-danger"
-                      onClick={handleDeleteAccount}>
-                      <div className="d-flex align-items-center">
-                        <Trash className="me-2" />
-                        <span>Eliminar cuenta</span>
-                      </div>
-                    </Button>
-                  </div>
-                </>
-              )}
             </Col>
-
-            <Col md={6}>
+            <Col md={1}></Col>
+            <Col md={8}>
               <div className="incidents-section">
-                <h5 className="d-flex align-items-center">
-                  <ExclamationTriangle className="me-2 field-icon" /> Reporte de Incidentes
+                <h5 className="d-flex align-items-center mb-4 report-title">
+                  <ExclamationTriangle className="me-2 field-icon" /> 
+                  Tus Reportes
                 </h5>
-                {/*user.incidents.length*/0 === 0 ? (
-                  <div className="no-incidents">
-                    No has reportado incidentes
+                <Row className="mb-4 text-center"></Row>
+                {/* Sección de estadísticas */}
+                <div className="stats-wrapper">
+                  <Row className="mb-4 text-center">
+                    <Col md={4}>
+                      <div className="incident-stat-card">
+                        <h3 className="stat-number">0</h3>
+                        <p className="stat-label">Reportados</p>
+                      </div>
+                    </Col>
+                    <Col md={4}>
+                      <div className="incident-stat-card">
+                        <h3 className="stat-number">0</h3>
+                        <p className="stat-label">En revisión</p>
+                      </div>
+                    </Col>
+                    <Col md={4}>
+                      <div className="incident-stat-card">
+                        <h3 className="stat-number">0</h3>
+                        <p className="stat-label">Resueltos</p>
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+                <Row className="mb-4 text-center"></Row>
+                
+                {/* Sección de lista de incidentes con scroll */}
+                <div className="incidents-list-scroll">
+                  <div className="incidents-list-container">
+                    <div className="no-incidents">
+                      No tienes incidentes reportados
+                    </div>
                   </div>
-                ) : (
-                  <div className="incidents-list">
-                    {/* Aquí iría la lista de incidentes */}
-                  </div>
-                )}
+                </div>
               </div>
             </Col>
           </Row>
         </Card.Body>
       </Card>
+
+      {/* Modal de eliminación de cuenta */}
+      <ModalDeleteAccount 
+        mostrar={showDeleteModal}
+        onCancelar={handleCloseDeleteModal}/>
+
+      <ChangePasswordModal 
+        show={showChangePasswordModal}
+        onHide={handleCloseChangePasswordModal}
+        onSubmit={async () => {}}/>
     </Container>
   );
 };

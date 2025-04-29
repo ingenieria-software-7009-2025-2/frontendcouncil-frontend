@@ -1,0 +1,69 @@
+.map-container {
+    position: relative;
+}
+
+.map-container .logo-picture-map img {
+    position: fixed;
+    bottom: 15px;
+    left: 20px;
+    width: 6rem !important; 
+    height: auto;
+    z-index: 10;
+}
+
+/* BOTÓN DE AGREGAR INCIDENTE*/
+.incident-button-wrapper {
+    position: absolute;
+    bottom: 7.5rem;
+    right: 40px;
+    width: 20px!important; 
+    height: auto;
+    z-index: 10;
+}
+
+.incident-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: #00A5C2;
+    border-color: #00A5C2;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    display: flex;
+}
+
+.incident-button:hover {
+    background-color: #018ea7;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.incident-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: max-content;
+    background-color: #fbfbfb;
+    color: #030436;
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    position: absolute;
+    top: 50%;
+    right: 130%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+.incident-button-wrapper:hover .incident-tooltip {
+    visibility: visible;
+    opacity: 1;
+}

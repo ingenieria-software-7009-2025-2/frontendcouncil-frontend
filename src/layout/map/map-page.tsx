@@ -1,24 +1,33 @@
 import './map-page.css';
-import fotoFondo from '../../assets/mapa.jpg';
+import Maps from '../../components/maps/map';
+import logo from '../../assets/logo.png';
+import { Container } from 'react-bootstrap';
+import ReportIncidentModal from '../report-incident/report-incident';
+import { useState } from 'react';
 
 const Mapa = () => {
+    const [showIncidentModal, setShowIncidentModal] = useState(false);
+
     return (
-        <div
-            style={{
-                backgroundImage: `url(${fotoFondo})`,
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                height: '100vh',              // Usa viewport height en lugar de porcentaje
-                width: '100vw',               // Usa viewport width para consistencia
-                margin: 0,
-                padding: 0,
-                position: 'fixed',
-                top: 0,
-                left: 0
-            }}
-        >
-        </div>
+        <Container fluid className='map-container'>
+            <Maps/>
+            <div className="logo-picture-map">
+                <img src={logo} alt="Logo" onError={(e) => { e.currentTarget.src = '/default-logo.png';}}/>
+            </div>
+
+            {/*
+            <div className="incident-button-wrapper">
+                <button className="incident-button" onClick={() => setShowIncidentModal(true)}>
+                    +
+                </button>
+                <span className="incident-tooltip">Agregar incidente</span>
+            </div>*/}
+
+            {/* Modal de reporte de incidente 
+            <ReportIncidentModal 
+                show={showIncidentModal} 
+                onHide={() => setShowIncidentModal(false)}/>*/}
+        </Container>
     );
 };
 
