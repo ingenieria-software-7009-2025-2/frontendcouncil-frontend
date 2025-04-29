@@ -1,19 +1,8 @@
 import { IncidentDTO, IncidentStatus} from "../models/dto-incident";
 
 export class IncidentService {
+  private static apiUrl = 'http://localhost:8080/v1/incident';
   private static mockIncidents: IncidentDTO[] = [
-    {
-      incidenteID: 1,
-      clienteID: 101,
-      categoriaID: 5,
-      nombre: "Fuga de agua",
-      descripcion: "Se detectó una fuga cerca del parque",
-      fecha: "2025-04-24",
-      hora: "10:00",
-      latitud: 19.4065,
-      longitud: -99.1632,
-      estado: "reportado"
-    },
     {
       incidenteID: 2,
       clienteID: 102,
@@ -44,22 +33,32 @@ export class IncidentService {
   private static intervalId: number | null = null;
 
   static async connect(): Promise<void> {
-    // Simulamos conexión WebSocket con un intervalo
+    await this.fetchAndNotify();
     this.intervalId = window.setInterval(() => {
-      this.notifyListeners([...this.mockIncidents]);
-    }, 5000); // Actualiza cada 5 segundos
+      this.fetchAndNotify();
+    }, 5000);
   }
+  
+  private static async fetchAndNotify() {
+    try {
+      const incidents = await this.fetchIncidents();
+      this.notifyListeners(incidents);
+    } catch (error) {
+      console.error("Error al obtener incidentes:", error);
+    }
+  }
+  
+  static subscribe(callback: (incidents: IncidentDTO[]) => void): void {
+    this.listeners.push(callback);
+    this.fetchAndNotify(); 
+  }
+  
 
   static disconnect(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
-  }
-
-  static subscribe(callback: (incidents: IncidentDTO[]) => void): void {
-    this.listeners.push(callback);
-    callback([...this.mockIncidents]); // Enviar datos inmediatamente al subscribirse
   }
 
   static unsubscribe(callback: (incidents: IncidentDTO[]) => void): void {
@@ -71,9 +70,14 @@ export class IncidentService {
   }
 
   static async fetchIncidents(): Promise<IncidentDTO[]> {
-    // Aquí va la lógica del backend 
-    return [...this.mockIncidents];
+    const response = await fetch(`${this.apiUrl}/toolkit`);
+    if (!response.ok) {
+      throw new Error("Error al obtener los incidentes");
+    }
+    const data = await response.json();
+    return data;
   }
+  
 
   static async createIncident(incident: Omit<IncidentDTO, 'incidenteID'>): Promise<void> {
     // Aquí va la lógica del backend 
