@@ -120,9 +120,11 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     console.log(reportData);
   
     try {
+      const token1 = sessionStorage.getItem("token")
       const response = await fetch('http://localhost:8080/v1/incident', {
         method: 'POST',
         headers: {
+          Authorization: `Bearer ${token1}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(reportData)
