@@ -11,7 +11,10 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
   // Estados del modal
   const [step, setStep] = useState<'category' | 'details'>('category');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [name,setName] = useState('');
   const [description, setDescription] = useState('');
+  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]); 
+  const [hour, setHour] = useState<string>(new Date().toTimeString().split(' ')[0].substring(0, 8));
   const [photos, setPhotos] = useState<File[]>([]);
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [address, setAddress] = useState('');
@@ -54,25 +57,96 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     }
   };
 
-  // Enviar reporte
-  const handleSubmit = () => {
-    setIsLoading(true);
-    // Simular envío al backend
-    setTimeout(() => {
-      setIsLoading(false);
-      onHide();
-      resetForm();
-    }, 2000);
+  //Obtener latitud y longitud de la ubicación
+  const handleToggleUseCurrentLocation = () => {
+    const newUseCurrentLocation = !useCurrentLocation;
+    setUseCurrentLocation(newUseCurrentLocation);
+  
+    if (newUseCurrentLocation) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const coordsText = `${latitude}, ${longitude}`;
+            setAddress(coordsText); 
+          },
+          (error) => {
+            console.error('Error obteniendo ubicación:', error);
+            alert('No se pudo obtener la ubicación. Por favor permite acceso a tu ubicación.');
+            setUseCurrentLocation(false); 
+          }
+        );
+      } else {
+        alert('La geolocalización no es soportada en este navegador.');
+        setUseCurrentLocation(false);
+      }
+    } else {
+      setAddress(''); 
+    }
   };
+  
+
+  // Enviar reporte
+  const handleSubmit = async () => {
+    setIsLoading(true);
+  
+    let lat: number | null = null;
+    let lon: number | null = null;
+  
+    if (address) {
+      const [latStr, lonStr] = address.split(',').map(item => item.trim());
+      lat = parseFloat(latStr);
+      lon = parseFloat(lonStr);
+    }
+  
+    const reportData = {
+      token: '04740e3d-29a9-4a09-89a1-d6d5e685027a', 
+      nombre: name,
+      descripcion: description,
+      fecha: date, 
+      hora: hour, 
+      latitud: lat?.toString() || '',
+      longitud: lon?.toString() || ''
+    };
+  
+    try {
+      const response = await fetch('http://localhost:8080/v1/incident', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reportData)
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al enviar el incidente');
+      }
+  
+      alert('Incidente reportado correctamente');
+      resetForm();
+      onHide();
+    } catch (error) {
+      console.error(error);
+      alert('Ocurrió un error al enviar el incidente');
+    } finally {
+      setIsLoading(false);
+    }
+  };  
+  
 
   // Resetear formulario al cerrar
   const resetForm = () => {
     setStep('category');
     setSelectedCategory(null);
+    setName('');
     setDescription('');
     setPhotos([]);
     setUseCurrentLocation(false);
     setAddress('');
+
+    const now = new Date();
+    setDate(now.toISOString().split('T')[0]);
+    setHour(now.toTimeString().split(' ')[0].substring(0, 8));
   };
 
   // Manejar cierre del modal
@@ -113,6 +187,16 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
         {/* Paso 2: Detalles del incidente */}
         {step === 'details' && (
           <div className="incident-details">
+            <Form.Group className="mb-4">
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={1}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Nombre del incidente"
+              />
+            </Form.Group>
             <Form.Group className="mb-4">
               <Form.Label>Descripción del incidente</Form.Label>
               <Form.Control
@@ -178,7 +262,7 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
               <div className="d-flex flex-column gap-2">
                 <Button
                   variant={useCurrentLocation ? 'primary' : 'outline-primary'}
-                  onClick={() => setUseCurrentLocation(!useCurrentLocation)}
+                  onClick={handleToggleUseCurrentLocation}
                 >
                   <GeoAlt className="me-2" />
                   {useCurrentLocation ? 'Usando ubicación actual' : 'Utilizar ubicación actual'}
