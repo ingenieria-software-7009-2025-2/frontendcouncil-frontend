@@ -115,16 +115,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) =
         }
         return;
       }
-      sessionStorage.setItem('token', data.token);
-      // Modificar esto de acuerdo al backend
-      // sessionStorage.setItem('rol', data.user.rol);
-      // IMPLEMENTACIÓN TEMPORAL DE ROL:
-      if (loginData.identifier === 'admin@admin.com' ||  loginData.identifier === 'admin') {
-        sessionStorage.setItem('rol', 'admin');
-      } else {
-        sessionStorage.setItem('rol', 'user');
-      }
+      
       onLoginSuccess();
+      sessionStorage.setItem('token', data.token);
+      sessionStorage.setItem('rol', data.user.rolid);
+
     } catch (error) {
       if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
         onLoginError('⚠️ Lo sentimos, no se pudo conectar con el servidor. Intentalo más tarde.');

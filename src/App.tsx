@@ -37,31 +37,31 @@ function App() {
             <Route path="/" element={<HomePage />} />
   
             <Route path="/profile" element={
-              <ProtectedRoute isAuth={!!localStorage.getItem('authToken')}>
+              <ProtectedRoute isAuth={!!sessionStorage.getItem('token')} userRole={sessionStorage.getItem('rol') || ''} allowedRoles={['1', '2','3']}>
                 <UserProfilePage />
               </ProtectedRoute>
             } />
 
             <Route path="/edit-profile" element={
-              <ProtectedRoute isAuth={!!localStorage.getItem('authToken')}>
+              <ProtectedRoute isAuth={!!sessionStorage.getItem('token')} userRole={sessionStorage.getItem('rol') || ''} allowedRoles={['1', '2']}>
                 <EditProfile />
               </ProtectedRoute>
             } />
 
             <Route path="/join-team" element={
-              <ProtectedRoute isAuth={!!localStorage.getItem('authToken')}>
+              <ProtectedRoute isAuth={!!sessionStorage.getItem('token')} userRole={sessionStorage.getItem('rol') || ''} allowedRoles={['1']}>
                 <JoinTeam />
               </ProtectedRoute>
             } />
 
             <Route path="/manage-incidents" element={
-              <ProtectedRoute isAuth={!!localStorage.getItem('authToken')}>
+              <ProtectedRoute isAuth={!!sessionStorage.getItem('token')} userRole={sessionStorage.getItem('rol') || ''} allowedRoles={['3']}>
                 <ManageIncidents />
               </ProtectedRoute>
             } />
 
             <Route path="/manage-users" element={
-              <ProtectedRoute isAuth={!!localStorage.getItem('authToken')}>
+              <ProtectedRoute isAuth={!!sessionStorage.getItem('token')} userRole={sessionStorage.getItem('rol') || ''} allowedRoles={['3']}>
                 <ManageUsers />
               </ProtectedRoute>
             } />
