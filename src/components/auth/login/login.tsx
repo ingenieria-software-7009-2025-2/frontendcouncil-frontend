@@ -118,7 +118,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) =
       
       onLoginSuccess();
       sessionStorage.setItem('token', data.token);
-      sessionStorage.setItem('rol', data.user.rolid);
+      sessionStorage.setItem('rol', data.rolid);
 
     } catch (error) {
       if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
