@@ -49,6 +49,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
       if (response.ok) {
         return await response.json();
       }
+      //if(response.status == 400){
+        //console.log('Se detecto correo duplicado')
+        //return true;
+      //}
       return false;
     } catch (error) {
       console.error('Error checking email:', error);
@@ -144,7 +148,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
       } else if (error instanceof TypeError ){
         onRegisterError('⚠️ Lo sentimos, este usuario ya esta en uso.');
       }
-      onRegisterError('⚠️ Lo sentimos, el servidor fuera de servicio');
+      onRegisterError('⚠️ Prueba con un correo diferente, de persistir el problema puede tratarse de una desconexion al servidor.');
     }
   };
 
