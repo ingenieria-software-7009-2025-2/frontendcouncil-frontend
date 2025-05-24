@@ -88,17 +88,9 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
     };
 
     return (
-        <Modal 
-            show={show} 
-            onHide={onHide} 
-            centered 
-            className="custom-modal" 
-            size="lg"
-            backdrop="static"
-        >
+        <Modal show={show} onHide={onHide} centered className="custom-modal" size="lg" backdrop="static" style={{ zIndex: 900000 }}>
             <Modal.Header closeButton>
             </Modal.Header>
-            
             <Modal.Body className="pt-0" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
                 <span className="comments-title mb-2 fw-bold">COMENTARIOS {comments.length > 0 && `(${comments.length})`}</span>
                 {error ? (
@@ -119,7 +111,6 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
                     ))
                 )}
             </Modal.Body>
-            
             <Modal.Footer className="border-0 pt-0">
                 <div className="add-comment position-relative w-100">
                     <input

@@ -19,6 +19,7 @@
     width: 33% !important; 
     margin: 0 auto;
   }
+  
   .modal-content {
     width: 100%; 
     display: flex;
@@ -73,7 +74,6 @@
     color: #666;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 1px solid #eee;
   }
 
 

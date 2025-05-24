@@ -8,6 +8,8 @@
 
 .custom-modal .modal-header {
   border-bottom: none !important; 
+  z-index: 2500;
+  border: transparent !important;
 }
 
 .custom-modal .modal-footer {
