@@ -3,21 +3,47 @@ import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaExclamationCircle } from 'react-icons/fa';
 import './login.css'
 
+/**
+ * @global
+ * Interfaz de propiedades para el login.
+ * 
+ * @param {function} onLoginSuccess - Función que indica la acción ante éxito al logear.
+ * @param {function} onLoginError - Función que indica la acción ante error al logear.
+ * 
+ * @interface
+ */
 interface LoginFormProps {
+
+  /**
+   * Función que indica la acción ante éxito al logear.
+   */
   onLoginSuccess: () => void;
+
+  /**
+   * Función que indica la acción ante error al logear.
+   * @param {string} message - Mensaje a mostrar.
+   */
   onLoginError: (message: string) => void;
 }
 
+/**
+ * @global
+ * Form usado para el login.
+ * 
+ * @param {function} onLoginSuccess - Función que indica la acción ante éxito al logear.
+ * @param {function} onLoginError - Función que indica la acción ante error al logear.
+ * 
+ * @returns {JSX.Element} - Elemento correspondiente.
+ * 
+ * @eventProperty
+ */
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) => {
   const [loginData, setLoginData] = useState({
     identifier: '',
     password: '',
   });
-
   const [showPassword, setShowPassword] = useState(false);
-  
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
-
   const [errors, setErrors] = useState({
     identifier: false,
     password: false,
@@ -26,6 +52,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) =
     passwordMessage: ''
   });
 
+  /**
+   * Manejador de cambios al logear.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de cambio ante entrada.
+   * 
+   * @eventProperty
+   */
   const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData({
       ...loginData,
@@ -41,6 +74,21 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) =
     }));
   };
 
+  /**
+   * Manejador de forma al logear.
+   * 
+   * @remaks Crea el elemento para llenar la forma, si no está llenada correctamente, se notifica al usuario.
+   * En otro caso, hace llamada al API dedicado para login.
+   * Dada la respuesta del servidor, se da acceso, o se controla avisa al usuario la eventualidad.
+   * 
+   * @apicall POST - `/v1/users/login`
+   * 
+   * @param {React.FormEvent<>} e - Evento dedicado al llenado de formas.
+   * 
+   * @returns {Promise<void>} Representación de una acción asíncrona completa.
+   * 
+   * @eventProperty
+   */
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -69,8 +117,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) =
       setErrors(newErrors);
       return;
     }
-
+    // TODO: Update regex [A-Za-z0-9]+@[a-z0-9]+\.[a-z]{2-4}
     const isEmail = loginData.identifier.includes('@');
+    // TODO: Raise error if not email.
     const credentials = isEmail
       ? { correo: loginData.identifier, password: loginData.password }
       : { correo: loginData.identifier, password: loginData.password };
@@ -204,4 +253,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) =
   );
 };
 
+/**
+ * @module login
+ *
+ * Inicio de sesión.
+ * 
+ * @remarks Modulo especilizado en la obtención de datos por un formulario para inicio de sesión.
+ */
 export default LoginForm;

@@ -1,5 +1,16 @@
 import React from 'react';
 
+/**
+ * @global
+ * Interfaz de propiedades para pentágono.
+ * 
+ * @param {string} [fill] - Relleno.
+ * @param {string} [stroke] - Trazo.
+ * @param {number} [strokeWidth] - Ancho del trazo.
+ * @param {number} [cornerRadius] -Radio de las esquinas.
+ * @param {number} [width] - Ancho.
+ * @param {number} [height] - Altura.
+*/
 interface PentagonProps {
   fill?: string;
   stroke?: string;
@@ -9,13 +20,26 @@ interface PentagonProps {
   height?: number;
 }
 
+/**
+ * @global
+ * Constructor de Pentagon.
+ * 
+ * @param {string} [fill = none] - Relleno.
+ * @param {string} [stroke = black] - Trazo.
+ * @param {number} [strokeWidth = 1] - Ancho del trazo.
+ * @param {number} [cornerRadius = 15] - Radio de las esquinas.
+ * @param {number} [width = 315] - Ancho.
+ * @param {number} [height = 276] - Altura.
+ * 
+ * @returns {JSX.Element} - Elemento correspondiente.
+ */
 const Pentagon: React.FC<PentagonProps> = ({
   fill = 'none',
   stroke = 'black',
   strokeWidth = 1,
   cornerRadius = 15,
-  width = 315,   
-  height = 276, 
+  width = 315,
+  height = 276,
 }) => {
   // Puntos del pentágono (coordenadas originales, pero escalables)
   const points = [
@@ -80,4 +104,11 @@ const Pentagon: React.FC<PentagonProps> = ({
   );
 };
 
+/**
+ * @module pentagon
+ *
+ * Creación un pentagon.
+ *
+ * @remarks Modulo especializado en la creación de pentágonos.
+ */
 export default Pentagon;

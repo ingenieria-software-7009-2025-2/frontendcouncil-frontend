@@ -1,8 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, JSX } from 'react';
 import { Card, Form, Button, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import './edit-profile.css';
 
+/**
+ * @global
+ * Información que puede cambiar el usuario.
+ * 
+ * @param {string} username - Nombre de usuario.
+ * @param {string} firstName - Nombre
+ * @param {string} lastName - Apellido paterno.
+ * @param {string} motherLastName - Apellido materno.
+ * @param {string} email - Correo electrónico.
+*/
 type UserProfile = {
   username: string;
   firstName: string;
@@ -11,6 +21,17 @@ type UserProfile = {
   email: string;
 };
 
+/**
+ * @global
+ * Lay-out para editar perfil de cuenta activa.
+ * 
+ * @apicall GET - `"http://localhost:8080/v1/users/me"`
+ * @apicall PUT - `"http://localhost:8080/v1/users/me"`
+ * 
+ * @returns {JSX.Element} Elemento correspondinete.
+ * 
+ * @eventProperty
+ */
 const EditProfile = () => {
   const navigate = useNavigate();
   const [tempUser, setTempUser] = useState<UserProfile>({
@@ -23,6 +44,14 @@ const EditProfile = () => {
 
   // Cargar datos del usuario al montar el componente
   useEffect(() => {
+
+    /**
+     * Obtención de datos de la cuenta activa.
+     * 
+     * @apicall GET - `"http://localhost:8080/v1/users/me"`
+     * 
+     * @returns {Promise<void>} Representación del terminado con éxito de una operación asíncrona.
+     */
     const loadUserData = async () => {
       const token = sessionStorage.getItem("token");
       if (!token) {
@@ -58,6 +87,13 @@ const EditProfile = () => {
     loadUserData();
   }, []);
 
+  /**
+   * Manejador de guardado.
+   * 
+   * @apicall PUT - `"http://localhost:8080/v1/users/me"`
+   * 
+   * @returns {Promise<void>} Representación del terminado con éxito de una operación asíncrona.
+   */
   const handleSave = async () => {
     const token = sessionStorage.getItem("token");
     if (!token) {
@@ -100,10 +136,22 @@ const EditProfile = () => {
     }
   };
 
+  /**
+   * Manejador ante cancelado.
+   * 
+   * @beta
+   */
   const handleCancel = () => {
     navigate('/profile');
   };
 
+  /**
+   * Manejador ante cambio.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de cambio.
+   * 
+   * @eventProperty
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempUser({
       ...tempUser,
@@ -182,4 +230,9 @@ const EditProfile = () => {
   );
 };
 
+/**
+ * @module edit-profile
+ * 
+ * Lay-out para la edición de datos de perfil.
+ */
 export default EditProfile;

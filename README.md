@@ -97,3 +97,10 @@ npm run dev
 ```
 
 Si todo ha salido de manera correcta, el proyecto estará en ejecución y se podrá visualizar en un **navegador web en localhost**. 
+
+## Documentación
+
+Se hizo documentación TSDoc style TSDoc para generar la documentación del proyecto.
+
+Se tienen los tags personalizados `@apicall (Método HTTP | _) - URL` para denotar llamadas a la API y el tag  `@interface` para denotar interfaces como Modifier tag.
+También se tiene la notación `{fuction}` para denotar funciones que no son callbacks explicitamente.

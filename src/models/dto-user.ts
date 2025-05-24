@@ -1,6 +1,19 @@
- import { IncidentDTO } from "./dto-incident";
+import { IncidentDTO } from "./dto-incident";
 
- export interface UserDTO {
+/**
+ * Modelo de Usuario.
+ * 
+ * @param {string} username
+ * @param {string} nombre
+ * @param {string} apPaterno
+ * @param {string} apMaterno
+ * @param {string} correo
+ * @param {string} [password]
+ * @param {string} [token]
+ * 
+ * @interface
+ */
+export interface UserDTO {
   username: string;
   nombre: string;
   apPaterno: string;

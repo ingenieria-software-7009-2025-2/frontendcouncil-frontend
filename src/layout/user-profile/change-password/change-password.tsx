@@ -2,12 +2,45 @@ import { useState } from 'react';
 import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
 import { Eye, EyeSlash, Lock } from 'react-bootstrap-icons';
 
+/**
+ * @glibal
+ * Propiedades de cambio de contrasseña.
+ * 
+ * @param {boolean} show - Mostrar contraseña.
+ * @param {function} onHide - Función que indica la acción ante el ocultado.
+ * @param {function} onSubmit - Función que indica la acción ante la subida.
+*/
 type ChangePasswordModalProps = {
   show: boolean;
+
+  /**
+   * Función que indica la acción ante el ocultado.
+   */
   onHide: () => void;
+
+  /**
+   * Función que indica la acción ante la subida.
+   * @param currentPassword 
+   * @param newPassword 
+   * @returns {Promise<void>} Representación del termino de una operación asíncrona.
+   */
   onSubmit: (currentPassword: string, newPassword: string) => Promise<void>;
 };
 
+/**
+ * @module change-password
+ * 
+ * @global
+ * Lay-out para cambio de contraseña.
+ * 
+ * @param {boolean} show - Mostrar contraseña.
+ * @param onHide - Función que indica la acción ante el ocultado.
+ * @param onSubmit - Función que indica la acción ante la subida.
+ * 
+ * @returns {JSX.Element} Elemento correspondiente.
+ * 
+ * @beta
+ */
 export const ChangePasswordModal = ({ show, onHide, onSubmit }: ChangePasswordModalProps) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -24,6 +57,15 @@ export const ChangePasswordModal = ({ show, onHide, onSubmit }: ChangePasswordMo
     setShowPassword(prev => ({ ...prev, [field]: !prev[field] }));
   };
 
+  /**
+   * Manejador de subida.
+   * 
+   * @param {React.FormEvent} e - Evento de Formulario 
+   * 
+   * @returns {Promise<void>} Representación del terminado con éxito de una operación asíncrona.
+   * 
+   * @eventProperty
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');

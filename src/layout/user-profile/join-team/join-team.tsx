@@ -1,6 +1,14 @@
 import React from 'react';
 import './join-team.css';
 
+/**
+ * @global
+ * Lay-out para solicitar cambio de rol a administrador.
+ * 
+ * @apicall PUT - `http://localhost:8080/v1/users/toolkit`
+ * 
+ * @returns {JSX.Element} Elemento correspondiente.
+ */
 const JoinTeam = () => {
   const handleButtonClick = async () => {
       console.log("Solicitud enviada");
@@ -57,4 +65,9 @@ const JoinTeam = () => {
   );
 };
 
+/**
+ * @module join-team
+ * 
+ * Lay-out para cambio de rol a administrador.
+ */
 export default JoinTeam;

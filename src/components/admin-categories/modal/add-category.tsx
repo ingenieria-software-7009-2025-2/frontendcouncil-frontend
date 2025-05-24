@@ -1,18 +1,57 @@
 import React, { useState, useRef, ChangeEvent } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
+/**
+ * @global
+ * Interfaz de propiedades para modal para agregar categoría.
+ * 
+ * @param {boolean} show -  Mostrar interfaz.
+ * @param {function} onHide - Función que indica la acción ante ocutar.
+ * @param {function} onSave - Función que indica la acción al guardar.
+ * 
+ * @interface
+ */
 interface AddCategoryModalProps {
   show: boolean;
+
+  /**
+   * Función que indica la acción ante ocutar.
+   */
   onHide: () => void;
+
+  /**
+   * Función que indica la acción al guardar.
+   * 
+   * @param {string} categoryName - Nombre de categoría
+   * @param {File} [imageFile] - Archivo de imagen
+   */
   onSave: (categoryName: string, imageFile: File | null) => void;
 }
 
+/**
+ * @global
+ * Constructor de modal para agregar categoría de incidente.
+ * @param {boolean} show - Mostrar interfaz.
+ * 
+ * @param {function} onHide - Función que indica la acción ante ocutar.
+ * @param {function} onSave - Función que indica la acción al guardar.
+ * 
+ * @returns {JSX.Element} Elemento correspondiente.
+ * 
+ * @eventProperty
+ */
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ show, onHide, onSave }) => {
   const [categoryName, setCategoryName] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  /**
+   * Manejador de subida de imagenes.
+   * @param {ChangeEvent<HTMLInputElement>} e - Evento de cambio ante entrada.
+   * 
+   * @eventProperty
+   */
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -25,6 +64,9 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ show, onHide, onSav
     }
   };
 
+  /**
+   * Manejador de eliminación de imagenes.
+   */
   const handleRemoveImage = () => {
     setImagePreview(null);
     setImageFile(null);
@@ -33,6 +75,9 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ show, onHide, onSav
     }
   };
 
+  /**
+   * Manejador para guardado de categoría.
+   */
   const handleSave = () => {
     if (!categoryName.trim()) {
       alert('Por favor ingresa un nombre para la categoría');
@@ -129,4 +174,9 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ show, onHide, onSav
   );
 };
 
+/**
+ * @module add-category
+ *
+ * Modal para agregar categoría.
+ */
 export default AddCategoryModal;

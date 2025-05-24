@@ -4,29 +4,64 @@ import LoginForm from './login/login';
 import RegisterForm from './register/register';
 import './login-register.css';
 
+/**
+ * @global
+ * Interfaz de propiedades para formulario sign up/log in.
+ * 
+ * @param onClose - Función que indica la acción ante cerrado.
+ * 
+ * @interface
+*/
 interface ModalLoginRegisterProps {
+
+  /**
+   * Función que indica la acción ante cerrado.
+   */
   onClose: () => void;
 }
 
+/**
+ * @global
+ * Modal usado para el llenado del formulario.
+ * 
+ * @param {function} onClose - Función que indica la acción ante cerrado.
+ *
+ * @returns {JSX.Element} Elemento correspondiente.
+ */
 const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
   const { successMessage, errorMessage } = useSwalMessages();
 
+  /**
+   * Manejador de éxito al logear.
+   */
   const handleLoginSuccess = () => {
     onClose();
-    window.location.reload(); 
+    window.location.reload();
   };
-
+  
+  /**
+   * Manejador de error al logear.
+   * @param {string} mensaje - Mensaje de error.
+  */
   const handleLoginError = (message: string) => {
     onClose();
     errorMessage(message);
   };
-
+  
+  /**
+   * Manejador de éxito al hacer sign up.
+  */
   const handleRegisterSuccess = () => {
     onClose();
     successMessage('¡Cuenta registrada exitosamente!');
   };
-
+  
+  /**
+   * Manejador de error al hacer sign up.
+   * 
+   * @param {string} mensaje - Mensaje de error.
+  */
   const handleRegisterError = (message: string) => {
     onClose();
     errorMessage(message);
@@ -82,4 +117,11 @@ const ModalLoginRegister: React.FC<ModalLoginRegisterProps> = ({ onClose }) => {
   );
 };
 
+/**
+ * @module login-register
+ *
+ * Modal de log in y sign up.
+ * 
+ * @remarks Modulo especializado en la creación del modal para registro e incio de sesión.
+ */
 export default ModalLoginRegister;

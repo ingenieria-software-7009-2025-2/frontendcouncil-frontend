@@ -2,18 +2,46 @@ import React, { useState, useRef } from 'react';
 import { Modal, Button, Form, Carousel, Spinner } from 'react-bootstrap';
 import { XCircle, GeoAlt, Upload } from 'react-bootstrap-icons';
 
+// TODO: Check .css name
+
+/**
+ * @global
+ * Interfaz con propiedades para el reporte de incidentes.
+ * 
+ * @param {boolean} show - Mostrar interfaz.
+ * @param {function} onHide - Función que determina la acción al ocultar.
+ * 
+ * @interface
+ */
 interface ReportIncidentModalProps {
   show: boolean;
+
+  /**
+   * Función que determina la acción al ocultar.
+   */
   onHide: () => void;
 }
 
+/**
+ * @global
+ * Lay-out para el reporte de incidentes.
+ * 
+ * @apicall POST - `http://localhost:8080/v1/incident`
+ * 
+ * @param {boolean} show - Mostrar interfaz.
+ * @param {function} onHide - Función que determina la acción al ocultar.
+ * 
+ * @returns {JSX.Element} Elemento correspondiente.
+ * 
+ * @eventProperty
+ */
 const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide }) => {
   // Estados del modal
   const [step, setStep] = useState<'category' | 'details'>('category');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [name,setName] = useState('');
   const [description, setDescription] = useState('');
-  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]); 
+  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [hour, setHour] = useState<string>(new Date().toTimeString().split(' ')[0].substring(0, 8));
   const [photos, setPhotos] = useState<File[]>([]);
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
@@ -25,7 +53,11 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Categorías temporales (simulando backend)
+  /**
+   * Categorías de los incidentes.
+   * 
+   * @beta
+   */
   const categories = [
     { id: '1', name: 'Bache en la vía', icon: '🕳️' },
     { id: '2', name: 'Alumbrado público', icon: '💡' },
@@ -35,13 +67,23 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     { id: '6', name: 'Otro', icon: '❓' },
   ];
 
-  // Manejar selección de categoría
+  /**
+   * Manejador selección de categoría.
+   * 
+   * @param {string} categoryId - ID del la categoría.
+   */
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);
     setStep('details');
   };
 
-  // Manejar subida de fotos
+  /**
+   * Manejador de subida de fotos.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de cambio.
+   * 
+   * @eventProperty
+   */
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newPhotos = Array.from(e.target.files);
@@ -49,7 +91,11 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     }
   };
 
-  // Eliminar foto
+  /**
+   * Manejador de eliminado de foto.
+   * 
+   * @param {number} index - Índice de la foto a eliminar.
+   */
   const handleRemovePhoto = (index: number) => {
     const newPhotos = [...photos];
     newPhotos.splice(index, 1);
@@ -94,7 +140,15 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
   // };
   
 
-  // Enviar reporte
+    /**
+   * Manejador subida de reporte.
+   * 
+   * @apicall POST - `http://localhost:8080/v1/incident`
+   * 
+   * @returns {Promise<void>} Representación del terminado éxitoso de una operación asíncrona.
+   * 
+   * @alpha
+   */
   const handleSubmit = async () => {
     setIsLoading(true);
   
@@ -108,12 +162,12 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     // }
   
     const reportData = {
-      token: '043fbb63-e370-40ea-a0b0-50889681f546', 
+      token: '043fbb63-e370-40ea-a0b0-50889681f546',
       nombre: name,
       descripcion: description,
-      fecha: date, 
-      hora: hour, 
-      latitud: latitud, 
+      fecha: date,
+      hora: hour,
+      latitud: latitud,
       longitud: longitud,
     };
 
@@ -143,10 +197,14 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     } finally {
       setIsLoading(false);
     }
-  };  
+  };
   
 
-  // Resetear formulario al cerrar
+  /**
+   * Reseateado de formulario.
+   * 
+   * @beta
+   */
   const resetForm = () => {
     setStep('category');
     setSelectedCategory(null);
@@ -155,7 +213,7 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     setPhotos([]);
     setUseCurrentLocation(false);
     setAddress('');
-    setLatitud(''); 
+    setLatitud('');
     setLongitud('');
 
     const now = new Date();
@@ -163,7 +221,9 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     setHour(now.toTimeString().split(' ')[0].substring(0, 8));
   };
 
-  // Manejar cierre del modal
+  /**
+   * Manejador de cerrado de modal.
+   */
   const handleClose = () => {
     resetForm();
     onHide();
@@ -353,4 +413,11 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
   );
 };
 
+/**
+ * @module report-incident
+ * 
+ * Lay-out para reporte de incidentes.
+ * 
+ * @remarks Lay-out y modal hecho para reporte de incidentes.
+ */
 export default ReportIncidentModal;

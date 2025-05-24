@@ -1,16 +1,27 @@
 import { Dropdown, Form } from 'react-bootstrap';
 import { useState } from 'react';
 import ToggleSwitch from '../toggle-button/toggle-switch';
-import './filter.css';  
+import './filter.css';
 
-//'reportado' | 'en revision' | 'resuelto'; 
-
+/**
+ * @global
+ * Filtros disponibles.
+ * 
+ * @type { {...boolean} }
+ * @see {@link ./src/models/dto-incidents.ts}
+ */
 type Filters = {
   reportado: boolean;
   revision: boolean;
   resuelto: boolean;
 };
 
+/**
+ * @global
+ * Nav-bar para filtros.
+ * 
+ * @returns {JSX.Element} Elemento correspondiente.
+ */
 const Filter = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [filters, setFilters] = useState<Filters>({
@@ -72,4 +83,11 @@ const Filter = () => {
   );
 };
 
+/**
+ * @module filter
+ *
+ * Nav bar de filtros.
+ * 
+ * @remarks Módulo especializado en una barra de navegación hecha para filtrado de incidentes.
+ */
 export default Filter;

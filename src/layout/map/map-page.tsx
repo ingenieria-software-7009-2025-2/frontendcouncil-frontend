@@ -5,6 +5,11 @@ import { Container } from 'react-bootstrap';
 import ReportIncidentModal from '../report-incident/report-incident';
 import { useState } from 'react';
 
+/**
+ * Lay-out para página para el mapa.
+ * 
+ * @returns {JSX.Element} Elemento correspondiente.
+ */
 const Mapa = () => {
     const [showIncidentModal, setShowIncidentModal] = useState(false);
 
@@ -31,4 +36,9 @@ const Mapa = () => {
     );
 };
 
+/**
+ * @module map-page
+ * 
+ * Lay-out para el contenedor de la página del mapa.
+ */
 export default Mapa;

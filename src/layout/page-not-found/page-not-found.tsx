@@ -2,6 +2,12 @@ import React from 'react';
 import './page-not-found.css';
 import Pentagon from '../../components/figures/pentagon/pentagon';
 
+/**
+ * @global
+ * Lay-out para págiina no encontrada (404).
+ * 
+ * @returns {JSX.Element} Elemento correspondiente.
+ */
 const NotFoundPage: React.FC = () => {
     return (
         <div className="not-found-container">
@@ -40,4 +46,9 @@ const NotFoundPage: React.FC = () => {
     );
 };
 
+/**
+ * @module page-not-found
+ * 
+ * Lay-out 404 page-not-found.
+ */
 export default NotFoundPage;
