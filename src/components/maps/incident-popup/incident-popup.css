@@ -86,6 +86,7 @@
     font-weight: bold;
     color: #030436;
     font-size: 16px;
+    margin-top: 5px;
   }
 
   .popup-footer {
@@ -109,12 +110,17 @@
   }
   
   .like-count {
-    font-size: 14px;
+    font-size: 11px;
   }
   
   .incident-popup-like, .incident-popup-comment {
     font-size: 14px;
     color: #030436;
+  }
+
+  .comment-count {
+    margin-left: 5px !important;
+    font-size: 11px;
   }
   
   .category-link {

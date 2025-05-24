@@ -3,6 +3,7 @@ import { IncidentDTO } from '../../../models/dto-incident';
 import { Popup } from 'react-leaflet';
 import { FaComment, FaRegComment, FaThumbsUp, FaRegThumbsUp } from 'react-icons/fa';
 import { ChangeStatus } from './change-status/change-status';
+import {CommentSection} from './comment-section/comment-section';
 import './incident-popup.css'; 
 
 interface IncidentPopupProps {
@@ -12,8 +13,10 @@ interface IncidentPopupProps {
 
 export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose }) => {
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showCommentSectionModal, setShowCommentSectionModal] = useState(false);
   const [likes, setLikes] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [comment_count, setCommentCount] = useState<number>(0);
 
   const handleStatusChange = (newStatus: string, evidenceFiles: File[]) => {
     // Aquí va la lógica para enviar el reporte al backend
@@ -29,19 +32,21 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
     setIsLiked(!isLiked);
   };
 
+  const handleCommentCount = () => {
+    setCommentCount(comment_count);
+  }
+
+  const handleCommentClick = () => {
+
+  }
+
   return (
     <Popup
       className="incident-popup-custom"
-      closeButton={false}
-      onClose={onClose}
+      closeButton={true}
     >
       <div onClick={(e) => e.stopPropagation()} className="popup-container">
         <div className="popup-header">
-          <button 
-            type="button" 
-            className="btn-close popup-close-btn" 
-            onClick={onClose}
-          />
         </div>
         
         <div className="popup-category">
@@ -66,12 +71,16 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
               )}
               <span className="like-count">{likes}</span>
             </span>
-            <FaRegComment className="incident-popup-comment" />
+            <span className="comment-container" onClick={() => setShowCommentSectionModal(true)}>
+              <FaRegComment className="incident-popup-comment" />
+              <span className="comment-count">{comment_count}</span>
+            </span>
           </div>
         </div>
       </div>
 
       <ChangeStatus show={showStatusModal} onHide={() => setShowStatusModal(false)}/>
+      <CommentSection show={showCommentSectionModal} onHide={() => setShowCommentSectionModal(false)}/>
     </Popup>
   );
 };

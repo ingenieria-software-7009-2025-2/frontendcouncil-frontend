@@ -1,17 +1,24 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Modal, Button, Form, Carousel, Spinner } from 'react-bootstrap';
 import { XCircle, GeoAlt, Upload } from 'react-bootstrap-icons';
 
 interface ReportIncidentModalProps {
   show: boolean;
   onHide: () => void;
+  mapLocation?: { lat: number; lng: number }; // Nuevo prop para ubicación desde mapa
+  isMapSelected?: boolean; // Indica si la ubicación viene del mapa
 }
 
-const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide }) => {
+const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ 
+  show, 
+  onHide, 
+  mapLocation, 
+  isMapSelected = false 
+}) => {
   // Estados del modal
   const [step, setStep] = useState<'category' | 'details'>('category');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [name,setName] = useState('');
+  const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]); 
   const [hour, setHour] = useState<string>(new Date().toTimeString().split(' ')[0].substring(0, 8));
@@ -22,8 +29,18 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
   const [longitud, setLongitud] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [locationLocked, setLocationLocked] = useState(false); // Nuevo estado para bloquear ubicación
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Efecto para actualizar las coordenadas cuando cambia mapLocation
+  useEffect(() => {
+    if (mapLocation && isMapSelected) {
+      setLatitud(mapLocation.lat.toString());
+      setLongitud(mapLocation.lng.toString());
+      setLocationLocked(true); // Bloquear la edición de ubicación
+    }
+  }, [mapLocation, isMapSelected]);
 
   // Categorías temporales (simulando backend)
   const categories = [
@@ -59,53 +76,9 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     }
   };
 
-  //Obtener latitud y longitud de la ubicación
-  // const handleToggleUseCurrentLocation = () => {
-  //   const newUseCurrentLocation = !useCurrentLocation;
-  //   setUseCurrentLocation(newUseCurrentLocation);
-  
-  //   if (newUseCurrentLocation) {
-  //     if (navigator.geolocation) {
-  //       navigator.geolocation.getCurrentPosition(
-  //         (position) => {
-  //           const { latitude, longitude } = position.coords;
-  //           setLatitud(latitude.toString()); // Guarda latitud
-  //           setLongitud(longitude.toString()); // Guarda longitud
-  //           /** 
-  //           const coordsText = `${latitude}, ${longitude}`;
-  //           setAddress(coordsText); */
-  //           setAddress(`${latitude}, ${longitude}`);
-  //         },
-  //         (error) => {
-  //           console.error('Error obteniendo ubicación:', error);
-  //           alert('No se pudo obtener la ubicación. Por favor permite acceso a tu ubicación.');
-  //           setUseCurrentLocation(false); 
-  //         }
-  //       );
-  //     } else {
-  //       alert('La geolocalización no es soportada en este navegador.');
-  //       setUseCurrentLocation(false);
-  //     }
-  //   } else {
-  //     setLatitud('');
-  //     setLongitud('');
-  //     setAddress('');
-  //   }
-  // };
-  
-
   // Enviar reporte
   const handleSubmit = async () => {
     setIsLoading(true);
-  
-    // let lat: number | null = null;
-    // let lon: number | null = null;
-  
-    // if (address) {
-    //   const [latStr, lonStr] = address.split(',').map(item => item.trim());
-    //   lat = parseFloat(latStr);
-    //   lon = parseFloat(lonStr);
-    // }
   
     const reportData = {
       token: '043fbb63-e370-40ea-a0b0-50889681f546', 
@@ -145,7 +118,6 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     }
   };  
   
-
   // Resetear formulario al cerrar
   const resetForm = () => {
     setStep('category');
@@ -157,6 +129,7 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
     setAddress('');
     setLatitud(''); 
     setLongitud('');
+    setLocationLocked(false); // Desbloquear ubicación al resetear
 
     const now = new Date();
     setDate(now.toISOString().split('T')[0]);
@@ -273,47 +246,38 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
             
             <Form.Group className="mb-3">
               <Form.Label>Ubicación</Form.Label>
-              <div className="d-flex flex-column gap-2">
-              {/* Fila para latitud y longitud */}
-              <div className="row g-2">
-                <div className="col-md-6">
-                  <Form.Control
-                    type="number"
-                    value={latitud}
-                    onChange={(e) => setLatitud(e.target.value)}
-                    placeholder="Latitud (ej: 19.4326)"
-                    step="any" // Permite decimales
-                  />
-                </div>
-                <div className="col-md-6">
-                  <Form.Control
-                    type="number"
-                    value={longitud}
-                    onChange={(e) => setLongitud(e.target.value)}
-                    placeholder="Longitud (ej: -99.1332)"
-                    step="any"
-                  />
-                </div>
-              </div>
-                {/** 
-                <Button
-                  variant={useCurrentLocation ? 'primary' : 'outline-primary'}
-                  onClick={handleToggleUseCurrentLocation}
-                >
+              {locationLocked && (
+                <div className="alert alert-info mb-3">
                   <GeoAlt className="me-2" />
-                  {useCurrentLocation ? 'Usando ubicación actual' : 'Utilizar ubicación actual'}
-                </Button>
-                
-                <div className="text-center">o</div>
-                
-                <Form.Control
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Ingresar una dirección"
-                  disabled={useCurrentLocation}
-                />
-                */}
+                  Ubicación seleccionada desde el mapa (no editable)
+                </div>
+              )}
+              <div className="d-flex flex-column gap-2">
+                {/* Fila para latitud y longitud */}
+                <div className="row g-2">
+                  <div className="col-md-6">
+                    <Form.Control
+                      type="number"
+                      value={latitud}
+                      onChange={(e) => setLatitud(e.target.value)}
+                      placeholder="Latitud (ej: 19.4326)"
+                      step="any"
+                      readOnly={locationLocked}
+                      disabled={locationLocked}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <Form.Control
+                      type="number"
+                      value={longitud}
+                      onChange={(e) => setLongitud(e.target.value)}
+                      placeholder="Longitud (ej: -99.1332)"
+                      step="any"
+                      readOnly={locationLocked}
+                      disabled={locationLocked}
+                    />
+                  </div>
+                </div>
               </div>
             </Form.Group>
           </div>
@@ -339,6 +303,7 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ show, onHide 
           <Button 
             variant="primary" 
             onClick={handleSubmit}
+            disabled={!latitud || !longitud} // Deshabilitar si no hay ubicación
           >
             {isLoading ? (
               <>

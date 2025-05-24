@@ -14,7 +14,7 @@ interface Incident {
     hora: string;
     longitud: number;
     latitud: number;
-    estatus: 'creado' | 'en revisión' | 'resuelto';
+    estado: 'creado' | 'en revisión' | 'resuelto';
   }
   
   const ManageIncidents = () => {

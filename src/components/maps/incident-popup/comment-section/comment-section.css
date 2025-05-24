@@ -1,0 +1,21 @@
+.add-comment {
+    width: 100%;
+}
+
+.add {
+    border-radius: 20px;
+}
+
+.custom-modal .modal-header {
+  border-bottom: none !important; 
+}
+
+.custom-modal .modal-footer {
+  border-top: none !important;
+}
+
+.comments-title {
+    font-size: 18px;
+    margin-top: 0px !important;
+    margin-left: 5px;
+}

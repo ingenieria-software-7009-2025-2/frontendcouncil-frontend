@@ -10,11 +10,16 @@ import { IncidentDTO } from '../../models/dto-incident';
 import { IncidentPopup } from './incident-popup/incident-popup';
 import { IncidentPin } from './pin/pin';
 import SelectLocationPin from '../figures/select-location-pin/select-location-pin';
+import SISREP_ICON from '../../assets/SISREP_ICON.svg'
 
 const SetInitialView = ({ center, zoom }: { center: LatLngLiteral; zoom: number }) => {
   const map = useMap();
+  const initializedRef = useRef(false);
   useEffect(() => {
-    map.setView(center, zoom, { animate: true, duration: 1 });
+    if (!initializedRef.current) {
+      map.setView(center, zoom, { animate: true, duration: 1 });
+      initializedRef.current = true;
+    }
   }, [center, zoom, map]);
   return null;
 };
@@ -27,6 +32,7 @@ const MapComponent: React.FC = () => {
 
   const [dragMode, setDragMode] = useState(false);
   const [dragMarkerPosition, setDragMarkerPosition] = useState<LatLngLiteral | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<LatLngLiteral | null>(null);
   const dragTimer = useRef<NodeJS.Timeout | null>(null);
 
   const initialCenter: LatLngLiteral = { lat: 19.4063, lng: -99.1631 };
@@ -53,6 +59,8 @@ const MapComponent: React.FC = () => {
       dragTimer.current = null;
     }
     if (!dragMode) {
+      // Abrir modal sin ubicación específica (modo normal)
+      setSelectedLocation(null);
       setShowIncidentModal(true);
     }
   };
@@ -60,7 +68,8 @@ const MapComponent: React.FC = () => {
   const handleMapClick = (e: L.LeafletMouseEvent) => {
     if (dragMode) {
       setDragMode(false);
-      setDragMarkerPosition(e.latlng);
+      setSelectedLocation(e.latlng); // Guardar la ubicación seleccionada
+      setDragMarkerPosition(null); // Limpiar el marcador de arrastre
       setShowIncidentModal(true);
     }
   };
@@ -104,7 +113,7 @@ const MapComponent: React.FC = () => {
             className="incident-button"
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp} // Para cancelar si suelta fuera del botón
+            onMouseLeave={handleMouseUp}
           >
             <SelectLocationPin size={40} />
           </button>
@@ -129,7 +138,6 @@ const MapComponent: React.FC = () => {
           </Marker>
         ))}
 
-        {/* Manejador de clicks y movimientos */}
         <MapClickHandler />
 
         {/* Mostrar el pin flotante mientras arrastra */}
@@ -137,16 +145,22 @@ const MapComponent: React.FC = () => {
           <Marker
             position={dragMarkerPosition}
             icon={L.icon({
-              iconUrl: '/path-to-your-pin-icon.svg', 
+              iconUrl: SISREP_ICON,  
               iconSize: [40, 40],
               iconAnchor: [20, 40]
             })}
           />
         )}
-
+        
+        {/* Modal de reporte */}
         <ReportIncidentModal
           show={showIncidentModal}
-          onHide={() => setShowIncidentModal(false)}
+          onHide={() => {
+            setShowIncidentModal(false);
+            setSelectedLocation(null); // Limpiar la ubicación al cerrar
+          }}
+          mapLocation={selectedLocation || undefined}
+          isMapSelected={!!selectedLocation} // true si hay ubicación seleccionada
         />
       </MapContainer>
     </div>
