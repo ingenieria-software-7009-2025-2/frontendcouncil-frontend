@@ -4,6 +4,13 @@ import { Col, Row } from "react-bootstrap"
 import './categories-dropdown.css';
 import AddCategoryModal from "../modal/add-category";
 
+/**
+ * @global
+ * Categorías temporales para filtrar incidentes.
+ * 
+ * @type {[number, string]}
+ * @alpha
+ */
 const categoriasTemporales = [
   { id: 1, nombre: "Accidentes\ntransito" },
   { id: 2, nombre: "Categoría 2" },
@@ -15,17 +22,30 @@ const categoriasTemporales = [
   { id: 8, nombre: "Categoría 8" },
 ];
 
+/**
+ * @global
+ * Constructor de elemento DropdownCategories.
+ * @returns {JSX.Element} Elemento correspondiente
+ */
 const DropdownCategories = () => {
   const [open, setOpen] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [categories, setCategories] = useState(categoriasTemporales);
-
   const toggleDropdown = () => setOpen(!open);
 
+  /**
+   * Manejador ante clic.
+   * @remarks Abre modal para agregar categoría ante clic.
+   */
   const handleAddClick = () => {
     setShowAddModal(true);
   };
 
+  /**
+   * Gestor para guardar categorías.
+   * @param {string} categoryName - Nombre de la categoría nueva.
+   * @param {File | null} imageFile - Imagen de la categoría
+   */
   const handleSaveCategory = (categoryName: string, imageFile: File | null) => {
     // Aquí puedes manejar la lógica para guardar la nueva categoría
     const newCategory = {
@@ -91,4 +111,11 @@ const DropdownCategories = () => {
   );
 };
 
+/**
+ * @module categories-dropdown
+ *
+ * Crea un espacio para la gestión de categorías para incidentes.
+ *
+ * @remarks Modulo especializado en la gestión de categorías sobre incidentes. Regresa el elemento.
+ */
 export default DropdownCategories;

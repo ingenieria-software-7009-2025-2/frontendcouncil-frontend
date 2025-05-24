@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar, Container, Button } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ModalLoginRegister from '../auth/login-register'; 
+import ModalLoginRegister from '../auth/login-register';
 import SearchBar from '../searchbar/searchbar';
 import Filter from '../filter/filter';
 import UserDropdown from '../userMenu/userMenu';
 import './navbar.css';
 
+/**
+ * @global
+ * Creador de componente ppara barra de navegación.
+ *
+ * @returns {JSX.Element} Elemento correspondiente.
+ */
 const NavbarComponent = () => {
   // Estado para controlar la visibilidad del modal
   const [showModal, setShowModal] = useState(false);
@@ -23,13 +29,20 @@ const NavbarComponent = () => {
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     const rol = sessionStorage.getItem("rol"); // Agregue esto para el rol (TEMPORAL)
-    setIsAuthenticated(!!token); 
+    setIsAuthenticated(!!token);
     setUserRole(rol); // Agregue esto para el rol (TEMPORAL)
   }, []);
 
   // Función para abrir y cerrar el modal
   const handleShowModal = () => setShowModal(true);
 
+  /**
+   * Manejador de cerrado de modal.
+   * 
+   * @param {boolean} [loggedIn = false] - Booleano que indica si la hay una sessión iniciada
+   * 
+   * @beta
+   */
   const handleCloseModal = (loggedIn = false) => {
     setShowModal(false);
     if (loggedIn) {
@@ -39,8 +52,12 @@ const NavbarComponent = () => {
     }
   };
 
-   // Función de logout para actualizar estado
-   const handleLogout = () => {
+  /**
+   * Manejador de Cerrado de sesión.
+   * 
+   * @beta
+   */
+  const handleLogout = () => {
         sessionStorage.clear();
         setIsAuthenticated(false);
         setUserRole(null); // Agregue esto para el rol (TEMPORAL)
@@ -116,4 +133,11 @@ const NavbarComponent = () => {
   );
 };
 
+/**
+ * @module navbar
+ * 
+ * Barra de navegación
+ * 
+ * @remarks Módulo especializado en la creación y atención de la barra de navegación principal.
+ */
 export default NavbarComponent;

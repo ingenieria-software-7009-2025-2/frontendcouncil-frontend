@@ -11,6 +11,17 @@ import { IncidentPopup } from './incident-popup/incident-popup';
 import { IncidentPin } from './pin/pin';
 import SelectLocationPin from '../figures/select-location-pin/select-location-pin';
 
+/**
+ * @global
+ * Asigna la vista inicial.
+ * 
+ * @param {LatLngLiteral} center - Coordenada centrica de la vista.
+ * @param {number} zoom - Zoom de la vista.
+ * 
+ * @returns {null} null
+ * 
+ * @alpha
+ */
 const SetInitialView = ({ center, zoom }: { center: LatLngLiteral; zoom: number }) => {
   const map = useMap();
   useEffect(() => {
@@ -19,6 +30,16 @@ const SetInitialView = ({ center, zoom }: { center: LatLngLiteral; zoom: number 
   return null;
 };
 
+/**
+ * @global
+ * Inicializador de mapa.
+ * 
+ * @see {@link leaflet}
+ * 
+ * @returns {JSX.Element} Elemento correspondiente.
+ * 
+ * @eventProperty
+ */
 const MapComponent: React.FC = () => {
   const [showIncidentModal, setShowIncidentModal] = useState(false);
   const [incidents, setIncidents] = useState<IncidentDTO[]>([]);
@@ -41,12 +62,18 @@ const MapComponent: React.FC = () => {
     loadIncidents();
   }, []);
 
+  /**
+   * Manejador de scroll-down.
+   */
   const handleMouseDown = () => {
     dragTimer.current = setTimeout(() => {
       setDragMode(true);
-    }, 500); 
+    }, 500);
   };
 
+  /**
+   * Manejador de scroll-up
+   */
   const handleMouseUp = () => {
     if (dragTimer.current) {
       clearTimeout(dragTimer.current);
@@ -57,6 +84,13 @@ const MapComponent: React.FC = () => {
     }
   };
 
+  /**
+   * Maneja clic en el mapa.
+   * 
+   * @param {L.LeafletMouseEvent} e - Evento de mouse en el mapa.
+   * 
+   * @eventProperty
+   */
   const handleMapClick = (e: L.LeafletMouseEvent) => {
     if (dragMode) {
       setDragMode(false);
@@ -65,6 +99,15 @@ const MapComponent: React.FC = () => {
     }
   };
 
+  /**
+   * Manejador de clic en el mapa.
+   * 
+   * @param {L.LeafletMouseEvent} e - Evento de mouse en el mapa.
+   * 
+   * @returns {null} null
+   * 
+   * @eventProperty
+   */
   const MapClickHandler = () => {
     useMapEvents({
       click: handleMapClick,
@@ -137,7 +180,7 @@ const MapComponent: React.FC = () => {
           <Marker
             position={dragMarkerPosition}
             icon={L.icon({
-              iconUrl: '/path-to-your-pin-icon.svg', 
+              iconUrl: '/path-to-your-pin-icon.svg',
               iconSize: [40, 40],
               iconAnchor: [20, 40]
             })}
@@ -153,4 +196,11 @@ const MapComponent: React.FC = () => {
   );
 };
 
+/**
+ * @module map
+ * 
+ * Mapa.
+ * 
+ * @remarks Módulo especializado en el manejo del mapa.
+ */
 export default MapComponent;

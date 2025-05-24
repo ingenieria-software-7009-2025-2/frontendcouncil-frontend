@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 import { Card, Button, Row, Col, Container } from 'react-bootstrap';
 import { ExclamationTriangle } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,17 @@ import ModalDeleteAccount from './delete-account/delete-account';
 import { ChangePasswordModal } from './change-password/change-password';
 import './user-profile.css';
 
+/**
+ * @global
+ * Información obtenible para datos de usuario.
+ * 
+ * @param {string} username - Nombre de usuario.
+ * @param {string} firstName - Nombre.
+ * @param {string} lastName - Apellido paterno.
+ * @param {string} motherLastName - Apellido Materno,
+ * @param {string} email - Correo electrónico.
+ * @param {*[]} incidents - Lista de incidentes.
+ */
 type UserProfile = {
   username: string;
   firstName: string;
@@ -16,6 +27,16 @@ type UserProfile = {
   incidents: any[];
 };
 
+/**
+ * @global
+ * Lay-out para la página de perfil del usuario.
+ * 
+ * @apicall PUT - `http://localhost:8080/v1/users/me`
+ * 
+ * @returns {JSX.Element} Elemento correspondiente.
+ * 
+ * @eventProperty
+*/
 const UserProfilePage = () => {
   const nombre = sessionStorage.getItem("nombre");
   const apPaterno = sessionStorage.getItem("apPaterno");
@@ -36,11 +57,23 @@ const UserProfilePage = () => {
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
   const navigate = useNavigate();
 
+  /**
+   * Manejador ante editar.
+   * 
+   * @alpha
+   */
   const handleEdit = () => {
     navigate('/edit-profile');
     //setTempUser({ ...user });
   };
 
+  /**
+   * Manejador ante guardar.
+   * 
+   * @apicall PUT - `http://localhost:8080/v1/users/me`
+   * 
+   * @returns {Promise<void>} Representación del terminado con éxito de una operación asíncrona.
+   */
   const handleSave = async () => {
     const token = sessionStorage.getItem("token");
     console.log(token);
@@ -77,22 +110,41 @@ const UserProfilePage = () => {
     }
   };
 
+  /**
+   * Manejador ante cambio de contraseña.
+   */
   const handleChangePassword = () => {
     setShowChangePasswordModal(true);
   };
   
+  /**
+   * Manejador ante cerrado de modal de cambio de contraseña.
+   */
   const handleCloseChangePasswordModal = () => {
     setShowChangePasswordModal(false);
   };
 
+  /**
+   * Manejador ante borrado de cuenta.
+   */
   const handleDeleteAccount = () => {
     setShowDeleteModal(true);
   };
 
+  /**
+   * Manejador ante cerrado de modal de borrado de cuenta.
+   */
   const handleCloseDeleteModal = () => {
     setShowDeleteModal(false);
   };
 
+  /**
+   * Manejo ante cambios.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de cambios.
+   * 
+   * @eventProperty
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempUser({
       ...tempUser,
@@ -228,4 +280,9 @@ const UserProfilePage = () => {
   );
 };
 
+/**
+ * @module user-profile
+ * 
+ * Lay-out de página para perfil de usuario.
+ */
 export default UserProfilePage;

@@ -3,12 +3,45 @@ import { Modal, Button } from 'react-bootstrap';
 import { ExclamationTriangleFill } from 'react-bootstrap-icons';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
+/**
+ * @global
+ * Interfaz que maneja las propiedades para borrar cuenta.
+ * 
+ * @param {boolean} mostrar - Muestra contraseña.
+ * @param {function} onConfirmar - Función que indica la acción al confirmar.
+ * @param {function} onCancelar - Función que indica la cción tras cancelar.
+ * 
+ * @interface
+*/
 interface ModalDeleteAccount {
   mostrar: boolean;
+
+  /**
+   * Función que indica la acción al confirmar.
+   */
   onConfirmar: () => void;
+
+  /**
+   * Función que indica la cción tras cancelar.
+   */
   onCancelar: () => void;
 }
 
+/**
+ * @global
+ * Lay-out para de borrar cuenta,
+ * 
+ * @apicall POST - `http://localhost:8080/v1/users/toolkit/verify-password`
+ * @apicall DELETE - `http://localhost:8080/v1/users`
+ * 
+ * @param {boolean} mostrar - Muestra contraseña.
+ * @param onConfirmar - Función que indica la acción al confirmar.
+ * @param onCancelar - Función que indica la cción tras cancelar.
+ * 
+ * @returns {JSX.Element} Elemento correspondiente.
+ * 
+ * @eventProperty
+ */
 const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
   mostrar,
   onConfirmar,
@@ -35,6 +68,13 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
     }
   }, [mostrar]);
 
+  /**
+   * Verifica la contraseña del usuario activo.
+   * 
+   * @apicall POST - `http://localhost:8080/v1/users/toolkit/verify-password`
+   * 
+   * @returns {Promise<void>} Representación del terminado con éxito de una operación asíncrona.
+   */
   const verifyPassword = async () => {
     if (!password) {
       setError('');
@@ -46,7 +86,7 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
     try {
       const response = await fetch('http://localhost:8080/v1/users/toolkit/verify-password', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
@@ -85,6 +125,13 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
     return () => clearTimeout(timer);
   }, [password]);
 
+  /**
+   * Cambio de contraseña.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de cambio de evento.
+   * 
+   * @eventProperty
+   */
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     if (!e.target.value) {
@@ -93,6 +140,13 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
     }
   };
 
+  /**
+   * Eliminado de cuenta activa.
+   * 
+   * @apicall DELETE - `http://localhost:8080/v1/users`
+   * 
+   * @param {string} password - Contraseña para autenticar y confirmar.
+   */
   const eliminarCuenta = async (password: string) => {
         const token = sessionStorage.getItem("token")
     try {
@@ -186,4 +240,9 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
   );
 };
 
+/**
+ * @module delete-account
+ * 
+ * Lay-out para borrado de cuenta.
+ */
 export default ModalDeleteAccount;

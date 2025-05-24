@@ -4,11 +4,37 @@ import { XCircle, Upload } from 'react-bootstrap-icons';
 import { useSwalMessages } from '../../../../shared/swal-messages';
 import './change-status.css';
 
+/**
+ * @global
+ * Interfaz para propiedades de cambio de estado.
+ * 
+ * @param {boolean} show - Mostrar interfaz.
+ * @param {function} onHide - Función que indica que hacer al ocultar.
+ * 
+ * @interface
+*/
 interface ChangeStatusProps {
   show: boolean;
+
+  /**
+   * Función que indica que hacer al ocultar.
+   */
   onHide: () => void;
 }
 
+/**
+ * @module change-status
+ *
+ * @global
+ * Módulo correspondiente a el cambio de estado en incidentes..
+ * 
+ * @param {boolean} show - Mostrar interfaz.
+ * @param {function} onHide - Función que indica que hacer al ocultar.
+ * 
+ * @remarks Módulo especializado en el cambio de estado en reportes.
+ * 
+ * @eventProperties
+ */
 export const ChangeStatus: React.FC<ChangeStatusProps> = ({ show, onHide }) => {
     const [selectedOption, setSelectedOption] = useState<string>('');
     const [photos, setPhotos] = useState<File[]>([]);
@@ -16,11 +42,16 @@ export const ChangeStatus: React.FC<ChangeStatusProps> = ({ show, onHide }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { successMessage } = useSwalMessages();
     
-
+    /**
+     * Manejador al cerrar la interfaz.
+     */
     const handleClose = () => {
         onHide();
     };
 
+    /**
+     * Manejador para mandar peticion.
+     */
     const handleSubmit = () => {
         // Lógica para manejar la opción seleccionada
         console.log('Opción seleccionada:', selectedOption);
@@ -28,11 +59,24 @@ export const ChangeStatus: React.FC<ChangeStatusProps> = ({ show, onHide }) => {
         successMessage('¡Su reporte ha sido enviado! Gracias por su colaboración, nuestros administradores lo están revisando.');
     }
 
+    /**
+     * Manejador de opciones a elegir.
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de cambio ante entrada.
+     * 
+     * @eventProperty
+     */
     const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedOption(e.target.value);
     }
 
-    // Manejar subida de fotos
+    /**
+     * Manejador para subir fotos.
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de cambio ante entrada.
+     * 
+     * @eventProperty
+     */
     const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
           const newPhotos = Array.from(e.target.files);
@@ -40,7 +84,11 @@ export const ChangeStatus: React.FC<ChangeStatusProps> = ({ show, onHide }) => {
         }
     };
     
-    // Eliminar foto
+    /**
+     * Manejador para remover una imagen.
+     * 
+     * @param {number} index - Número de foto a remover.
+     */
     const handleRemovePhoto = (index: number) => {
         const newPhotos = [...photos];
         newPhotos.splice(index, 1);

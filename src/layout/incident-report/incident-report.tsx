@@ -1,0 +1,3 @@
+/**
+ * Clase no utilizada aún.
+ */

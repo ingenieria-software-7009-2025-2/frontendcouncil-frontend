@@ -2,11 +2,42 @@ import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './register.css';
 
+/**
+ * @global
+ * Interfaz de propiedades para el sign up.
+ * 
+ * @param {function} onRegisterSuccess - Función que indica la acción ante éxito al hacer sign up.
+ * @param {function} onRegisterError - Función que indica la acción ante error al hacer sign up.
+ * 
+ * @interface
+ */
 interface RegisterFormProps {
+
+  /**
+   * Función que indica la acción ante éxito al hacer sign up.
+   */
   onRegisterSuccess: () => void;
+
+  /**
+   * Función que indica la acción ante error al hacer sign up.
+   * @param {string} message - Mensaje a mostrar,
+   */
   onRegisterError: (message: string) => void;
 }
 
+/**
+ * @global
+ * Form usado para hacer sign up.
+ * 
+ * @apicall GET - `/v1/users/check-email`
+ * @apicall GET - `/v1/users/check-username`
+ * @apicall POST - `http://localhost:8080/v1/users`
+ * 
+ * @param {function} onRegisterSuccess - Función que indica la acción ante éxito al hacer sign up.
+ * @param {function} onRegisterError - Función que indica la acción ante error al hacer sign up.
+ * 
+ * @eventProperty
+ */
 const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegisterError }) => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -24,12 +55,23 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
+  /**
+   * Manejador de cambios al hacer sing up.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de cambio ante entrada.
+   * 
+   * @eventProperty
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: '' }); // limpia error al escribir
     setFormError('');
   };
 
+  /**
+   * Validador de formato de contraseñas.
+   * @param {string} password - Cadena con la posible contraseña.
+   */
   const validatePassword = (password: string) => {
     const lengthOK = password.length >= 8;
     const hasNumber = /\d/.test(password);
@@ -38,10 +80,26 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
     return lengthOK && hasNumber && hasUpper && hasSpecial;
   };
 
+  /**
+   * Validador de formato de correos.
+   * @param {string} correo - Cadena con la posible correo.
+   */
   const validateEmail = (correo: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
   };
 
+  /**
+   * Manejador de forma al logear.
+   * TODO: Modify request
+   * 
+   * @apicall GET - `/v1/users/check-email`
+   * 
+   * @param {React.FormEvent<>} e - Evento dedicado a formas
+   * 
+   * @returns {Promise<void>} Representación de una acción asíncrona completa.
+   * 
+   * @beta
+   */
   const checkEmailExists = async (correo: string) => {
     if (!correo || !validateEmail(correo)) return false;
     try {
@@ -56,6 +114,18 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
     }
   };
 
+  /**
+   * Manejador de forma al logear.
+   * TODO: Modify request
+   * 
+   * @apicall GET - `/v1/users/check-username`
+   * 
+   * @param {React.FormEvent<>} e - Evento dedicado a formas
+   * 
+   * @returns {Promise<void>} Representación de una acción asíncrona completa.
+   * 
+   * @beta @eventProperty
+   */
   const checkUsernameExists = async (username: string) => {
     if (!username) return false;
     try {
@@ -70,6 +140,21 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
     }
   };
 
+  /**
+   * Manejador de forma al hacer sign up.
+   * 
+   * @remaks Crea el elemento para llenar la forma, si no está llenada correctamente, se notifica al usuario.
+   * En otro caso, hace llamada al API dedicado para sign up.
+   * Dada la respuesta del servidor, se da acceso, o se controla avisa al usuario la eventualidad.
+   * 
+   * @apicall POST - `/v1/users`
+   * 
+   * @param {React.FormEvent<>} e - Evento dedicado al llenado de formas.
+   * 
+   * @returns {Promise<void>} Representación de una acción asíncrona completa.
+   * 
+   * @eventProperty
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: { [key: string]: string } = {};
@@ -122,7 +207,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
         body: JSON.stringify(user),
       });
       if (!response.ok) {
-        const errorData = await response.text(); 
+        const errorData = await response.text();
         if (response.status === 406) {
           setErrors(prev => ({ ...prev, username: 'Este nombre de usuario ya está en uso' }));
         } else if (response.status === 407) {
@@ -263,4 +348,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onRegist
   );
 };
 
+/**
+ * @module register
+ *
+ * Registro de sesión.
+ * 
+ * @remarks Modulo especilizado en la obtención de datos por un formulario para registro de cuenta.
+ */
 export default RegisterForm;

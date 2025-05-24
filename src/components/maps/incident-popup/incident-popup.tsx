@@ -3,23 +3,57 @@ import { IncidentDTO } from '../../../models/dto-incident';
 import { Popup } from 'react-leaflet';
 import { FaComment, FaRegComment, FaThumbsUp, FaRegThumbsUp } from 'react-icons/fa';
 import { ChangeStatus } from './change-status/change-status';
-import './incident-popup.css'; 
+import './incident-popup.css';
 
+/**
+ * @global
+ * Interfaz de propiedades para el pop-up de incidente.
+ * 
+ * @param {IncidentDTO} incident - Modelo de incidente
+ * @param {function} onClose - Función que indica la acción ante cerrado.
+ * 
+ * @interface
+*/
 interface IncidentPopupProps {
   incident: IncidentDTO;
+
+  /**
+   * Función que indica la acción ante cerrado.
+   */
   onClose: () => void;
 }
 
+/**
+ * @module change-status
+ * 
+ * @global
+ * Creador de Pop-up para cambio de estado.
+ * 
+ * @param {IncidentDTO} incident - Modelo de incidente
+ * @param {function} onClose - Función que indica la acción ante cerrado.
+ */
 export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose }) => {
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [likes, setLikes] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
 
+  /**
+   * Manejador de cambio de estado.
+   * @param {string} newStatus - Nuevo estado.
+   * @param {File[]} evidenceFiles - Arreglo de archivos.
+   * 
+   * @beta
+   */
   const handleStatusChange = (newStatus: string, evidenceFiles: File[]) => {
     // Aquí va la lógica para enviar el reporte al backend
     console.log("Nuevo estado:", newStatus, "Evidencia:", evidenceFiles);
   };
 
+  /**
+   * Manejador de likes.
+   *
+   * @alpha
+   */
   const handleLikeClick = () => {
     if (isLiked) {
       setLikes(likes - 1);

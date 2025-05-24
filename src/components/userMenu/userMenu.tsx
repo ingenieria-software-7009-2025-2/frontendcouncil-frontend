@@ -4,14 +4,25 @@ import { PersonFill, Gear, BoxArrowRight } from 'react-bootstrap-icons';
 import { useNavigate } from "react-router-dom";
 import './UserDropdown.css';
 
+/**
+ * @global
+ * Creador de dropdown para usuario.
+ * 
+ * @apicall GET - `http://localhost:8080/v1/users/me`
+ * @apicall POST - `http://localhost:8080/v1/users/logout`
+ * 
+ * @param onLogout - Función que define las acciones ante el cerrado de sesión.
+ * 
+ * @returns {JSX.Element} - Elemento correspondiente.
+ */
 const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
-  const [userData, setUserData] = useState<{ 
-    nombre: string; 
-    apPaterno: string | null; 
-    apMaterno: string | null; 
-    correo: string; 
+  const [userData, setUserData] = useState<{
+    nombre: string;
+    apPaterno: string | null;
+    apMaterno: string | null;
+    correo: string;
     userName: string;
   }>(null);
   const [dataFetched, setDataFetched] = useState(false);
@@ -23,9 +34,16 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
     if (token && !dataFetched) {
       fetchUserData();
     }
-  }, []); 
+  }, []);
 
-  const fetchUserData = async () => {
+  /**
+   * Obtiene la información del usuario.
+   * 
+   * @apicall GET - `http://localhost:8080/v1/users/me`
+   * 
+   * @returns {Promise<void>} Representación de una operación asíncrona realizada con éxito.
+  */
+ const fetchUserData = async () => {
     const token = sessionStorage.getItem("token");
     if (!token) {
       console.error("No hay token disponible");
@@ -49,10 +67,10 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
       sessionStorage.setItem("apMaterno", data.apMaterno);
       sessionStorage.setItem("userName", data.userName);
       setUserData({
-        nombre: data.nombre, 
+        nombre: data.nombre,
         apPaterno: data.apPaterno,
         apMaterno: data.apMaterno,
-        correo: data.correo, 
+        correo: data.correo,
         userName: data.userName
       });
       setDataFetched(true);
@@ -61,6 +79,13 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
     }
   };
 
+  /**
+   * Manejador del log-out.
+   * 
+   * @apicall POST - `http://localhost:8080/v1/users/logout`
+   * 
+   * @returns {Promise<void>} Representación de una operación asíncrona realizada con éxito.
+   */
   const handleLogout = async () => {
     const token = sessionStorage.getItem("token");
     try {
@@ -83,6 +108,11 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
     }
   };
 
+  /**
+   * Alternado de desplegado.
+   * 
+   * @param {boolean} isOpen - Está abierto 
+   */
   const toggleDropdown = (isOpen: boolean) => {
     setShowDropdown(isOpen);
     if (isOpen && !dataFetched) {
@@ -90,7 +120,12 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
     }
   };
 
-  // Obtener la inicial del nombre (o 'P' si no hay datos)
+  /** 
+   * Obtiene la inicial del nombre.
+   * 'P' si no hay datos.
+   * 
+   * @returns {string} Inicial del nombre
+   */
   const getUserInitial = () => {
     if (userData?.nombre) {
       return userData.nombre.charAt(0).toUpperCase();
@@ -143,4 +178,11 @@ const UserDropdown = ({ onLogout }: { onLogout: () => void }) => {
   );
 };
 
+/**
+ * @module userMenu
+ * 
+ * Menú del usuario.
+ * 
+ * @remarks Módulo que crea y maneja la interacción en el menú del usuario.
+ */
 export default UserDropdown;

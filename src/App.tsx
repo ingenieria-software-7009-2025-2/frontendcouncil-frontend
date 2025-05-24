@@ -9,11 +9,22 @@ import NotFoundPage from "./layout/page-not-found/page-not-found.tsx";
 import ManageIncidents from "./layout/admin-panel/manage-incidents.tsx/manage-incidents.tsx";
 import ManageUsers from "./layout/admin-panel/manage-users/manage-users.tsx";
 
+/**
+ * Aplicación y rutas. Launcher
+ * 
+ * @returns {JSX.Element} Elemento correspondiente.
+ */
 function App() {
   const [count, setCount] = useState(0);
 
   // Si se cierra la venta se cierra sesión
   useEffect(() => {
+
+    /**
+     * Manejador antes de vaciar storage.
+     * 
+     * @alpha
+     */
     const handleBeforeUnload = () => {
       // Podríamos implementar la del backend pero esto sirve
       localStorage.removeItem('authToken');
@@ -46,4 +57,9 @@ function App() {
   );
 }
 
+/**
+ * @module App
+ * 
+ * Aplicación y rutas.
+ */
 export default App;

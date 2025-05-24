@@ -1,13 +1,32 @@
 import React from "react";
 
+/**
+ * @global
+ * Interfaz de propiedades del mapa.
+ * 
+ * @param {string} [pinColor] - Color del pin.
+ * @param {number} [size] - Tamaño del pin.
+ * @param {string} [className] - Nombre de clase.
+ * 
+ * @interface
+ */
 interface MapPinProps {
-  pinColor?: string; 
-  size?: number; 
-  className?: string; 
+  pinColor?: string;
+  size?: number;
+  className?: string;
 }
 
+/**
+ * @global
+ * Constructor para la locaclizacion del pin.
+ * 
+ * @param {string} [pinColor = #00A5C2] - Color del pin.
+ * @param {number} [size = 32] - Tamaño del pin.
+ * @param {string} [className = ""] - Nombre de clase.
+ * @returns {JSX.Element} - Elemento correspondiente.
+ */
 const SelectLocationPin: React.FC<MapPinProps> = ({
-  pinColor = "#00A5C2", 
+  pinColor = "#00A5C2",
   size = 32,
   className = "",
 }) => {
@@ -45,4 +64,11 @@ const SelectLocationPin: React.FC<MapPinProps> = ({
   );
 };
 
+/**
+ * @module select-location-pin
+ *
+ * Modulo correspondiente a la localizacion del pin.
+ *
+ * @remarks Modulo especializado en la localizacion del pin en el mapa.
+ */
 export default SelectLocationPin;

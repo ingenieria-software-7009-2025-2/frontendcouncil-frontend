@@ -3,6 +3,20 @@ import { Dropdown } from 'react-bootstrap';
 import { Search } from "lucide-react";
 import './manage-users.css';
 
+/**
+ * @global
+ * Interfaz que maneja los datos de los usuarios.
+ * 
+ * @param {number} clienteid - ID del cliente
+ * @param {string} userName - Nombre de usuario/cliente
+ * @param {string} nombre - Nombre
+ * @param {string} apPaterno - Apellido Paterno
+ * @param {string} apMaterno - Apellido Materno
+ * @param {string} correo - Correo electrónico
+ * @param {string} rolid - ID del rol que tiene el usuario
+ * 
+ * @interface
+ */
 interface User {
   clienteid: number;
   userName: string;
@@ -13,6 +27,15 @@ interface User {
   rolid: string;
 }
 
+/**
+ * @global
+ * Lay-out y manejador de usuarios.
+ * 
+ * @apicall GET - `http://localhost:8080/v1/users/toolkit`
+ * @apicall PUT - `http://localhost:8080/v1/users/toolkit`
+ * 
+ * @returns {JSX.Element} Elemento correspondiente
+ */
 const ManageUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -45,7 +68,13 @@ const ManageUsers = () => {
     fetchData();
   }, []);
 
-  // Métodos para el backend que van a (sin implementar)
+  /**
+   * Obtiene una lista de todos los usuarios.
+   * 
+   * @apicall GET - `http://localhost:8080/v1/users/toolkit`
+   * 
+   * @returns {Promise<User[]>} Representación del terminado de una operación asíncrona junto con su resultado. 
+  */
   const fetchUsersFromBackend = async (): Promise<User[]> => {
     const token = sessionStorage.getItem("token");
     const response = await fetch("http://localhost:8080/v1/users/toolkit", {
@@ -66,8 +95,21 @@ const ManageUsers = () => {
     // return [];
   };
 
-  const updateUserRole = async (username: string, newRole: string, oldRole : number, role : string): Promise<boolean> => {
+  /**
+   * Modifica el rol de un usuario.
+   * 
+   * @apicall PUT - `http://localhost:8080/v1/users/toolkit`
+   * 
+   * @param {string} username - Nombre de usuario
+   * @param {string} newRole - ID del rol nuevo
+   * @param {number} oldRole - ID del rol viejo
+   * @param {string} role - ID del rol viejo en cadena.
+   * 
+   * @returns {Promise<boolean>} Representación del terminado de una operación asíncrona junto con su resultado.
+  */
+const updateUserRole = async (username: string, newRole: string, oldRole : number, role : string): Promise<boolean> => {
     // Implementación chafa, xd
+    // TODO: Update verif. de rol
     if (oldRole !== 2 || role !== '4'){
       return true
     }
@@ -98,13 +140,24 @@ const ManageUsers = () => {
     return true;
   };
 
+  /**
+   * Eliminado de usuario.
+   * 
+   * @param {number} userId - ID del usuario a eliminar.
+   * 
+   * @returns {Promise<boolean>} Representación del terminado de una operación asíncrona junto con su resultado.
+   */
   const deleteUser = async (userId: number): Promise<boolean> => {
     // Implementación pendiente
     console.log(`Eliminando usuario ${userId}`);
     return true;
   };
 
-  // Filtrado y ordenación
+  /**
+   * Filtrado y ordenado de Usuarios.
+   * 
+   * @returns {User[]} - Lista de usuarios filtrada y ordenada.
+   */
   const filteredUsers = users.filter(user => {
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -118,6 +171,11 @@ const ManageUsers = () => {
     );
   });
 
+  /**
+   * Ordenado de usuarios.
+   * 
+   * @returns {Incidents[]} - Lista de usuarios ordenada.
+   */
   const sortedUsers = React.useMemo(() => {
     if (!sortConfig) return filteredUsers;
     
@@ -132,6 +190,11 @@ const ManageUsers = () => {
     });
   }, [filteredUsers, sortConfig]);
 
+  /**
+   * Solicitar ordenado.
+   * 
+   * @param key - Llave del usuario,
+   */
   const requestSort = (key: keyof User) => {
     let direction: 'ascending' | 'descending' = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -140,7 +203,14 @@ const ManageUsers = () => {
     setSortConfig({ key, direction });
   };
 
-  // Paginación con useMemo para evitar recálculos innecesarios
+  /**
+   * Númerado de páginas. Evita recálculos innecesarios.
+   * 
+   * @param {number} totalPages - Número total de página.
+   * @param {number} paginatedIncidents - Incidentes páginados.
+   * 
+   * @returns {{total, paginated}}
+   */
   const { totalPages, paginatedUsers } = React.useMemo(() => {
     const total = Math.ceil(sortedUsers.length / itemsPerPage);
     const paginated = sortedUsers.slice(
@@ -150,28 +220,52 @@ const ManageUsers = () => {
     return { totalPages: total, paginatedUsers: paginated };
   }, [sortedUsers, currentPage, itemsPerPage]);
 
+  /**
+   * Manejador de items por cambio de página.
+   * 
+   * @param {React.ChangeEvent<HTMLSelectElement>} e - Evento de cambio.
+   * 
+   * @eventProperty
+   */
   const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newValue = Number(e.target.value);
     setItemsPerPage(newValue);
-    // Resetear a la primera página cuando cambia el número de items por 
+    // Resetear a la primera página cuando cambia el número de items por 1
     setCurrentPage(1);
   };
 
+  /**
+   * Ir a `n` página.
+   * 
+   * @param {number} page - Número de página.
+   */
   const goToPage = (page: number) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
   };
 
-  // Manejo de dropdowns
+  /**
+   * Manejo de dropdowns.
+   * 
+   * @param {number} incidentId - ID del incidente.
+   */
   const toggleDropdown = (userId: number) => {
     setDropdownOpen(dropdownOpen === userId ? null : userId);
     setMoreDropdownOpen(null);
   };
 
+  /**
+   * Manejo de dropdowns.
+   * 
+   * @param {number} incidentId - ID del incidente.
+   */
   const toggleMoreDropdown = (userId: number) => {
     setMoreDropdownOpen(moreDropdownOpen === userId ? null : userId);
     setDropdownOpen(null);
   };
 
+  /**
+   * Cerrar dropdowns.
+   */
   const closeDropdowns = () => {
     setDropdownOpen(null);
     setMoreDropdownOpen(null);
@@ -403,6 +497,16 @@ const ManageUsers = () => {
   );
 };
 
+/**
+ * @global
+ * Obtiene el nombre del rol dado su identificador.
+ * 
+ * @param {number | string} rolid - ID del rol
+ *  
+ * @returns {string} - Nombre del rol.
+ * 
+ * @alpha
+ */
 function getRolNombre(rolid: number | string): string {
   switch (rolid) {
     case 1:
@@ -418,4 +522,11 @@ function getRolNombre(rolid: number | string): string {
   }
 }
 
+/**
+ * @module manage-users
+ * 
+ * Lay-out para el manejo de usuarios.
+ * 
+ * @remarks Lay-out especializado en el manejo de usuarios, con operaciones extra.
+ */
 export default ManageUsers;

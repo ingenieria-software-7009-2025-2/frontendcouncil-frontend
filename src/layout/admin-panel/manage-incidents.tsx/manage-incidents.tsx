@@ -4,6 +4,23 @@ import { Search } from "lucide-react";
 import DropdownCategories from '../../../components/admin-categories/dropdown/categories-dropdown';
 import './manage-incidents.css'
 
+/**
+ * @global
+ * Interfaz que mantiene los datos del modelo de incidente
+ * 
+ * @param {number} incidenteid - ID del incidente.
+ * @param {number} clienteid - ID del cliente.
+ * @param {string} categoriaid - ID de la categoría.
+ * @param {string} nombre - Nombre del incidente.
+ * @param {string} descripcion - Descripción del incidente.
+ * @param {string} fecha - Fecha del incidente
+ * @param {string} hora - Hora del incidente.
+ * @param {number} longitud - Longitud de la ubicación del incidente.
+ * @param {number} latitud - Latitud de la ubicación del incidente.
+ * @param {string} [estatus = 'creado' | 'en revisión' | 'resuelto'] - Estado del incidente.
+ * 
+ * @interface
+ */
 interface Incident {
     incidenteid: number;
     clienteid: number;
@@ -17,6 +34,16 @@ interface Incident {
     estatus: 'creado' | 'en revisión' | 'resuelto';
   }
   
+  /**
+   * @global
+   * Lay-out y manejador de incidentes.
+   * 
+   * @apicall GET - `http://localhost:8080/v1/incident/toolkit`
+   * @apicall PUT - `http://localhost:8080/v1/incident/toolkit`
+   * @apicall DELETE - `http://localhost:8080/v1/incident/toolkit`
+   * 
+   * @returns {JSX.Element} Elemento correspondiente.
+   */
   const ManageIncidents = () => {
     const [incidents, setIncidents] = useState<Incident[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -76,9 +103,14 @@ interface Incident {
       fetchData();
     }, []);
   
-    // Métodos para el backend (sin implementar) IMPLEMENTAR DTO Y SERVICES
-    const fetchIncidentsFromBackend = async (): Promise<Incident[]> => {
-      // Implementación pendiente
+    /**
+     * Busca incidentes.
+     * 
+     * @apicall GET - `http://localhost:8080/v1/incident/toolkit`
+     * 
+     * @returns {Promise<Incident[]>} - Representación de una operación asíncrona completada con éxito con el resultado.
+    */
+   const fetchIncidentsFromBackend = async (): Promise<Incident[]> => {
       const token = sessionStorage.getItem("token");
       const response = await fetch("http://localhost:8080/v1/incident/toolkit", {
       method: "GET",
@@ -97,7 +129,17 @@ interface Incident {
 
     // return [];
     };
-  
+    
+    /**
+     * Actualiza incidentes.
+     * 
+     * @apicall PUT - `http://localhost:8080/v1/incident/toolkit`
+     * 
+     * @param {number} incidentid - ID del incidente.
+     * @param {['creado' | 'en revisión' | 'resuelto']} newStatus - Nuevo estado del incidente.
+     * 
+     * @returns {Promise<boolean>} - Representación de una operación asíncrona completada con éxito con el resultado.
+     */
     const updateIncidentStatus = async (incidentId: number, newStatus: 'creado' | 'en revisión' | 'resuelto'): Promise<boolean> => {
       try {
         const token = sessionStorage.getItem("token");
@@ -113,10 +155,8 @@ interface Incident {
           longitud: -99.1332,
           latitud: 19.4326,
           estatus: newStatus
-
-
         }
-
+        
         const response = await fetch("http://localhost:8080/v1/incident/toolkit", {
           method: "PUT",
           headers: {
@@ -140,6 +180,15 @@ interface Incident {
       return true;
     };
   
+    /**
+     * Borra incidentes.
+     * 
+     * @apicall DELETE - `http://localhost:8080/v1/incident/toolkit`
+     * 
+     * @param {number} incidentid - ID del incidente
+     * 
+     * @returns {Promise<boolean>} - Representación de una operación asíncrona completada con éxito con el resultado.
+     */
     const deleteIncident = async (incidentId: number): Promise<boolean> => {
       try {
         const token = sessionStorage.getItem("token");
@@ -167,7 +216,11 @@ interface Incident {
       return true;
     };
   
-    // Filtrado y ordenación
+    /**
+     * Filtrado y ordenado de incidentes.
+     * 
+     * @returns {Incidents[]} - Lista de incidentes filtrada y ordenada.
+     */
     const filteredIncidents = incidents.filter(incident => {
       const searchLower = searchTerm.toLowerCase();
       return (
@@ -180,6 +233,11 @@ interface Incident {
       );
     });
   
+    /**
+     * Ordenado de incidentes.
+     * 
+     * @returns {Incidents[]} - Lista de incidentes ordenada.
+     */
     const sortedIncidents = React.useMemo(() => {
       if (!sortConfig) return filteredIncidents;
       
@@ -194,6 +252,11 @@ interface Incident {
       });
     }, [filteredIncidents, sortConfig]);
   
+    /**
+     * Solicitar ordenado.
+     * 
+     * @param key - Llave del incidente,
+     */
     const requestSort = (key: keyof Incident) => {
       let direction: 'ascending' | 'descending' = 'ascending';
       if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -202,7 +265,14 @@ interface Incident {
       setSortConfig({ key, direction });
     };
   
-    // Paginación
+    /**
+     * Númerado de páginas. Evita recálculos innecesarios.
+     * 
+     * @param {number} totalPages - Número total de página.
+     * @param {number} paginatedIncidents - Incidentes páginados.
+     * 
+     * @returns {{total, paginated}}
+     */
     const { totalPages, paginatedIncidents } = React.useMemo(() => {
       const total = Math.ceil(sortedIncidents.length / itemsPerPage);
       const paginated = sortedIncidents.slice(
@@ -212,21 +282,40 @@ interface Incident {
       return { totalPages: total, paginatedIncidents: paginated };
     }, [sortedIncidents, currentPage, itemsPerPage]);
   
+    /**
+     * Manejador de items por cambio de página.
+     * 
+     * @param {React.ChangeEvent<HTMLSelectElement>} e - Evento de cambio.
+     * 
+     * @eventProperty
+     */
     const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       const newValue = Number(e.target.value);
       setItemsPerPage(newValue);
       setCurrentPage(1);
     };
   
+    /**
+     * Ir a `n` página.
+     * 
+     * @param {number} page - Número de página.
+     */
     const goToPage = (page: number) => {
       setCurrentPage(Math.max(1, Math.min(page, totalPages)));
     };
   
-    // Manejo de dropdowns
+    /**
+     * Manejo de dropdowns.
+     * 
+     * @param {number} incidentId - ID del incidente.
+     */
     const toggleMoreDropdown = (incidentId: number) => {
       setMoreDropdownOpen(moreDropdownOpen === incidentId ? null : incidentId);
     };
   
+    /**
+     * Cerrar dropdowns.
+     */
     const closeDropdowns = () => {
       setMoreDropdownOpen(null);
     };
@@ -429,4 +518,11 @@ interface Incident {
   );
 };
 
+/**
+ * @module manage-incidents
+ * 
+ * Lay-out para manejo de incidentes.
+ * 
+ * @remarks Lay-out para pantalla especial para el manejo de incidentes.
+ */
 export default ManageIncidents;

@@ -1,11 +1,20 @@
 import Swal from "sweetalert2";
 import './swal-message.css';
 
+/**
+ * @global
+ * Estilo mensajes. 
+ */
 export function useSwalMessages() {
   const toastStyles = {
     marginTop: '70px', 
   };
 
+  /**
+   * Mensaje de éxito.
+   * 
+   * @param {string} message - Mensaje a mostrar. 
+   */
   const successMessage = (message:string) => {
     Swal.fire({
       position: 'top-end',
@@ -19,6 +28,11 @@ export function useSwalMessages() {
     });
   };
 
+  /**
+   * Mensaje de error.
+   * 
+   * @param {string} message - Mensaje a mostrar. 
+   */
   const errorMessage = (message:string) => {
     Swal.fire({
       position: 'top-end',
@@ -32,6 +46,9 @@ export function useSwalMessages() {
     });
   };
 
+  /**
+   * Mensaje de confrmación.
+   */
   const confirmMessage = Swal.mixin({
     icon: 'warning',
     showCancelButton: true,
