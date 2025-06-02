@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Modal, Button, Form, Carousel, Spinner } from 'react-bootstrap';
 import { XCircle, GeoAlt, Upload } from 'react-bootstrap-icons';
+import './report-incidents.css'
 
 interface ReportIncidentModalProps {
   show: boolean;
@@ -143,14 +144,13 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
   };
 
   return (
-    <Modal className="custom-modal" show={show} onHide={handleClose} size="lg" centered style={{ zIndex: 900000 }}>
-      <Modal.Header closeButton>
-        <Modal.Title>
-          {step === 'category' ? 'Selecciona una categoría' : 'Detalles del incidente'}
-        </Modal.Title>
-      </Modal.Header>
+    <Modal className="custom-modal-r" show={show} onHide={handleClose} size="lg" centered style={{ zIndex: 900000 }}>
+      <Modal.Header closeButton> </Modal.Header>
       
       <Modal.Body>
+        <h2 className="select-category-title">
+          {step === 'category' ? 'Selecciona una categoría' : 'Detalles del incidente'}
+        </h2>
         {/* Paso 1: Selección de categoría */}
         {step === 'category' && (
           <div className="category-selection">
@@ -286,14 +286,14 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
       
       <Modal.Footer>
         {step === 'details' && (
-          <Button variant="secondary" onClick={() => setStep('category')}>
+          <Button className='btn-back' onClick={() => setStep('category')}>
             Volver
           </Button>
         )}
         
         {step === 'category' ? (
           <Button 
-            variant="primary" 
+            className="btn-send-status" 
             disabled={!selectedCategory}
             onClick={() => setStep('details')}
           >
@@ -301,7 +301,7 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
           </Button>
         ) : (
           <Button 
-            variant="primary" 
+            className="btn-send-status" 
             onClick={handleSubmit}
             disabled={!latitud || !longitud} // Deshabilitar si no hay ubicación
           >

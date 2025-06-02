@@ -80,7 +80,12 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
       </div>
 
       <ChangeStatus show={showStatusModal} onHide={() => setShowStatusModal(false)}/>
-      <CommentSection show={showCommentSectionModal} onHide={() => setShowCommentSectionModal(false)}/>
+      <CommentSection 
+        show={showCommentSectionModal} 
+        onHide={() => setShowCommentSectionModal(false)}
+        incidenteID={incident.incidenteID}  // Pasa el ID del incidente actual
+        currentUserID={1}  // Pasa el ID del usuario actual
+      />
     </Popup>
   );
 };

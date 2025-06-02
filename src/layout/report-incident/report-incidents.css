@@ -1,0 +1,40 @@
+.custom-modal-r {
+    
+}
+
+.custom-modal-r .modal-header {
+  border-bottom: none !important; 
+  z-index: 2500;
+  border: transparent !important;
+}
+
+.custom-modal-r .modal-footer {
+    border-top: none !important;
+}
+
+.select-category-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.btn-back {
+    background-color: #030436 !important;
+    color: white !important;
+    border-radius: 20px !important;
+    font-weight: bold !important;
+    border-color: #030436 !important;
+    font-size: 0.9rem;
+    padding: 4px 6px;
+    margin-top: 0 !important;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    transform: scale(1.04);
+}
+
+.incident-details {
+    font-size: 0.9rem !important;
+}
+

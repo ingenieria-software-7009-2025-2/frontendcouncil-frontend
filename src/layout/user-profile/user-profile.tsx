@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Card, Button, Row, Col, Container } from 'react-bootstrap';
-import { ExclamationTriangle } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import ModalDeleteAccount from './delete-account/delete-account';
 import { ChangePasswordModal } from './change-password/change-password';
+import UserIncidents from './user-incidents/user-incidents';
 import './user-profile.css';
 
 type UserProfile = {
@@ -38,12 +38,10 @@ const UserProfilePage = () => {
 
   const handleEdit = () => {
     navigate('/edit-profile');
-    //setTempUser({ ...user });
   };
 
   const handleSave = async () => {
     const token = sessionStorage.getItem("token");
-    console.log(token);
     if (!token) {
       console.error("No hay token disponible");
       return;
@@ -58,13 +56,12 @@ const UserProfilePage = () => {
         },
         body: JSON.stringify(tempUser),
       });
-    console.log(tempUser)
+
       if (!response.ok) {
         throw new Error("Error al actualizar el usuario");
       }
 
       const updatedUser = await response.json();
-      
       setUser(updatedUser);
       sessionStorage.setItem("correo", updatedUser.correo);
       sessionStorage.setItem("nombre", updatedUser.nombre);
@@ -104,13 +101,12 @@ const UserProfilePage = () => {
     <Container fluid className="user-profile-container">
       <Card className="profile-card">
         <Card.Body>
-        <div className="logo-picture">
-          <img src={logo} alt="Logo" onError={(e) => { e.currentTarget.src = '/default-logo.png';}}
-        />
-        </div>
+          <div className="logo-picture">
+            <img src={logo} alt="Logo" onError={(e) => { e.currentTarget.src = '/default-logo.png';}} />
+          </div>
           <Row>
             <Col md={3}>
-              <div className="user-name-text  text-start"> 
+              <div className="user-name-text text-start"> 
                 <h4 className="mb-0 fw-bold name-text">
                   {`${user.firstName} ${user.lastName} ${user.motherLastName}`}
                 </h4>
@@ -125,91 +121,52 @@ const UserProfilePage = () => {
                 </div>
               </div>
 
-              <div className="profile-info  py-2">
+              <div className="profile-info py-2">
                 <div className="d-flex align-items-center mb-2 py-2">
-                    <Button 
-                        variant="link" 
-                        className="text-start p-0 text-decoration-none text-body"
-                        onClick={handleEdit}>
-                        <div className="d-flex align-items">
-                          <span>Editar perfil</span>
-                        </div>
-                      </Button>
+                  <Button 
+                    variant="link" 
+                    className="text-start p-0 text-decoration-none text-body"
+                    onClick={handleEdit}>
+                    <div className="d-flex align-items">
+                      <span>Editar perfil</span>
                     </div>
-                    <div className="d-flex align-items-center mb-2 py-2">
-                      <Button 
-                        variant="link" 
-                        className="text-start p-0 text-decoration-none text-body"
-                        onClick={handleChangePassword}>
-                        <div className="d-flex align-items">
-                          <span>Cambiar contraseña</span>
-                        </div>
-                      </Button>
+                  </Button>
+                </div>
+                <div className="d-flex align-items-center mb-2 py-2">
+                  <Button 
+                    variant="link" 
+                    className="text-start p-0 text-decoration-none text-body"
+                    onClick={handleChangePassword}>
+                    <div className="d-flex align-items">
+                      <span>Cambiar contraseña</span>
                     </div>
-                    <div className="d-flex align-items-center mb-2 py-2">
-                      <Button 
-                        variant="link" 
-                        className="text-start p-0 text-decoration-none text-body"
-                        onClick={() => navigate('/join-team')}>
-                        <div className="d-flex align-items">
-                          <span>Unete a nuestro equipo</span>
-                        </div>
-                      </Button>
+                  </Button>
+                </div>
+                <div className="d-flex align-items-center mb-2 py-2">
+                  <Button 
+                    variant="link" 
+                    className="text-start p-0 text-decoration-none text-body"
+                    onClick={() => navigate('/join-team')}>
+                    <div className="d-flex align-items">
+                      <span>Unete a nuestro equipo</span>
                     </div>
-                    <div className="d-flex align-items-center mb-2 py-2">
-                      <Button 
-                        variant="link" 
-                        className="text-start p-0 text-decoration-none text-danger"
-                        onClick={handleDeleteAccount}>
-                        <div className="d-flex align-items-center">
-                          <span>Eliminar cuenta</span>
-                        </div>
-                      </Button>
+                  </Button>
+                </div>
+                <div className="d-flex align-items-center mb-2 py-2">
+                  <Button 
+                    variant="link" 
+                    className="text-start p-0 text-decoration-none text-danger"
+                    onClick={handleDeleteAccount}>
+                    <div className="d-flex align-items-center">
+                      <span>Eliminar cuenta</span>
                     </div>
-                  </div>
+                  </Button>
+                </div>
+              </div>
             </Col>
             <Col md={1}></Col>
             <Col md={8}>
-              <div className="incidents-section">
-                <h5 className="d-flex align-items-center mb-4 report-title">
-                  <ExclamationTriangle className="me-2 field-icon" /> 
-                  Tus Reportes
-                </h5>
-                <Row className="mb-4 text-center"></Row>
-                {/* Sección de estadísticas */}
-                <div className="stats-wrapper">
-                  <Row className="mb-4 text-center">
-                    <Col md={4}>
-                      <div className="incident-stat-card">
-                        <h3 className="stat-number">0</h3>
-                        <p className="stat-label">Reportados</p>
-                      </div>
-                    </Col>
-                    <Col md={4}>
-                      <div className="incident-stat-card">
-                        <h3 className="stat-number">0</h3>
-                        <p className="stat-label">En revisión</p>
-                      </div>
-                    </Col>
-                    <Col md={4}>
-                      <div className="incident-stat-card">
-                        <h3 className="stat-number">0</h3>
-                        <p className="stat-label">Resueltos</p>
-                      </div>
-                    </Col>
-                  </Row>
-                </div>
-                <Row className="mb-4 text-center"></Row>
-                
-                {/* Sección de lista de incidentes con scroll */}
-                <div className="incidents-list-scroll">
-                  <div className="incidents-list-container">
-                    <div className="no-incidents">
-                      No tienes incidentes reportados
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <UserIncidents userId={1745895906927} /> {/* Agregar a que funcione por obtener el id del usuario*/}
             </Col>
           </Row>
         </Card.Body>
@@ -218,7 +175,8 @@ const UserProfilePage = () => {
       {/* Modal de eliminación de cuenta */}
       <ModalDeleteAccount 
         mostrar={showDeleteModal}
-        onCancelar={handleCloseDeleteModal}/>
+        onCancelar={handleCloseDeleteModal}
+        onConfirmar={() => {}}/>
 
       <ChangePasswordModal 
         show={showChangePasswordModal}

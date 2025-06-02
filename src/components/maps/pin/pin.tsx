@@ -6,7 +6,7 @@ import './pin.css';
 export class IncidentPin {
   private static colorMap: Record<IncidentStatus, string> = {
     reportado: '#FF4D4D',     
-    revision: '#FFAC4D', 
+    'en revisión': '#FFAC4D', 
     resuelto: '#8DE266'      
   };
 

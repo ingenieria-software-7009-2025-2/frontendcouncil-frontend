@@ -5,12 +5,15 @@ import ReportIncidentModal from '../../layout/report-incident/report-incident';
 import 'leaflet/dist/leaflet.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './map.css';
+import { Navbar, Container } from 'react-bootstrap';
+import Filter from '../filter/filter';
 import { IncidentService } from '../../services/incident.service';
 import { IncidentDTO } from '../../models/dto-incident';
 import { IncidentPopup } from './incident-popup/incident-popup';
 import { IncidentPin } from './pin/pin';
 import SelectLocationPin from '../figures/select-location-pin/select-location-pin';
 import SISREP_ICON from '../../assets/SISREP_ICON.svg'
+import SearchBar from '../searchbar/searchbar';
 
 const SetInitialView = ({ center, zoom }: { center: LatLngLiteral; zoom: number }) => {
   const map = useMap();
@@ -24,11 +27,46 @@ const SetInitialView = ({ center, zoom }: { center: LatLngLiteral; zoom: number 
   return null;
 };
 
+type Filters = {
+  reportado: boolean;
+  revision: boolean;
+  resuelto: boolean;
+  [key: string]: boolean; // para categorías
+};
+
 const MapComponent: React.FC = () => {
   const [showIncidentModal, setShowIncidentModal] = useState(false);
   const [incidents, setIncidents] = useState<IncidentDTO[]>([]);
+
+  const [filters, setFilters] = useState<Filters>({
+    reportado: true,
+    revision: true,
+    resuelto: true,
+  });
+
+  // Función para manejar cambios en los filtros
+  const handleFilterChange = (newFilters: Filters) => {
+    setFilters(newFilters);
+  };
+
+  // Filtrar incidentes basados en los estados activos
+  const filteredIncidents = incidents.filter((incident) => {
+    // Mapea los estados de los incidentes a los nombres de los filtros
+    const estadoMap: Record<string, keyof Filters> = {
+      'Reportado': 'reportado',
+      'En revisión': 'revision',
+      'Resuelto': 'resuelto'
+    };
+    
+    const filterKey = estadoMap[incident.estado];
+    return filterKey ? filters[filterKey] : true;
+  });
+
   const [selectedIncident, setSelectedIncident] = useState<IncidentDTO | null>(null);
   const [mapReady, setMapReady] = useState(false);
+
+  const [searchLocation, setSearchLocation] = useState<LatLngLiteral | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
 
   const [dragMode, setDragMode] = useState(false);
   const [dragMarkerPosition, setDragMarkerPosition] = useState<LatLngLiteral | null>(null);
@@ -42,8 +80,7 @@ const MapComponent: React.FC = () => {
   useEffect(() => {
     const loadIncidents = async () => {
       const data = await IncidentService.fetchIncidents();
-      setIncidents(data);
-    };
+      setIncidents(data); };
     loadIncidents();
   }, []);
 
@@ -86,8 +123,40 @@ const MapComponent: React.FC = () => {
     return null;
   };
 
+  // Función para manejar la selección de ubicación desde SearchBar
+  const handleLocationSelect = (location: LatLngLiteral) => {
+    setSearchLocation(location);
+    if (mapRef.current) {
+      mapRef.current.flyTo(location, 18, {
+        animate: true,
+        duration: 1
+      });
+    }
+  };
+
+  const MapRefHandler = () => {
+    const map = useMap();
+    useEffect(() => {
+      mapRef.current = map;
+      return () => {
+        mapRef.current = null;
+      };
+    }, [map]);
+    return null;
+  };
+
   return (
     <div className="map-container">
+      <Navbar collapseOnSelect expand="lg" variant="dark" className="navbar-custom" style={{ zIndex: 900000 }}>
+        <Container>
+          <div className="search-container" style={{ zIndex: 900000 }}>
+            <div className="menuH">
+              <Filter onFilterChange={handleFilterChange} />
+            </div>
+            <SearchBar onLocationSelect={handleLocationSelect}/>
+          </div>
+        </Container>
+      </Navbar>
       <MapContainer
         center={initialCenter}
         zoom={initialZoom}
@@ -97,7 +166,10 @@ const MapComponent: React.FC = () => {
         doubleClickZoom={false}
         zoomSnap={0.5}
         whenReady={() => setMapReady(true)}
+        ref={mapRef} 
       >
+        <MapRefHandler />
+
         {mapReady && <SetInitialView center={initialCenter} zoom={initialZoom} />}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -162,6 +234,9 @@ const MapComponent: React.FC = () => {
           mapLocation={selectedLocation || undefined}
           isMapSelected={!!selectedLocation} // true si hay ubicación seleccionada
         />
+
+
+        
       </MapContainer>
     </div>
   );

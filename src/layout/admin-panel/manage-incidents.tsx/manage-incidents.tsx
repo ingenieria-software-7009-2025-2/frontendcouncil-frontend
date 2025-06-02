@@ -27,45 +27,11 @@ interface Incident {
     const [sortConfig, setSortConfig] = useState<{ key: keyof Incident; direction: 'ascending' | 'descending' } | null>(null);
     const [moreDropdownOpen, setMoreDropdownOpen] = useState<number | null>(null);
   
-    // Simulación de datos temporales
     useEffect(() => {
       const fetchData = async () => {
         try {
-          // Simulando retraso de red
-          //await new Promise(resolve => setTimeout(resolve, 500));
           const fetchedIncidents = await fetchIncidentsFromBackend();
           setIncidents(fetchedIncidents);
-          // Datos temporales de ejemplo
-          /*
-          const tempIncidents: Incident[] = [
-            {
-              incidenteid: 56478,
-              clienteid: 24323,
-              categoriaid: 'Infraestructura',
-              nombre: 'trivial',
-              descripcion: 'Bache en la calle principal',
-              fecha: '2023-05-15',
-              hora: '14:30',
-              longitud: -99.1332,
-              latitud: 19.4326,
-              estado: 'Creado'
-            },
-            {
-              incidenteid: 2,
-              clienteid: 24323,
-              nombre: 'trivial',
-              categoriaid: 'Seguridad',
-              descripcion: 'Alumbrado público dañado',
-              fecha: '2023-05-16',
-              hora: '20:15',
-              longitud: -99.1345,
-              latitud: 19.4312,
-              estado: 'En revisión'
-            },
-          ];
-          */
-
-          //setIncidents(tempIncidents);
           setLoading(false);
         } catch (err) {
           setError('Error de conexión con la BD');

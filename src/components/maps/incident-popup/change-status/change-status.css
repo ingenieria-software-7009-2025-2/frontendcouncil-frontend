@@ -1,15 +1,64 @@
-/* ESTILOS DE LOS RADIO BUTTONS */
- .form-check-input:checked {
-    background-color: #030436;
-    border-color: #030436;
+  .custoom-modal .modal-header {
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
   }
-  
-  /* Estilo para el label cuando está seleccionado */
-  .form-check-input:checked + .form-check-label {
-    color: #030436;
+
+  .custoom-modal .modal-footer {
+    border-top: none !important;
+    padding-top: 0 !important;
   }
-  
-  /* Espaciado entre opciones */
-  .form-check {
-    padding-bottom: 0.2rem;
+
+  .change-status-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+  }
+
+  /* ESTILOS DE LOS BOTONES PARA SLECCIÓN DE NUEVO ESTADO */
+  .select-status {
+    font-size: 0.9rem;
+  }
+
+  .status-button {
+    border-radius: 10px !important;
+    border-color: #00A5C2;
+    color:#00A5C2 !important;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .btn-custom-selected {
+    background-color: #00A5C2 !important;
+    border-color: #00A5C2;
+    color: white !important;
+  }
+
+  .btn-custom-unselected {
+    background-color: transparent;
+    border-color: #00A5C2;
+    color: #00A5C2;
+  }
+
+  .btn-custom-selected:hover,
+  .btn-custom-unselected:hover {
+    background-color: #00A5C2 !important;
+    border-color: #00A5C2;
+    color: white !important;
+  }
+
+  /* BOTÓN ENVIAR SOLICUTUD Y CANCELAR */
+  .btn-send-status {
+    background-color: #030436 !important;
+    color: white !important;
+    border-radius: 20px !important;
+    font-weight: bold !important;
+    border-color: #030436 !important;
+    font-size: 0.9rem;
+    padding: 4px 6px;
+    margin-top: 0 !important;
+    transition: all 0.3s ease;
+  }
+
+  .btn-send-status:hover {
+    transform: scale(1.04);
   }
