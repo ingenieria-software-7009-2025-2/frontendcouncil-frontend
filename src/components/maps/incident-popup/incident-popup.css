@@ -137,4 +137,8 @@
     text-decoration: underline; 
     text-underline-offset: 3px; 
   }
-  
+
+  .category-link.disabled {
+    cursor: not-allowed;
+    pointer-events: none; 
+  }

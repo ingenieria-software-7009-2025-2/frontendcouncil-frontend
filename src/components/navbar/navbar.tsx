@@ -119,14 +119,18 @@ const NavbarComponent = () => {
           )}   
       </Navbar>
       )}
-      {/* Mostrar el modal solo si `showModal` es true */}
+      <ModalLoginRegister 
+        show={showModal} 
+        onClose={() => setShowModal(false)} 
+      />
+      {/* Mostrar el modal solo si `showModal` es true 
       {showModal && (
         <div className="modal-overlay" onClick={() => handleCloseModal()}>
           <div className="modal-wrapper" onClick={(e) => e.stopPropagation()}>
             <ModalLoginRegister onClose={(loggedIn = false) => handleCloseModal(loggedIn)} />
           </div>
         </div>
-      )}
+      )}*/}
     </>
   );
 };

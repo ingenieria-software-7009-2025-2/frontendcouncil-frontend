@@ -78,5 +78,44 @@
 
 
   .question {
-    font-size: 12px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .text-warning {
+    margin-bottom: 10px !important;
+  }
+
+  .text-muted {
+    font-size: 0.9rem;
+    margin-top: 10px;
+  }
+
+  .cancel-button {
+    border-radius: 20px !important;
+    border-color: crimson;
+    background-color: transparent;
+    color:crimson;
+  }
+
+  .cancel-button:hover {
+    border-radius: 20px !important;
+    border-color: crimson;
+    background-color: transparent;
+    color:crimson;
+    transform: scale(1.04);
+  }
+
+  .delete-button {
+    border-radius: 20px !important;
+    border-color: crimson;
+    background-color: crimson;
+    color:rgb(255, 255, 255);
+  }
+
+  .delete-button:hover {
+    border-radius: 20px !important;
+    border-color: crimson;
+    background-color: crimson;
+    color:rgb(255, 255, 255);
+    transform: scale(1.02);
   }

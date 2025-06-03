@@ -7,6 +7,7 @@ import { CategoryDTO } from '../../models/dto-category';
 
 interface FilterProps {
   onFilterChange: (filters: Filters) => void;
+  onCategoryChange: (categories: Record<number, boolean>) => void;
 }
 
 type Filters = {
@@ -15,7 +16,7 @@ type Filters = {
   resuelto: boolean;
 };
 
-const Filter = ({ onFilterChange }: FilterProps) => {
+const Filter = ({ onFilterChange, onCategoryChange }: FilterProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [filters, setFilters] = useState<Filters>({
     reportado: true,  
@@ -49,8 +50,9 @@ const Filter = ({ onFilterChange }: FilterProps) => {
   };
 
   const handleCategoryToggle = (categoryId: number) => (isOn: boolean) => {
-    setCategoryStates(prev => ({ ...prev, [categoryId]: isOn }));
-    // Lógica de filtrado para categorías aquí
+    const newCategoryStates = { ...categoryStates, [categoryId]: isOn };
+    setCategoryStates(newCategoryStates);
+    onCategoryChange(newCategoryStates); 
   };
 
   return (

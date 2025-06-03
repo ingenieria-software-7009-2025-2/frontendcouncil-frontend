@@ -18,6 +18,7 @@ import SearchBar from '../searchbar/searchbar';
 const SetInitialView = ({ center, zoom }: { center: LatLngLiteral; zoom: number }) => {
   const map = useMap();
   const initializedRef = useRef(false);
+  
   useEffect(() => {
     if (!initializedRef.current) {
       map.setView(center, zoom, { animate: true, duration: 1 });
@@ -27,40 +28,17 @@ const SetInitialView = ({ center, zoom }: { center: LatLngLiteral; zoom: number 
   return null;
 };
 
-type Filters = {
+type IncidentFilters = {
   reportado: boolean;
   revision: boolean;
   resuelto: boolean;
-  [key: string]: boolean; // para categorías
+  categories: Record<number, boolean>;
 };
 
 const MapComponent: React.FC = () => {
   const [showIncidentModal, setShowIncidentModal] = useState(false);
   const [incidents, setIncidents] = useState<IncidentDTO[]>([]);
-
-  const [filters, setFilters] = useState<Filters>({
-    reportado: true,
-    revision: true,
-    resuelto: true,
-  });
-
-  // Función para manejar cambios en los filtros
-  const handleFilterChange = (newFilters: Filters) => {
-    setFilters(newFilters);
-  };
-
-  // Filtrar incidentes basados en los estados activos
-  const filteredIncidents = incidents.filter((incident) => {
-    // Mapea los estados de los incidentes a los nombres de los filtros
-    const estadoMap: Record<string, keyof Filters> = {
-      'Reportado': 'reportado',
-      'En revisión': 'revision',
-      'Resuelto': 'resuelto'
-    };
-    
-    const filterKey = estadoMap[incident.estado];
-    return filterKey ? filters[filterKey] : true;
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [selectedIncident, setSelectedIncident] = useState<IncidentDTO | null>(null);
   const [mapReady, setMapReady] = useState(false);
@@ -77,7 +55,16 @@ const MapComponent: React.FC = () => {
   const initialZoom = 18;
   const maxZoom = 22;
 
+  const [filters, setFilters] = useState<IncidentFilters>({
+    reportado: true,
+    revision: true,
+    resuelto: true,
+    categories: {}
+  });
+
   useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    setIsAuthenticated(!!token); 
     const loadIncidents = async () => {
       const data = await IncidentService.fetchIncidents();
       setIncidents(data); };
@@ -145,13 +132,45 @@ const MapComponent: React.FC = () => {
     return null;
   };
 
+  // Función para manejar cambios en los filtros
+  const handleFilterChange = (statusFilters: Filters) => {
+    setFilters(prev => ({
+      ...prev,
+      ...statusFilters
+    }));
+  };
+
+  // Función para manejar cambios en categorías
+  const handleCategoryChange = (categoryStates: Record<number, boolean>) => {
+    setFilters(prev => ({
+      ...prev,
+      categories: categoryStates
+    }));
+  };
+
+  // Filtrar incidentes basado en los filtros actuales
+  const filteredIncidents = incidents.filter(incident => {
+    // Filtrar por estado
+    const statusMatch = 
+      (incident.estado === 'reportado' && filters.reportado) ||
+      (incident.estado === 'en revisión' && filters.revision) ||
+      (incident.estado === 'resuelto' && filters.resuelto);
+    
+    // Filtrar por categoría
+    const categoryMatch = 
+      Object.keys(filters.categories).length === 0 || // Si no hay categorías seleccionadas
+      (incident.categoriaID && filters.categories[incident.categoriaID]);
+    
+    return statusMatch && categoryMatch;
+  });
+
   return (
     <div className="map-container">
       <Navbar collapseOnSelect expand="lg" variant="dark" className="navbar-custom" style={{ zIndex: 900000 }}>
         <Container>
           <div className="search-container" style={{ zIndex: 900000 }}>
             <div className="menuH">
-              <Filter onFilterChange={handleFilterChange} />
+              <Filter onFilterChange={handleFilterChange} onCategoryChange={() => {}} />
             </div>
             <SearchBar onLocationSelect={handleLocationSelect}/>
           </div>
@@ -168,6 +187,7 @@ const MapComponent: React.FC = () => {
         whenReady={() => setMapReady(true)}
         ref={mapRef} 
       >
+        
         <MapRefHandler />
 
         {mapReady && <SetInitialView center={initialCenter} zoom={initialZoom} />}
@@ -180,19 +200,30 @@ const MapComponent: React.FC = () => {
 
         <ZoomControl position="bottomright" />
 
+        {isAuthenticated ? (
         <div className="incident-button-wrapper" style={{ zIndex: 900000 }}>
           <button
             className="incident-button"
             onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+            onClick={handleMouseUp}
           >
             <SelectLocationPin size={40} />
           </button>
           <span className="incident-tooltip">Agregar incidente</span>
         </div>
-
-        {incidents.map((incident) => (
+        ) : (
+        <div className="incident-button-wrapper" style={{ zIndex: 900000 }}>
+          <button
+            className="incident-button"
+            style={{ cursor: "not-allowed" }}
+          >
+            <SelectLocationPin size={40} />
+          </button>
+          <span className="incident-tooltip">Agregar incidente</span>
+        </div>
+      )}
+        
+        {filteredIncidents.map((incident) => (
           <Marker
             key={incident.incidenteID}
             position={[incident.latitud, incident.longitud]}
@@ -208,8 +239,7 @@ const MapComponent: React.FC = () => {
               />
             )}
           </Marker>
-        ))}
-
+        ))} 
         <MapClickHandler />
 
         {/* Mostrar el pin flotante mientras arrastra */}

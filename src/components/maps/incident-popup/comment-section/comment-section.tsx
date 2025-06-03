@@ -91,8 +91,8 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
         <Modal show={show} onHide={onHide} centered className="custom-modal" size="lg" backdrop="static" style={{ zIndex: 900000 }}>
             <Modal.Header closeButton>
             </Modal.Header>
+            <span className="commments-title mb-2 fw-bold">COMENTARIOS {comments.length > 0 && `(${comments.length})`}</span>
             <Modal.Body className="pt-0" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-                <span className="comments-title mb-2 fw-bold">COMENTARIOS {comments.length > 0 && `(${comments.length})`}</span>
                 {error ? (
                     <div className="alert alert-danger">{error}</div>
                 ) : isLoading && comments.length === 0 ? (

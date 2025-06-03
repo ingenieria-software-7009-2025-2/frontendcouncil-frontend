@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { ExclamationTriangleFill } from 'react-bootstrap-icons';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import './delete-account.css'
 
 interface ModalDeleteAccount {
   mostrar: boolean;
@@ -128,11 +129,10 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
       </Modal.Header>
       <Modal.Body className="text-center">
         <ExclamationTriangleFill className="text-warning" size={48} />
-        <h4 className="mb-3 fw-bold">Eliminar cuenta</h4>
+        <h4 className="change-password-title">ELIMINAR CUENTA</h4>
         <p className="text-muted">
+          <strong>No podrás recuperar tu cuenta después de esto.</strong> <br />
           Esta acción eliminará permanentemente todos tus datos, historial y contenido asociado.
-          <br />
-          <strong>No podrás recuperar tu cuenta después de esto.</strong>
         </p>
         
         <div className="mb-3 position-relative">
@@ -165,10 +165,10 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
           <>
             <h4 className="question mt-3">¿Estás seguro de eliminar tu cuenta?</h4>
             <div className="d-flex justify-content-center gap-3 mt-3">
-              <Button variant="outline-secondary" onClick={onCancelar} className="px-4">
+              <Button className="cancel-button" onClick={onCancelar} >
                 Cancelar
               </Button>
-              <Button variant="danger" onClick={() => eliminarCuenta(password)} className="px-4">
+              <Button className="delete-button" onClick={() => eliminarCuenta(password)} >
                 Sí, eliminar cuenta
               </Button>
             </div>
@@ -177,7 +177,7 @@ const ModalDeleteAccount: React.FC<ModalDeleteAccount> = ({
       </Modal.Body>
       {!isPasswordCorrect && (
         <Modal.Footer className="border-0 justify-content-center">
-          <Button variant="outline-secondary" onClick={onCancelar} className="px-4">
+          <Button className="cancel-button" onClick={onCancelar}>
             Cancelar
           </Button>
         </Modal.Footer>
