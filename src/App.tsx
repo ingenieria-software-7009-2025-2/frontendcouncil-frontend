@@ -44,7 +44,7 @@ function App() {
               }/>
 
               <Route path="/edit-profile" element={
-                <ProtectedRoute isAuth={!!sessionStorage.getItem('token')} userRole={sessionStorage.getItem('rol') || ''} allowedRoles={['1', '2']}>
+                <ProtectedRoute isAuth={!!sessionStorage.getItem('token')} userRole={sessionStorage.getItem('rol') || ''} allowedRoles={['1', '2', '3']}>
                   <EditProfile />
                 </ProtectedRoute>
               } />
@@ -56,13 +56,13 @@ function App() {
               } />
 
               <Route path="/manage-incidents" element={
-                <ProtectedRoute isAuth={!!sessionStorage.getItem('token')} userRole={sessionStorage.getItem('rol') || ''} allowedRoles={['2', '3', '4']}>
+                <ProtectedRoute isAuth={!!sessionStorage.getItem('token')} userRole={sessionStorage.getItem('rol') || ''} allowedRoles={['3', '4']}>
                   <ManageIncidents />
                 </ProtectedRoute>
               } />
 
               <Route path="/manage-users" element={
-                <ProtectedRoute isAuth={!!sessionStorage.getItem('token')} userRole={sessionStorage.getItem('rol') || ''} allowedRoles={['3', '4']}>
+                <ProtectedRoute isAuth={!!sessionStorage.getItem('token')} userRole={sessionStorage.getItem('rol') || ''} allowedRoles={['4']}>
                   <ManageUsers />
                 </ProtectedRoute>
               } />

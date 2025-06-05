@@ -13,7 +13,8 @@ export class IncidentService {
       hora: "09:30",
       latitud: 19.4060,
       longitud: -99.1635,
-      estado: "revision"
+      estado: "en revisión",
+      likes: 0
     },
     {
       incidenteID: 3,
@@ -25,7 +26,8 @@ export class IncidentService {
       hora: "18:20",
       latitud: 19.4068,
       longitud: -99.1630,
-      estado: "resuelto"
+      estado: "resuelto",
+      likes: 0
     }
   ];
 

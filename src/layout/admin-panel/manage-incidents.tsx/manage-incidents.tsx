@@ -26,8 +26,10 @@ interface Incident {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [sortConfig, setSortConfig] = useState<{ key: keyof Incident; direction: 'ascending' | 'descending' } | null>(null);
     const [moreDropdownOpen, setMoreDropdownOpen] = useState<number | null>(null);
+    const [userRole, setUserRole] = useState<string | null>(null);
   
     useEffect(() => {
+      const rol = sessionStorage.getItem("rol");
       const fetchData = async () => {
         try {
           const fetchedIncidents = await fetchIncidentsFromBackend();
@@ -38,7 +40,7 @@ interface Incident {
           setLoading(false);
         }
       };
-  
+      setUserRole(rol);
       fetchData();
     }, []);
   
@@ -79,8 +81,6 @@ interface Incident {
           longitud: -99.1332,
           latitud: 19.4326,
           estatus: newStatus
-
-
         }
 
         const response = await fetch("http://localhost:8080/v1/incident/toolkit", {
@@ -215,7 +215,7 @@ interface Incident {
   return (
     <div className="manage-incidents-container">
       <h2 className="manage-incidents-title">Administración de Incidentes</h2>
-      <DropdownCategories/>
+      {(userRole === '4' ) && ( <DropdownCategories/> )}
       {incidents.length === 0 ? 
       (<div className="no-users">No hay incidentes registrados</div>
       ) : (

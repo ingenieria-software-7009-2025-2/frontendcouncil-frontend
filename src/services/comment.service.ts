@@ -1,4 +1,5 @@
 import { CommentDTO } from "../models/dto-comment";
+import '../shared/backendcouncil-api'
 
 export class CommentService {
     private static mockComments: CommentDTO[] = [

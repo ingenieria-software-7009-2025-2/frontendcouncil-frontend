@@ -25,7 +25,8 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     setIsAuthenticated(!!token); 
-  }, []);
+    setLikes(incident.likes);
+}, [incident]);
 
   useEffect(() => {
     const fetchDireccion = async () => {
@@ -54,10 +55,37 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
     console.log("Nuevo estado:", newStatus, "Evidencia:", evidenceFiles);
   };
 
-  const handleLikeClick = () => {
+  /**const handleLikeClick = () => {
     setLikes((prev) => isLiked ? prev - 1 : prev + 1);
     setIsLiked(!isLiked);
-  };
+  };*/
+
+
+const handleLikeClick = async () => {
+  if (!isAuthenticated) return;
+  setIsLiked(!isLiked); // permite visualizar el cambio de color 
+  try {
+    const endpoint = isLiked ? '/v1/incident/dislike' : '/v1/incident/like';
+    const response = await fetch(`http://localhost:8080${endpoint}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ incidenteid: incident.incidenteID}),
+    });
+    if (response.ok) {
+      const updatedLikes = await response.json();
+      setLikes(updatedLikes);
+      //setIsLiked(!isLiked);
+    } else {
+      console.error("Error al actualizar like");
+    }
+  } catch (error) {
+    console.error("Error en la solicitud de like:", error);
+  }
+};
+
 
   return (
     <Popup className="incident-popup-custom" closeButton={true}>
@@ -108,8 +136,9 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
         show={showCommentSectionModal}
         onHide={() => setShowCommentSectionModal(false)}
         incidenteID={incident.incidenteID}
-        currentUserID={1} // Asegúrate de reemplazarlo dinámicamente si tienes usuario activo
+        currentUserID={1} 
       />
+
     </Popup>
   );
 };

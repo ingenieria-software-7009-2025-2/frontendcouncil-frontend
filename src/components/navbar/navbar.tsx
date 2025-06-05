@@ -50,23 +50,24 @@ const NavbarComponent = () => {
       <Navbar collapseOnSelect expand="lg" variant="dark" className="navbar-custom-map">
         {isAuthenticated ? ( 
           <div className="d-flex align-items-center gap-2">
-          {(userRole === '3' || userRole === '4') && (
             <>
-              <Button
-                variant="outline-warning"
-                className={`manageIncidentsButton ${currentPath === '/manage-incidents' ? 'active' : ''}`}
-                style={{ zIndex: 9999999 }}
-                onClick={() => navigate('/manage-incidents')}>
-                Incidentes
-              </Button>
-              <Button
-                variant="outline-info"
-                className={`manageUsersButton ${currentPath === '/manage-users' ? 'active' : ''}`}
-                onClick={() => navigate('/manage-users')}>
-                Usuarios
-              </Button>
+              {(userRole === '3' ||userRole === '4' ) && (
+                  <Button
+                    variant="outline-warning"
+                    className={`manageIncidentsButton ${currentPath === '/manage-incidents' ? 'active' : ''}`}
+                    style={{ zIndex: 9999999 }}
+                    onClick={() => navigate('/manage-incidents')}>
+                    Incidentes
+                  </Button>)}
+                {(userRole === '4' ) && (
+                  <Button
+                    variant="outline-info"
+                    className={`manageUsersButton ${currentPath === '/manage-users' ? 'active' : ''}`}
+                    onClick={() => navigate('/manage-users')}>
+                    Usuarios
+                  </Button>
+                  )}
             </>
-          )}
           <div className="userMenu">
             <UserDropdown onLogout={handleLogout} />
           </div>
@@ -95,23 +96,24 @@ const NavbarComponent = () => {
                   Ir al mapa
                 </Button>
               )}
-              {(userRole === '3' ||userRole === '4' ) && (
                 <>
+                {(userRole === '3' ||userRole === '4' ) && (
                   <Button
                     variant="outline-warning"
                     className={`manageIncidentsButton ${currentPath === '/manage-incidents' ? 'active' : ''}`}
                     style={{ zIndex: 9999999 }}
                     onClick={() => navigate('/manage-incidents')}>
                     Incidentes
-                  </Button>
+                  </Button>)}
+                {(userRole === '4' ) && (
                   <Button
                     variant="outline-info"
                     className={`manageUsersButton ${currentPath === '/manage-users' ? 'active' : ''}`}
                     onClick={() => navigate('/manage-users')}>
                     Usuarios
                   </Button>
+                  )}
                 </>
-              )}
               <div className="userMenu">
                 <UserDropdown onLogout={handleLogout} />
               </div>

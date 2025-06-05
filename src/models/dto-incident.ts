@@ -11,4 +11,5 @@ export interface IncidentDTO {
   longitud: number;
   latitud: number;
   estado: IncidentStatus;
+  likes: number;
 }
