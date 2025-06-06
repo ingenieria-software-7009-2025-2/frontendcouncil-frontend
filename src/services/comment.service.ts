@@ -3,25 +3,48 @@ import { CommentDTO } from "../models/dto-comment";
 export class CommentService {
   private apiBaseUrl = 'http://localhost:8080';
 
-  // Método para obtener todos los comentarios y filtrarlos por incidenteid
+  // Método para obtener comentarios por incidenteid
   public async getCommentsByIncidentId(incidenteid: number): Promise<CommentDTO[]> {
     try {
-        const response = await fetch(`${this.apiBaseUrl}/v1/comment/all`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const allComments: CommentDTO[] = await response.json();
+      const response = await fetch(`${this.apiBaseUrl}/v1/comment/incident`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          incidenteid: incidenteid
+        }),
+      });
 
-        // Verificación exhaustiva
-        console.log("Todos los comentarios recibidos:", allComments);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-        // Retornar todos los comentarios sin filtro
-        return allComments;
+      const comments: CommentDTO[] = await response.json();
+      return comments;
     } catch (error) {
-        console.error('Error fetching comments:', error);
-        throw error;
+      console.error('Error fetching comments by incident ID:', error);
+      throw error;
     }
-}
+  }
+
+  // Método para obtener todos los comentarios y filtrarlos por incidenteid
+  public async getAllComments(): Promise<CommentDTO[]> {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/v1/comment/all`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const allComments: CommentDTO[] = await response.json();
+      return allComments;
+    } catch (error) {
+      console.error('Error fetching all comments:', error);
+      throw error;
+    }
+  }
+
+
+
 
 
   // Método para crear un nuevo comentario
@@ -54,46 +77,4 @@ export class CommentService {
     }
   }
 
-  // Método para dar like a un comentario
-  public async likeComment(comentarioid: number): Promise<number> {
-    try {
-        const response = await fetch(`${this.apiBaseUrl}/v1/comment/like`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ comentarioid: comentarioid }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        return await response.json(); // Devuelve el nuevo conteo de likes
-    } catch (error) {
-        console.error('Error liking comment:', error);
-        throw error;
-    }
-}
-
-public async dislikeComment(comentarioid: number): Promise<number> {
-    try {
-        const response = await fetch(`${this.apiBaseUrl}/v1/comment/dislike`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ comentarioid: comentarioid }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        return await response.json(); // Devuelve el nuevo conteo de likes
-    } catch (error) {
-        console.error('Error disliking comment:', error);
-        throw error;
-    }
-}
 }

@@ -1,13 +1,42 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Modal, Button, Form, Carousel, Spinner } from 'react-bootstrap';
 import { XCircle, GeoAlt, Upload } from 'react-bootstrap-icons';
-import './report-incidents.css'
+import './report-incidents.css';
+
+class PhotoService {
+  private baseUrl: string = 'http://localhost:8080/v1/photos';
+
+  async uploadPhotos(incidentId: string, files: File[]): Promise<void> {
+    const token = sessionStorage.getItem("token");
+    
+    await Promise.all(files.map(async (file) => {
+      const arrayBuffer = await file.arrayBuffer();
+      const photoBody = {
+        fotoid: Array.from(new Uint8Array(arrayBuffer)),
+        incidenteid: incidentId
+      };
+
+      const response = await fetch(this.baseUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(photoBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error al subir foto: ${response.status}`);
+      }
+    }));
+  }
+}
 
 interface ReportIncidentModalProps {
   show: boolean;
   onHide: () => void;
-  mapLocation?: { lat: number; lng: number }; // Nuevo prop para ubicación desde mapa
-  isMapSelected?: boolean; // Indica si la ubicación viene del mapa
+  mapLocation?: { lat: number; lng: number };
+  isMapSelected?: boolean;
 }
 
 const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({ 
@@ -16,7 +45,6 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
   mapLocation, 
   isMapSelected = false 
 }) => {
-  // Estados del modal
   const [step, setStep] = useState<'category' | 'details'>('category');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [name, setName] = useState('');
@@ -30,20 +58,19 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
   const [longitud, setLongitud] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [locationLocked, setLocationLocked] = useState(false); // Nuevo estado para bloquear ubicación
+  const [locationLocked, setLocationLocked] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const photoService = new PhotoService();
 
-  // Efecto para actualizar las coordenadas cuando cambia mapLocation
   useEffect(() => {
     if (mapLocation && isMapSelected) {
       setLatitud(mapLocation.lat.toString());
       setLongitud(mapLocation.lng.toString());
-      setLocationLocked(true); // Bloquear la edición de ubicación
+      setLocationLocked(true);
     }
   }, [mapLocation, isMapSelected]);
 
-  // Categorías temporales (simulando backend)
   const categories = [
     { id: '1', name: 'Bache en la vía', icon: '🕳️' },
     { id: '2', name: 'Alumbrado público', icon: '💡' },
@@ -53,13 +80,11 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
     { id: '6', name: 'Otro', icon: '❓' },
   ];
 
-  // Manejar selección de categoría
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);
     setStep('details');
   };
 
-  // Manejar subida de fotos
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newPhotos = Array.from(e.target.files);
@@ -67,7 +92,6 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
     }
   };
 
-  // Eliminar foto
   const handleRemovePhoto = (index: number) => {
     const newPhotos = [...photos];
     newPhotos.splice(index, 1);
@@ -77,10 +101,14 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
     }
   };
 
-  // Enviar reporte
   const handleSubmit = async () => {
+    if (!latitud || !longitud) {
+      alert('Por favor ingresa una ubicación válida');
+      return;
+    }
+
     setIsLoading(true);
-  
+    
     const reportData = {
       token: '043fbb63-e370-40ea-a0b0-50889681f546', 
       nombre: name,
@@ -91,11 +119,11 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
       longitud: longitud,
     };
 
-    console.log(reportData);
-  
     try {
-      const token1 = sessionStorage.getItem("token")
-      const response = await fetch('http://localhost:8080/v1/incident', {
+      const token1 = sessionStorage.getItem("token");
+      
+      // 1. Crear el incidente
+      const incidentResponse = await fetch('http://localhost:8080/v1/incident', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token1}`,
@@ -103,23 +131,36 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
         },
         body: JSON.stringify(reportData)
       });
-  
-      if (!response.ok) {
-        throw new Error('Error al enviar el incidente');
+
+      if (!incidentResponse.ok) {
+        const errorData = await incidentResponse.json();
+        throw new Error(errorData.message || 'Error al enviar el incidente');
       }
-  
+
+      const incidentData = await incidentResponse.json();
+      const incidentId = String (incidentData.id);
+
+      // 2. Subir fotos si existen
+      if (photos.length > 0) {
+        try {
+          await photoService.uploadPhotos(incidentId, photos);
+        } catch (photoError) {
+          console.error('Error al subir fotos:', photoError);
+          alert('Incidente creado pero hubo errores al subir las fotos');
+        }
+      }
+
       alert('Incidente reportado correctamente');
       resetForm();
       onHide();
     } catch (error) {
-      console.error(error);
-      alert('Ocurrió un error al enviar el incidente');
+      console.error('Error general:', error);
+      alert(error.message || 'Ocurrió un error al enviar el incidente');
     } finally {
       setIsLoading(false);
     }
-  };  
-  
-  // Resetear formulario al cerrar
+  };
+
   const resetForm = () => {
     setStep('category');
     setSelectedCategory(null);
@@ -130,14 +171,13 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
     setAddress('');
     setLatitud(''); 
     setLongitud('');
-    setLocationLocked(false); // Desbloquear ubicación al resetear
+    setLocationLocked(false);
 
     const now = new Date();
     setDate(now.toISOString().split('T')[0]);
     setHour(now.toTimeString().split(' ')[0].substring(0, 8));
   };
 
-  // Manejar cierre del modal
   const handleClose = () => {
     resetForm();
     onHide();
@@ -151,7 +191,7 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
         <h2 className="select-category-title">
           {step === 'category' ? 'Selecciona una categoría' : 'Detalles del incidente'}
         </h2>
-        {/* Paso 1: Selección de categoría */}
+        
         {step === 'category' && (
           <div className="category-selection">
             <div className="row">
@@ -171,7 +211,6 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
           </div>
         )}
         
-        {/* Paso 2: Detalles del incidente */}
         {step === 'details' && (
           <div className="incident-details">
             <Form.Group className="mb-4">
@@ -203,7 +242,7 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Upload size={24} className="mb-2" />
-                <p>Haz clic para subir fotos </p>
+                <p>Haz clic para subir fotos</p>
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -214,30 +253,29 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
                 />
               </div>
               
-              {/* Carrusel de fotos */}
               {photos.length > 0 && (
                 <div className="mt-3">
                   <Carousel controls={false} indicators={false} interval={null}>
                     {photos.map((photo, index) => (
-                        <Carousel.Item key={index}>
+                      <Carousel.Item key={index}>
                         <div className="position-relative" style={{ height: '150px' }}>
-                            <img
+                          <img
                             src={URL.createObjectURL(photo)}
                             alt={`Foto ${index + 1}`}
                             className="d-block w-100 h-100"
                             style={{ objectFit: 'cover' }}
-                            />
-                            <Button
+                          />
+                          <Button
                             variant="danger"
                             size="sm"
                             className="position-absolute top-0 end-0 m-1"
                             onClick={() => handleRemovePhoto(index)}
                             style={{ borderRadius: '50%' }}
-                            >
+                          >
                             <XCircle />
-                            </Button>
+                          </Button>
                         </div>
-                        </Carousel.Item>
+                      </Carousel.Item>
                     ))}
                   </Carousel>
                 </div>
@@ -253,7 +291,6 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
                 </div>
               )}
               <div className="d-flex flex-column gap-2">
-                {/* Fila para latitud y longitud */}
                 <div className="row g-2">
                   <div className="col-md-6">
                     <Form.Control
@@ -303,7 +340,7 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
           <Button 
             className="btn-send-status" 
             onClick={handleSubmit}
-            disabled={!latitud || !longitud} // Deshabilitar si no hay ubicación
+            disabled={!latitud || !longitud}
           >
             {isLoading ? (
               <>

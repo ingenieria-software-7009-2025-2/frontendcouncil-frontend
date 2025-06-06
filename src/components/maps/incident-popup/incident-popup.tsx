@@ -4,6 +4,7 @@ import { Popup } from 'react-leaflet';
 import { FaRegComment, FaThumbsUp, FaRegThumbsUp } from 'react-icons/fa';
 import { ChangeStatus } from './change-status/change-status';
 import { CommentSection } from './comment-section/comment-section';
+import ModalFullIncidentView from './incident-view/incident-view';
 import './incident-popup.css';
 
 interface IncidentPopupProps {
@@ -15,6 +16,7 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [showCommentSectionModal, setShowCommentSectionModal] = useState(false);
+  const [showFullIncidentModal, setShowFullIncidentModal] = useState(false);
   const [likes, setLikes] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [comment_count, setCommentCount] = useState<number>(0);
@@ -28,7 +30,7 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
     const token = sessionStorage.getItem("token");
     setIsAuthenticated(!!token); 
     setLikes(incident.likes);
-}, [incident]);
+  }, [incident]);
 
   useEffect(() => {
     const fetchDireccion = async () => {
@@ -57,28 +59,34 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
     console.log("Nuevo estado:", newStatus, "Evidencia:", evidenceFiles);
   };
 
-const handleLikeClick = async () => {
-  try {
-    const endpoint = isLiked ? 'dislike' : 'like';
-    const response = await fetch(`http://localhost:8080/v1/incident/${endpoint}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ incidenteid: incident.incidenteid, estatus: ""}),
-    });
-    if (response.ok) {
-      const updatedLikes = await response.json();
-      setLikes(updatedLikes);
-      setIsLiked(!isLiked);
-    } else {
-      console.error("Error al actualizar like");
+  const handleLikeClick = async () => {
+    try {
+      const endpoint = isLiked ? 'dislike' : 'like';
+      const response = await fetch(`http://localhost:8080/v1/incident/${endpoint}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ incidenteid: incident.incidenteid, estatus: ""}),
+      });
+      if (response.ok) {
+        const updatedLikes = await response.json();
+        setLikes(updatedLikes);
+        setIsLiked(!isLiked);
+      } else {
+        console.error("Error al actualizar like");
+      }
+    } catch (error) {
+      console.error("Error en la solicitud de like:", error);
     }
-  } catch (error) {
-    console.error("Error en la solicitud de like:", error);
-  }
-};
+  };
+
+  const handleIncidentNameClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowFullIncidentModal(true);
+  };
 
   return (
     <Popup className="incident-popup-custom" closeButton={true}>
@@ -87,9 +95,9 @@ const handleLikeClick = async () => {
 
         <div className="popup-category">
           <a
-            href="/#"
+            href="#"
             className={`category-link ${!isAuthenticated ? 'disabled' : ''}`}
-            onClick={(e) => !isAuthenticated && e.preventDefault()}
+            onClick={handleIncidentNameClick}
           >
             {incident.nombre}
           </a>
@@ -117,19 +125,26 @@ const handleLikeClick = async () => {
               </span>
               <span className="comment-container" onClick={() => setShowCommentSectionModal(true)}>
                 <FaRegComment className="incident-popup-comment" />
-                <span className="comment-count">{comment_count}</span>
               </span>
             </div>
           </div>
         )}
       </div>
 
-      <ChangeStatus show={showStatusModal} onHide={() => setShowStatusModal(false)} />
+      <ChangeStatus 
+        show={showStatusModal} 
+        onHide={() => setShowStatusModal(false)} 
+      />
       <CommentSection
         show={showCommentSectionModal}
         onHide={() => setShowCommentSectionModal(false)}
         incidenteid={incident.incidenteid}
         currentUserID={userId} 
+      />
+      <ModalFullIncidentView 
+        mostrar={showFullIncidentModal} 
+        onHide={() => setShowFullIncidentModal(false)} 
+        incident={incident} 
       />
     </Popup>
   );

@@ -6,33 +6,48 @@ import './comment.css';
 interface CommentProps {
     comment: CommentDTO;
     isLiked: boolean;
-    onLikeToggle: (comentarioid: number, isLike: boolean) => Promise<void>;
 }
 
 export const Comment: React.FC<CommentProps> = ({ 
     comment, 
-    isLiked: initialIsLiked, 
-    onLikeToggle 
+    isLiked: initialIsLiked 
 }) => {
     const [isLiked, setIsLiked] = useState(initialIsLiked);
     const [likeCount, setLikeCount] = useState(comment.likes || 0);
     const [isLoading, setIsLoading] = useState(false);
+    const [tempLikeCount, setTempLikeCount] = useState(comment.likes);
+    
+    const apiUrl = 'http://localhost:8080/v1/comment';
+
+    const handleLikeToggle = async (comentarioid: number, isLike: boolean): Promise<number> => {
+        setTempLikeCount(comment.likes);
+        const endpoint = isLike ? 'dislike' : 'like';
+        isLike ? setTempLikeCount(comment.likes)  : setTempLikeCount(comment.likes + 1);
+        const response = await fetch(`${apiUrl}/${endpoint}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ comentarioid })
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    };
 
     const handleLikeClick = async () => {
         if (isLoading) return;
-        
         setIsLoading(true);
         try {
-             setIsLiked(!isLiked);
-            
-            setLikeCount(prev => isLiked ? prev + 1 : prev - 1);
-            
-            // Call the parent handler which communicates with backend
-            await onLikeToggle(comment.comentarioid, isLiked);
+            const newLikeStatus = !isLiked;
+            setIsLiked(newLikeStatus);
+            setLikeCount(comment.likes);
+            const updatedLikes = await handleLikeToggle(comment.comentarioid, isLiked);
+            setLikeCount(updatedLikes);
         } catch (error) {
-            // Revert changes if there's an error
             setIsLiked(!isLiked);
-            setLikeCount(prev => !isLiked ? prev + 1 : prev - 1);
+            setLikeCount(likeCount);
             console.error('Error toggling like:', error);
         } finally {
             setIsLoading(false);
@@ -52,18 +67,18 @@ export const Comment: React.FC<CommentProps> = ({
                 </div>
                 <div className="comment-actions flex-shrink-0 d-flex align-items-center">
                     <span className={`me-2 small ${isLoading ? 'text-muted' : ''}`}>
-                        {likeCount}
+                        {tempLikeCount}
                     </span>
                     <button 
                         className={`heart-button btn btn-sm ${isLiked ? 'btn-danger' : 'btn-outline-danger'}`}
                         onClick={handleLikeClick}
                         disabled={isLoading}
-                        aria-label={isLiked ? 'Quitar like' : 'Dar like'}
+                        aria-label={isLiked ? 'like' : 'dislike'}
                     >
                         {isLoading ? (
                             <span className="spinner-border spinner-border-sm" role="status" />
                         ) : isLiked ? (
-                            <HeartFill color="white" size={16} />
+                            <HeartFill color="red" size={16} />
                         ) : (
                             <Heart size={16} className="text-danger" />
                         )}
