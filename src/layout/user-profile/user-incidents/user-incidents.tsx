@@ -15,17 +15,22 @@ const UserIncidents: React.FC = () => {
   useEffect(() => {
   const loadIncidents = async () => {
     try {
+      console.log("UserID enviado al backend:", userId);
       setLoading(true); // Activamos el estado de carga
       const incidents = await IncidentService.getIncidentsByUser(userId);
+      console.log("Incidentes recibidos:", incidents);
       setIncidents(incidents); // Guardamos los datos
       setError(null); // Limpiamos errores previos
     } catch (err) {
+      console.error("Error al cargar incidentes:", err);
       setError('Error al cargar los incidentes'); // Mostramos error
       setIncidents([]); // Opcional: Resetear lista si falla
     } finally {
       setLoading(false); // Desactivamos carga (éxito o error)
     }
   };
+
+  
 
   loadIncidents();
 }, [userId]);
