@@ -20,6 +20,7 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
   const [likes, setLikes] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [comment_count, setCommentCount] = useState<number>(0);
+  const [tempLikeCount, setTempLikeCount] = useState(incident.likes);
   const [calle, setCalle] = useState<string>('...');
   const [colonia, setColonia] = useState<string>('...');
   const [ciudad, setCiudad] = useState<string>('...');
@@ -61,6 +62,8 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
 
   const handleLikeClick = async () => {
     try {
+      setTempLikeCount(incident.likes);
+      isLiked ? setTempLikeCount(incident.likes)  : setTempLikeCount(incident.likes + 1);
       const endpoint = isLiked ? 'dislike' : 'like';
       const response = await fetch(`http://localhost:8080/v1/incident/${endpoint}`, {
         method: 'PUT',
@@ -121,7 +124,7 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
                 ) : (
                   <FaRegThumbsUp className="incident-popup-like" />
                 )}
-                <span className="like-count">{likes}</span>
+                <span className="like-count">{tempLikeCount}</span>
               </span>
               <span className="comment-container" onClick={() => setShowCommentSectionModal(true)}>
                 <FaRegComment className="incident-popup-comment" />
