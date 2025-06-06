@@ -73,24 +73,26 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
     };
 
     const handleLikeToggle = async (commentId: number, isLike: boolean) => {
-        try {
-            let updatedLikes: number;
-            
-            if (isLike) {
-                updatedLikes = await commentService.likeComment(commentId);
-                setLikedComments(prev => [...prev, commentId]);
-            } else {
-                updatedLikes = await commentService.dislikeComment(commentId);
-                setLikedComments(prev => prev.filter(id => id !== commentId));
-            }
-            
-            setComments(prev => 
-                prev.map(c => c.comentarioid === commentId ? {...c, likes: updatedLikes} : c)
-            );
-        } catch (err) {
-            console.error('Error al actualizar like:', err);
+    try {
+        let updatedLikes: number;
+        
+        if (isLike) {
+            updatedLikes = await commentService.likeComment(commentId);
+            setLikedComments(prev => [...prev, commentId]);
+        } else {
+            updatedLikes = await commentService.dislikeComment(commentId);
+            setLikedComments(prev => prev.filter(id => id !== commentId));
         }
-    };
+        
+        setComments(prev => 
+            prev.map(c => c.comentarioid === commentId ? {...c, likes: updatedLikes} : c)
+        );
+    } catch (err) {
+        console.error('Error al actualizar like:', err);
+        // Podrías mostrar un mensaje de error al usuario aquí
+    }
+};
+
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
