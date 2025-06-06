@@ -119,6 +119,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onLoginError }) =
       // Modificar esto de acuerdo al backend
       sessionStorage.setItem('rol', data.rolid);
       console.log(data.rolid)
+      sessionStorage.setItem('clienteid', data.clienteid);
       // IMPLEMENTACIÓN TEMPORAL DE ROL:
       /*
       if (loginData.identifier === 'admin@admin.com' ||  loginData.identifier === 'admin') {

@@ -225,14 +225,14 @@ const MapComponent: React.FC = () => {
         
         {filteredIncidents.map((incident) => (
           <Marker
-            key={incident.incidenteID}
+            key={incident.incidenteid}
             position={[incident.latitud, incident.longitud]}
             icon={IncidentPin.getIcon(incident.estado)}
             eventHandlers={{
               click: () => setSelectedIncident(incident)
             }}
           >
-            {selectedIncident?.incidenteID === incident.incidenteID && (
+            {selectedIncident?.incidenteid === incident.incidenteid && (
               <IncidentPopup
                 incident={incident}
                 onClose={() => setSelectedIncident(null)}

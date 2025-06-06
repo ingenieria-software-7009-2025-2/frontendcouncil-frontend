@@ -4,30 +4,33 @@ import { ExclamationTriangle } from 'react-bootstrap-icons';
 import { IncidentService } from '../../../services/incident.service';
 import { IncidentDTO, IncidentStatus } from '../../../models/dto-incident';
 
-interface UserIncidentsProps {
-  userId: number;
-}
 
-const UserIncidents: React.FC<UserIncidentsProps> = ({ userId }) => {
+const UserIncidents: React.FC = () => {
   const [incidents, setIncidents] = useState<IncidentDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const userIdStr = sessionStorage.getItem("clienteid");
+  const userId = Number(userIdStr);
+  
   useEffect(() => {
-    const handleIncidentsUpdate = (fetchedIncidents: IncidentDTO[]) => {
-      try {
-        // Filtrar incidentes por el userId proporcionado
-        const userIncidents = fetchedIncidents.filter(incident => incident.clienteID === userId);
-        setIncidents(userIncidents);
-        setLoading(false);
-        setError(null);
-      } catch (err) {
-        setError('Error al procesar los incidentes');
-        setLoading(false);
-      }
-    };
+  const loadIncidents = async () => {
+    try {
+      setLoading(true); // Activamos el estado de carga
+      const incidents = await IncidentService.getIncidentsByUser(userId);
+      setIncidents(incidents); // Guardamos los datos
+      setError(null); // Limpiamos errores previos
+    } catch (err) {
+      setError('Error al cargar los incidentes'); // Mostramos error
+      setIncidents([]); // Opcional: Resetear lista si falla
+    } finally {
+      setLoading(false); // Desactivamos carga (éxito o error)
+    }
+  };
 
-    IncidentService.subscribe(handleIncidentsUpdate);
+  loadIncidents();
+}, [userId]);
+
+   /**  IncidentService.subscribe(handleIncidentsUpdate);
     IncidentService.connect().catch(err => {
       setError('Error al conectar con el servicio de incidentes');
       setLoading(false);
@@ -59,7 +62,7 @@ const UserIncidents: React.FC<UserIncidentsProps> = ({ userId }) => {
 
   if (loading) {
     return <div>Cargando incidentes...</div>;
-  }
+  }*/
 
   if (error) {
     return <div className="text-red-500">{error}</div>;
@@ -98,8 +101,8 @@ const UserIncidents: React.FC<UserIncidentsProps> = ({ userId }) => {
       <Row className="mb-4 text-center"></Row>
                     
       {/* Sección de lista de incidentes con scroll */}
-      {incidents.length <= 0 ? (
-        <div> No se encontraron incidentes para este usuario. </div>
+      {incidents.length === 0 ? (
+        <div> No se encontraron incidentes para este usuario. {userId}</div>
       ) : (
       <div className="incidents-list-scroll">
         <div className="incidents-list-container">
@@ -116,10 +119,10 @@ const UserIncidents: React.FC<UserIncidentsProps> = ({ userId }) => {
               </thead>
               <tbody>
                 {incidents.map((incident) => (
-                  <tr key={incident.incidenteID} className="hover:bg-gray-50">
+                  <tr key={incident.incidenteid} className="hover:bg-gray-50">
                     <td className="py-2 px-4 border-b border-gray-200">{incident.nombre}</td>
                     <td className="py-2 px-4 border-b border-gray-200">
-                      {getCategoryName(incident.categoriaID)}
+                      {incident.categoriaID}
                     </td>
                     <td className="py-2 px-4 border-b border-gray-200">
                       Lat: {incident.latitud.toFixed(4)}, Long: {incident.longitud.toFixed(4)}
@@ -127,8 +130,8 @@ const UserIncidents: React.FC<UserIncidentsProps> = ({ userId }) => {
                     <td className="py-2 px-4 border-b border-gray-200">
                       <span className={`inline-block px-2 py-1 rounded text-xs ${ 
                         incident.estado === 'resuelto' ? 'bg-green-100 text-green-800' : 
-                        incident.estado === 'revision' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'}`}>
-                        {getStatusText(incident.estado)}
+                        incident.estado === 'en revisión' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'}`}>
+                        {incident.estado}
                       </span>
                     </td>
                   </tr>

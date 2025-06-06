@@ -9,7 +9,7 @@ import './comment-section.css';
 interface CommentSectionProps {
     show: boolean;
     onHide: () => void;
-    incidenteID: number;
+    incidenteid: number;
     currentUserID: number;
     onCommentAdded?: (newCount: number) => void;
 }
@@ -17,7 +17,7 @@ interface CommentSectionProps {
 export const CommentSection: React.FC<CommentSectionProps> = ({ 
     show, 
     onHide, 
-    incidenteID, 
+    incidenteid, 
     currentUserID,
     onCommentAdded 
 }) => {
@@ -25,12 +25,15 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
     const [newComment, setNewComment] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [likedComments, setLikedComments] = useState<number[]>([]);
+    
+    const commentService = new CommentService();
 
     const loadComments = useCallback(async () => {
         setIsLoading(true);
         setError(null);
         try {
-            const commentsData = await CommentService.getByIncidente(incidenteID);
+            const commentsData = await commentService.getCommentsByIncidentId(incidenteid);
             setComments(commentsData);
         } catch (err) {
             console.error('Error cargando comentarios:', err);
@@ -38,13 +41,13 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
         } finally {
             setIsLoading(false);
         }
-    }, [incidenteID]);
+    }, [incidenteid]);
 
     useEffect(() => {
         if (show) {
             loadComments();
         }
-    }, [show, incidenteID, loadComments]);
+    }, [show, incidenteid, loadComments]);
 
     const handleAddComment = async () => {
         if (!newComment.trim()) return;
@@ -52,10 +55,10 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
         setIsLoading(true);
         setError(null);
         try {
-            const createdComment = await CommentService.create({
-                IncidenteID: incidenteID,
-                Contenido: newComment,
-                ClienteID: currentUserID
+            const createdComment = await commentService.createComment({
+                clienteid: currentUserID,
+                incidenteid: incidenteid,
+                contenido: newComment
             });
             
             setComments(prev => [createdComment, ...prev]);
@@ -69,11 +72,20 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
         }
     };
 
-    const handleLikeToggle = async (commentID: number) => {
+    const handleLikeToggle = async (commentId: number, isLike: boolean) => {
         try {
-            const updatedComment = await CommentService.toggleLike(commentID);
+            let updatedLikes: number;
+            
+            if (isLike) {
+                updatedLikes = await commentService.likeComment(commentId);
+                setLikedComments(prev => [...prev, commentId]);
+            } else {
+                updatedLikes = await commentService.dislikeComment(commentId);
+                setLikedComments(prev => prev.filter(id => id !== commentId));
+            }
+            
             setComments(prev => 
-                prev.map(c => c.IDComentario === updatedComment.IDComentario ? updatedComment : c)
+                prev.map(c => c.comentarioid === commentId ? {...c, likes: updatedLikes} : c)
             );
         } catch (err) {
             console.error('Error al actualizar like:', err);
@@ -88,10 +100,11 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
     };
 
     return (
-        <Modal show={show} onHide={onHide} centered className="custom-modal" size="lg" backdrop="static" style={{ zIndex: 900000 }}>
-            <Modal.Header closeButton>
-            </Modal.Header>
-            <span className="commments-title mb-2 fw-bold">COMENTARIOS {comments.length > 0 && `(${comments.length})`}</span>
+        <Modal show={show} onHide={onHide} centered className="custom-modal" size="lg" backdrop="static" style={{ zIndex: 9999999 }}>
+            <Modal.Header closeButton></Modal.Header>
+            <span className="commments-title mb-2 fw-bold">
+                COMENTARIOS {comments.length > 0 && `(${comments.length})`}
+            </span>
             <Modal.Body className="pt-0" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
                 {error ? (
                     <div className="alert alert-danger">{error}</div>
@@ -104,8 +117,9 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
                 ) : (
                     comments.map(comment => (
                         <Comment 
-                            key={comment.IDComentario} 
+                            key={comment.comentarioid} 
                             comment={comment}
+                            isLiked={likedComments.includes(comment.comentarioid)}
                             onLikeToggle={handleLikeToggle}
                         />
                     ))

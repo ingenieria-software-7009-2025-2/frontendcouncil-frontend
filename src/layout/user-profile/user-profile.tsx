@@ -7,7 +7,10 @@ import { ChangePasswordModal } from './change-password/change-password';
 import UserIncidents from './user-incidents/user-incidents';
 import './user-profile.css';
 
+import { useSwalMessages } from '../../shared/swal-messages';
+
 type UserProfile = {
+  clienteid: number;
   username: string;
   firstName: string;
   lastName: string;
@@ -17,12 +20,16 @@ type UserProfile = {
 };
 
 const UserProfilePage = () => {
+  const { successMessage, errorMessage } = useSwalMessages();
+  
+  const clienteid = sessionStorage.getItem("clienteid");
   const nombre = sessionStorage.getItem("nombre");
   const apPaterno = sessionStorage.getItem("apPaterno");
   const apMaterno = sessionStorage.getItem("apMaterno");
   const correo = sessionStorage.getItem("correo");
   const userName = sessionStorage.getItem("userName");
   const [user, setUser] = useState<UserProfile>({
+    clienteid: clienteid,
     username: userName,
     firstName: nombre,
     lastName: apPaterno,
@@ -166,7 +173,7 @@ const UserProfilePage = () => {
             </Col>
             <Col md={1}></Col>
             <Col md={8}>
-              <UserIncidents userId={1745895906927} /> {/* Agregar a que funcione por obtener el id del usuario*/}
+              <UserIncidents userId={user.clienteid} /> {/* Agregar a que funcione por obtener el id del usuario*/}
             </Col>
           </Row>
         </Card.Body>

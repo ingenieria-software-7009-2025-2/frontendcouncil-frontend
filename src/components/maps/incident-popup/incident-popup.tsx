@@ -21,6 +21,8 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
   const [calle, setCalle] = useState<string>('...');
   const [colonia, setColonia] = useState<string>('...');
   const [ciudad, setCiudad] = useState<string>('...');
+  const userIdStr = sessionStorage.getItem("clienteid");
+  const userId = Number(userIdStr);
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -55,29 +57,21 @@ export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose 
     console.log("Nuevo estado:", newStatus, "Evidencia:", evidenceFiles);
   };
 
-  /**const handleLikeClick = () => {
-    setLikes((prev) => isLiked ? prev - 1 : prev + 1);
-    setIsLiked(!isLiked);
-  };*/
-
-
 const handleLikeClick = async () => {
-  if (!isAuthenticated) return;
-  setIsLiked(!isLiked); // permite visualizar el cambio de color 
   try {
-    const endpoint = isLiked ? '/v1/incident/dislike' : '/v1/incident/like';
-    const response = await fetch(`http://localhost:8080${endpoint}`, {
+    const endpoint = isLiked ? 'dislike' : 'like';
+    const response = await fetch(`http://localhost:8080/v1/incident/${endpoint}`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ incidenteid: incident.incidenteID}),
+      body: JSON.stringify({ incidenteid: incident.incidenteid, estatus: ""}),
     });
     if (response.ok) {
       const updatedLikes = await response.json();
       setLikes(updatedLikes);
-      //setIsLiked(!isLiked);
+      setIsLiked(!isLiked);
     } else {
       console.error("Error al actualizar like");
     }
@@ -85,7 +79,6 @@ const handleLikeClick = async () => {
     console.error("Error en la solicitud de like:", error);
   }
 };
-
 
   return (
     <Popup className="incident-popup-custom" closeButton={true}>
@@ -135,10 +128,9 @@ const handleLikeClick = async () => {
       <CommentSection
         show={showCommentSectionModal}
         onHide={() => setShowCommentSectionModal(false)}
-        incidenteID={incident.incidenteID}
-        currentUserID={1} 
+        incidenteid={incident.incidenteid}
+        currentUserID={userId} 
       />
-
     </Popup>
   );
 };
