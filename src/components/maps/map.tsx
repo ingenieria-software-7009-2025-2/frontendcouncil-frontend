@@ -50,7 +50,7 @@ const MapComponent: React.FC = () => {
   const [dragMarkerPosition, setDragMarkerPosition] = useState<LatLngLiteral | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<LatLngLiteral | null>(null);
   const dragTimer = useRef<NodeJS.Timeout | null>(null);
-
+  
   const initialCenter: LatLngLiteral = { lat: 19.4063, lng: -99.1631 };
   const initialZoom = 18;
   const maxZoom = 22;
@@ -227,7 +227,7 @@ const MapComponent: React.FC = () => {
           <Marker
             key={incident.incidenteid}
             position={[incident.latitud, incident.longitud]}
-            icon={IncidentPin.getIcon(incident.estado)}
+            icon={IncidentPin.getIcon(incident.estado, incident.categoriaid)}
             eventHandlers={{
               click: () => setSelectedIncident(incident)
             }}
