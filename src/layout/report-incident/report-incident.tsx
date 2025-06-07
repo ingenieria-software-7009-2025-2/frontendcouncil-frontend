@@ -89,6 +89,7 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
       hora: hour, 
       latitud: latitud, 
       longitud: longitud,
+      categoriaid: (selectedCategory != null) ? parseInt(selectedCategory) : 6,
     };
 
     console.log(reportData);
