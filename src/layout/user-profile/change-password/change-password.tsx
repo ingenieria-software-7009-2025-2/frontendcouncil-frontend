@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
-import { Eye, EyeSlash, Lock } from 'react-bootstrap-icons';
+import { Lock } from 'react-bootstrap-icons';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import './change-password.css'
 
 type ChangePasswordModalProps = {
   show: boolean;
@@ -48,15 +50,11 @@ export const ChangePasswordModal = ({ show, onHide, onSubmit }: ChangePasswordMo
   };
 
   return (
-    <Modal show={show} onHide={onHide} centered backdrop="static" style={{ zIndex: 900000 }}>
-      <Modal.Header closeButton className="border-0 pb-0">
-        <Modal.Title className="w-100 text-center">
-          <Lock size={32} className="text-primary mb-3" />
-          <h4 className="fw-bold">Cambiar contraseña</h4>
-        </Modal.Title>
-      </Modal.Header>
+    <Modal show={show} onHide={onHide} centered backdrop="static" style={{ zIndex: 900000 }} className="custoom-modal">
+      <Modal.Header closeButton className="border-0 pb-0"></Modal.Header>
       
       <Form onSubmit={handleSubmit}>
+        <h2 className="change-password-title"><Lock size={25} className='lock-icon'/> CAMBIAR CONTRASEÑA </h2>
         <Modal.Body>
           {error && (
             <div className="alert alert-danger text-center">
@@ -65,53 +63,56 @@ export const ChangePasswordModal = ({ show, onHide, onSubmit }: ChangePasswordMo
           )}
 
           <Form.Group className="mb-3">
-            <Form.Label>Contraseña actual</Form.Label>
+            <Form.Label className="input-label">Contraseña actual</Form.Label>
             <InputGroup>
-              <Form.Control
+              <input
                 type={showPassword.current ? 'text' : 'password'}
+                className={`form-control custom-input pe-4` }
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
                 placeholder="Ingresa tu contraseña actual"/>
-              <Button 
-                variant="outline-secondary"
-                onClick={() => toggleShowPassword('current')}>
-                {showPassword.current ? <EyeSlash /> : <Eye />}
-              </Button>
+              <span
+                className="position-absolute top-50 end-0 translate-middle-y me-2"
+                style={{cursor: 'pointer', color: '#9aaaba'} } onClick={() => toggleShowPassword('current')}>
+                {showPassword.current ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </InputGroup>
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Nueva contraseña</Form.Label>
+            <Form.Label className="input-label">Nueva contraseña</Form.Label>
             <InputGroup>
-              <Form.Control
+              <input
                 type={showPassword.new ? 'text' : 'password'}
+                className={`form-control custom-input pe-4` }
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 placeholder="Mínimo 8 caracteres"/>
-              <Button 
-                variant="outline-secondary"
-                onClick={() => toggleShowPassword('new')}>
-                {showPassword.new ? <EyeSlash /> : <Eye />}
-              </Button>
+              <span
+                className="position-absolute top-50 end-0 translate-middle-y me-2"
+                style={{cursor: 'pointer', color: '#9aaaba'}} onClick={() => toggleShowPassword('new')}>
+                {showPassword.new ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </InputGroup>
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Confirmar nueva contraseña</Form.Label>
+            <Form.Label className="input-label">Confirmar nueva contraseña</Form.Label>
             <InputGroup>
-              <Form.Control
+              <input
                 type={showPassword.confirm ? 'text' : 'password'}
+                className={`form-control custom-input pe-4` }
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 placeholder="Repite la nueva contraseña"/>
-              <Button 
-                variant="outline-secondary"
-                onClick={() => toggleShowPassword('confirm')}>
-                {showPassword.confirm ? <EyeSlash /> : <Eye />}
-              </Button>
+              <span
+                className="position-absolute top-50 end-0 translate-middle-y me-2"
+                style={{cursor: 'pointer', color: '#9aaaba'}} onClick={() => toggleShowPassword('confirm')}>
+                {showPassword.confirm ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </InputGroup>
           </Form.Group>
 
@@ -121,19 +122,22 @@ export const ChangePasswordModal = ({ show, onHide, onSubmit }: ChangePasswordMo
               <li className={newPassword.length >= 8 ? 'text-success' : ''}>
                 Mínimo 8 caracteres
               </li>
+               <li className={newPassword.length >= 8 ? 'text-success' : ''}>
+                Un número
+              </li>
+              <li className={newPassword.length >= 8 ? 'text-success' : ''}>
+                Una mayúscula
+              </li>
+              <li className={newPassword.length >= 8 ? 'text-success' : ''}>
+                Un caracter especial: !@#$%^&*(),.?":{}|
+              </li>
             </ul>
           </div>
         </Modal.Body>
         
-        <Modal.Footer className="border-0 justify-content-center">
+        <Modal.Footer>
           <Button 
-            variant="outline-secondary" 
-            onClick={onHide}
-            disabled={isLoading}>
-            Cancelar
-          </Button>
-          <Button 
-            variant="primary" 
+            className="btn-send-status"
             type="submit"
             disabled={isLoading || !currentPassword || !newPassword || !confirmPassword}>
             {isLoading ? 'Guardando...' : 'Guardar cambios'}

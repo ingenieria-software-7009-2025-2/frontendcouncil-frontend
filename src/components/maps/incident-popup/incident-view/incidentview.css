@@ -1,0 +1,77 @@
+.incident-info {
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+    font-size: 0.9rem;
+}
+
+.date-style {
+    font-size: 0.8rem !important;
+    margin-top: 0 !important;
+    color: rgb(86, 86, 86);
+}
+
+.incident-info p {
+  margin: 0.2em 0; /* Ajusta este valor para reducir/incrementar el espacio */
+  line-height: 1.2; /* Controla el espacio entre líneas */
+}
+
+.location, .date-style {
+  display: inline-block; /* Para que estén en la misma línea si lo prefieres */
+  margin-right: 10px; /* Espacio entre elementos si están en línea */
+}
+
+
+/* Estilos base para el badge de estado */
+.status-badge {
+  display: flex;
+  align-items: center;
+  padding: 3px 5px;
+  border-radius: 5px;
+  font-size: 0.8em;
+  width: fit-content;
+}
+
+/* Bullet point circular */
+.status-bullet {
+  display: inline-block;
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+/* Texto del estado */
+.status-text {
+  font-weight: 500;
+}
+
+/* Colores para cada estado */
+.status-badge.reportado {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+.status-badge.reportado .status-bullet {
+  background-color: #ff0000;
+}
+.status-badge.reportado .status-text {
+  color: #ff0000;
+}
+
+.status-badge.en-revisión {
+  background-color: rgba(255, 165, 0, 0.1);
+}
+.status-badge.en-revisión .status-bullet {
+  background-color: #ffa500;
+}
+.status-badge.en-revisión .status-text {
+  color: #ffa500;
+}
+
+.status-badge.resuelto {
+  background-color: rgba(0, 128, 0, 0.1);
+}
+.status-badge.resuelto .status-bullet {
+  background-color: #008000;
+}
+.status-badge.resuelto .status-text {
+  color: #008000;
+}

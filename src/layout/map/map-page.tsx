@@ -14,19 +14,6 @@ const Mapa = () => {
             <div className="logo-picture-map">
                 <img src={logo} alt="Logo" onError={(e) => { e.currentTarget.src = '/default-logo.png';}}/>
             </div>
-
-            {/*
-            <div className="incident-button-wrapper">
-                <button className="incident-button" onClick={() => setShowIncidentModal(true)}>
-                    +
-                </button>
-                <span className="incident-tooltip">Agregar incidente</span>
-            </div>*/}
-
-            {/* Modal de reporte de incidente 
-            <ReportIncidentModal 
-                show={showIncidentModal} 
-                onHide={() => setShowIncidentModal(false)}/>*/}
         </Container>
     );
 };

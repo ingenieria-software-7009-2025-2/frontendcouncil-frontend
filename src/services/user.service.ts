@@ -1,97 +1,150 @@
 import { UserDTO } from "../models/dto-user";
-import { backendcouncil_api } from "../shared/backendcouncil-api";
-import { z } from "zod";
 
-const UserSchema = z.object({
-    username: z.string(),
-    nombre: z.string(),
-    apPaterno: z.string(),
-    apMaterno: z.string(),
-    correo: z.string().email(),
-  });
-  
-  export class UserService {
-    private static async request<T>(
-      endpoint: string,
-      method: string,
-      body?: any,
-      requiresAuth: boolean = true
-    ): Promise<T> {
-      const url = `${backendcouncil_api}${endpoint}`;
-      const headers: HeadersInit = {
-        "Content-Type": "application/json",
-      };
-  
-      if (requiresAuth) {
-        const token = sessionStorage.getItem("authToken");
-        if (!token) {
-          throw new Error("No authentication token found");
-        }
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-  
-      try {
-        const response = await fetch(url, {
-          method,
-          headers,
-          body: body ? JSON.stringify(body) : undefined,
-        });
-  
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(
-            errorData.message || `Error ${response.status}: ${response.statusText}`
-          );
-        }
-  
-        if (response.status === 204) {
-          return null as unknown as T;
-        }
-  
-        return response.json();
-      } catch (error) {
-        console.error("API request failed:", error);
-        throw error;
-      }
-    }
-  
-    static async register(user: Omit<UserDTO, "password"> & { password: string }): Promise<UserDTO> {
-      const response = await this.request<UserDTO>("/", "POST", user, false);
-      return UserSchema.parse(response);
-    }
-  
-    static async login(email: string, password: string): Promise<{ user: UserDTO; token: string }> {
-        const response = await this.request<{ user: UserDTO; token: string }>(
-          "/login",
-          "POST",
-          { correo: email, password },
-          false
-        );
-        
-        // Validamos que la respuesta tenga la estructura esperada
-        if (!response.user || !response.token) {
-          throw new Error("Respuesta del servidor inválida");
-        }
-        
-        return response;
-      }
-  
-    static async getCurrentUser(): Promise<UserDTO> {
-      const response = await this.request<UserDTO>("/me", "GET");
-      return UserSchema.parse(response);
-    }
-  
-    static async updateUser(userData: Partial<UserDTO>): Promise<UserDTO> {
-      const response = await this.request<UserDTO>("/me", "PUT", userData);
-      return UserSchema.parse(response);
-    }
-  
-    static async logout(): Promise<void> {
-      await this.request<void>("/logout", "POST");
-    }
-  
-    static async getAllUsers(): Promise<UserDTO[]> {
-      const response = await this.request<UserDTO[]>("/", "GET");
-      return z.array(UserSchema).parse(response);
+export class UserService {
+  private static apiUrl = 'http://localhost:8080/v1/users';
+  private static mockUsers: UserDTO[] = [ ];
+
+  private static listeners: ((users: UserDTO[]) => void)[] = [];
+  private static intervalId: number | null = null;
+
+  static async connect(): Promise<void> {
+    await this.fetchAndNotify();
+    this.intervalId = window.setInterval(() => {
+      this.fetchAndNotify();
+    }, 5000);
+  }
+
+  private static async fetchAndNotify() {
+    try {
+      const users = await this.fetchUsers();
+      this.notifyListeners(users);
+    } catch (error) {
+      console.error("Error al obtener usuarios:", error);
     }
   }
+
+  static subscribe(callback: (users: UserDTO[]) => void): void {
+    this.listeners.push(callback);
+    this.fetchAndNotify();
+  }
+
+  static unsubscribe(callback: (users: UserDTO[]) => void): void {
+    this.listeners = this.listeners.filter(listener => listener !== callback);
+  }
+
+  static disconnect(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  private static notifyListeners(users: UserDTO[]): void {
+    this.listeners.forEach(listener => listener(users));
+  }
+
+  static async fetchUsers(): Promise<UserDTO[]> {
+    const token = sessionStorage.getItem("token");
+    const response = await fetch(`${this.apiUrl}/toolkit`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al obtener los usuarios");
+    }
+    return await response.json();
+  }
+
+  static async updateUserRole(username: string, newRole: string): Promise<boolean> {
+    try {
+      const token = sessionStorage.getItem("token");
+      const request = {
+        username: username,
+        rolid: newRole
+      };
+
+      const response = await fetch(`${this.apiUrl}/toolkit`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(request)
+      });
+
+      if (!response.ok) {
+        throw new Error("No se pudo cambiar el rol");
+      }
+
+      // Actualizar datos locales si es necesario
+      const users = await this.fetchUsers();
+      this.notifyListeners(users);
+      
+      return true;
+    } catch (error) {
+      console.error("Error al actualizar rol:", error);
+      return false;
+    }
+  }
+
+  static async deleteUser(userId: number): Promise<boolean> {
+    try {
+      const token = sessionStorage.getItem("token");
+      const response = await fetch(`${this.apiUrl}/${userId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("No se pudo eliminar el usuario");
+      }
+
+      // Actualizar datos locales si es necesario
+      const users = await this.fetchUsers();
+      this.notifyListeners(users);
+      
+      return true;
+    } catch (error) {
+      console.error("Error al eliminar usuario:", error);
+      return false;
+    }
+  }
+
+  public static async getCurrentUser(): Promise<UserDTO> {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      throw new Error("No hay token disponible");
+    }
+
+    const response = await fetch(`${this.apiUrl}/me`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    this.storeUserData(data);
+    return data;
+  }
+
+  private static storeUserData(userData: UserDTO): void {
+    sessionStorage.setItem("correo", userData.correo);
+    sessionStorage.setItem("nombre", userData.nombre);
+    sessionStorage.setItem("apPaterno", userData.apPaterno || '');
+    sessionStorage.setItem("apMaterno", userData.apMaterno || '');
+    sessionStorage.setItem("userName", userData.userName);
+    sessionStorage.setItem("userId", String(userData.clienteid));
+  }
+}

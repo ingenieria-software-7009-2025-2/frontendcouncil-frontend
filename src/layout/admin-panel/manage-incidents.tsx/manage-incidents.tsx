@@ -14,7 +14,7 @@ interface Incident {
     hora: string;
     longitud: number;
     latitud: number;
-    estatus: 'creado' | 'en revisión' | 'resuelto';
+    estado: 'creado' | 'en revisión' | 'resuelto';
   }
   
   const ManageIncidents = () => {
@@ -26,53 +26,21 @@ interface Incident {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [sortConfig, setSortConfig] = useState<{ key: keyof Incident; direction: 'ascending' | 'descending' } | null>(null);
     const [moreDropdownOpen, setMoreDropdownOpen] = useState<number | null>(null);
+    const [userRole, setUserRole] = useState<string | null>(null);
   
-    // Simulación de datos temporales
     useEffect(() => {
+      const rol = sessionStorage.getItem("rol");
       const fetchData = async () => {
         try {
-          // Simulando retraso de red
-          //await new Promise(resolve => setTimeout(resolve, 500));
           const fetchedIncidents = await fetchIncidentsFromBackend();
           setIncidents(fetchedIncidents);
-          // Datos temporales de ejemplo
-          /*
-          const tempIncidents: Incident[] = [
-            {
-              incidenteid: 56478,
-              clienteid: 24323,
-              categoriaid: 'Infraestructura',
-              nombre: 'trivial',
-              descripcion: 'Bache en la calle principal',
-              fecha: '2023-05-15',
-              hora: '14:30',
-              longitud: -99.1332,
-              latitud: 19.4326,
-              estado: 'Creado'
-            },
-            {
-              incidenteid: 2,
-              clienteid: 24323,
-              nombre: 'trivial',
-              categoriaid: 'Seguridad',
-              descripcion: 'Alumbrado público dañado',
-              fecha: '2023-05-16',
-              hora: '20:15',
-              longitud: -99.1345,
-              latitud: 19.4312,
-              estado: 'En revisión'
-            },
-          ];
-          */
-
-          //setIncidents(tempIncidents);
           setLoading(false);
         } catch (err) {
           setError('Error de conexión con la BD');
           setLoading(false);
         }
       };
-  
+      setUserRole(rol);
       fetchData();
     }, []);
   
@@ -113,8 +81,6 @@ interface Incident {
           longitud: -99.1332,
           latitud: 19.4326,
           estatus: newStatus
-
-
         }
 
         const response = await fetch("http://localhost:8080/v1/incident/toolkit", {
@@ -249,7 +215,7 @@ interface Incident {
   return (
     <div className="manage-incidents-container">
       <h2 className="manage-incidents-title">Administración de Incidentes</h2>
-      <DropdownCategories/>
+      {(userRole === '4' ) && ( <DropdownCategories/> )}
       {incidents.length === 0 ? 
       (<div className="no-users">No hay incidentes registrados</div>
       ) : (

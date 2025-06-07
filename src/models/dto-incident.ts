@@ -1,9 +1,9 @@
-export type IncidentStatus = 'reportado' | 'revision' | 'resuelto'; 
+export type IncidentStatus = 'reportado' | 'en revisión' | 'resuelto'; 
 
 export interface IncidentDTO {
-  incidenteID: number;
+  incidenteid: number;
   clienteID: number;
-  categoriaID: number;
+  categoriaid: number;
   nombre: string;
   descripcion: string;
   fecha: string;     
@@ -11,4 +11,5 @@ export interface IncidentDTO {
   longitud: number;
   latitud: number;
   estado: IncidentStatus;
+  likes: number;
 }

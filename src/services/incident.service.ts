@@ -4,28 +4,30 @@ export class IncidentService {
   private static apiUrl = 'http://localhost:8080/v1/incident';
   private static mockIncidents: IncidentDTO[] = [
     {
-      incidenteID: 2,
+      incidenteid: 2,
       clienteID: 102,
-      categoriaID: 3,
+      categoriaid: 3,
       nombre: "Corte eléctrico",
       descripcion: "Zona sin luz por varias horas",
       fecha: "2025-04-24",
       hora: "09:30",
       latitud: 19.4060,
       longitud: -99.1635,
-      estado: "revision"
+      estado: "en revisión",
+      likes: 0
     },
     {
-      incidenteID: 3,
+      incidenteid: 3,
       clienteID: 103,
-      categoriaID: 2,
+      categoriaid: 2,
       nombre: "Semáforo descompuesto",
       descripcion: "Semáforo fuera de servicio en la esquina",
       fecha: "2025-04-23",
       hora: "18:20",
       latitud: 19.4068,
       longitud: -99.1630,
-      estado: "resuelto"
+      estado: "resuelto",
+      likes: 0
     }
   ];
 
@@ -83,7 +85,7 @@ export class IncidentService {
     // Aquí va la lógica del backend 
     const newIncident: IncidentDTO = {
       ...incident,
-      incidenteID: Math.max(...this.mockIncidents.map(i => i.incidenteID), 0) + 1
+      incidenteid: Math.max(...this.mockIncidents.map(i => i.incidenteid), 0) + 1
     };
     this.mockIncidents.push(newIncident);
     this.notifyListeners([...this.mockIncidents]);
@@ -91,7 +93,7 @@ export class IncidentService {
 
   static async updateIncidentStatus(id: number, status: IncidentStatus): Promise<void> {
     // Aquí va la lógica del backend 
-    const incident = this.mockIncidents.find(i => i.incidenteID === id);
+    const incident = this.mockIncidents.find(i => i.incidenteid === id);
     if (incident) {
       incident.estado = status;
       this.notifyListeners([...this.mockIncidents]);
@@ -100,7 +102,30 @@ export class IncidentService {
 
   static async deleteIncident(id: number): Promise<void> {
     // Aquí va la lógica del backend 
-    this.mockIncidents = this.mockIncidents.filter(i => i.incidenteID !== id);
+    this.mockIncidents = this.mockIncidents.filter(i => i.incidenteid !== id);
     this.notifyListeners([...this.mockIncidents]);
   }
+
+
+  static async getIncidentsByUser(userId: number): Promise<IncidentDTO[]> {
+    try {
+      const response = await fetch(`http://localhost:8080/v1/incident/user`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ clienteid: userId }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al obtener incidentes del usuario');
+      }
+      const incidents : IncidentDTO[] = await response.json();
+      return incidents;
+    } catch (error) {
+      console.error('Error fetching user incidents:', error);
+      throw error;
+    }
+  }
+  
 }

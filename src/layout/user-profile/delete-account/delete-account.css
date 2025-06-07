@@ -19,6 +19,7 @@
     width: 33% !important; 
     margin: 0 auto;
   }
+  
   .modal-content {
     width: 100%; 
     display: flex;
@@ -73,10 +74,48 @@
     color: #666;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 1px solid #eee;
   }
 
 
   .question {
-    font-size: 12px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .text-warning {
+    margin-bottom: 10px !important;
+  }
+
+  .text-muted {
+    font-size: 0.9rem;
+    margin-top: 10px;
+  }
+
+  .cancel-button {
+    border-radius: 20px !important;
+    border-color: crimson;
+    background-color: transparent;
+    color:crimson;
+  }
+
+  .cancel-button:hover {
+    border-radius: 20px !important;
+    border-color: crimson;
+    background-color: transparent;
+    color:crimson;
+    transform: scale(1.04);
+  }
+
+  .delete-button {
+    border-radius: 20px !important;
+    border-color: crimson;
+    background-color: crimson;
+    color:rgb(255, 255, 255);
+  }
+
+  .delete-button:hover {
+    border-radius: 20px !important;
+    border-color: crimson;
+    background-color: crimson;
+    color:rgb(255, 255, 255);
+    transform: scale(1.02);
   }

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IncidentDTO } from '../../../models/dto-incident';
 import { Popup } from 'react-leaflet';
-import { FaComment, FaRegComment, FaThumbsUp, FaRegThumbsUp } from 'react-icons/fa';
+import { FaRegComment, FaThumbsUp, FaRegThumbsUp } from 'react-icons/fa';
 import { ChangeStatus } from './change-status/change-status';
-import './incident-popup.css'; 
+import { CommentSection } from './comment-section/comment-section';
+import ModalFullIncidentView from './incident-view/incident-view';
+import './incident-popup.css';
 
 interface IncidentPopupProps {
   incident: IncidentDTO;
@@ -11,67 +13,142 @@ interface IncidentPopupProps {
 }
 
 export const IncidentPopup: React.FC<IncidentPopupProps> = ({ incident, onClose }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showCommentSectionModal, setShowCommentSectionModal] = useState(false);
+  const [showFullIncidentModal, setShowFullIncidentModal] = useState(false);
   const [likes, setLikes] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [comment_count, setCommentCount] = useState<number>(0);
+  const [tempLikeCount, setTempLikeCount] = useState(incident.likes);
+  const [calle, setCalle] = useState<string>('...');
+  const [colonia, setColonia] = useState<string>('...');
+  const [ciudad, setCiudad] = useState<string>('...');
+  const userIdStr = sessionStorage.getItem("clienteid");
+  const userId = Number(userIdStr);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    setIsAuthenticated(!!token); 
+    setLikes(incident.likes);
+  }, [incident]);
+
+  useEffect(() => {
+    const fetchDireccion = async () => {
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${incident.latitud}&lon=${incident.longitud}`
+        );
+        const data = await response.json();
+        const address = data.address;
+
+        setCalle(address.road || address.pedestrian || address.path || 'No disponible');
+        setColonia(address.neighbourhood || address.suburb || address.village || 'No disponible');
+        setCiudad(address.city || address.town || address.village || address.county || 'No disponible');
+      } catch (error) {
+        console.error('Error al obtener la dirección:', error);
+        setCalle('No disponible');
+        setColonia('No disponible');
+        setCiudad('No disponible');
+      }
+    };
+
+    fetchDireccion();
+  }, [incident.latitud, incident.longitud]);
 
   const handleStatusChange = (newStatus: string, evidenceFiles: File[]) => {
-    // Aquí va la lógica para enviar el reporte al backend
     console.log("Nuevo estado:", newStatus, "Evidencia:", evidenceFiles);
   };
 
-  const handleLikeClick = () => {
-    if (isLiked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
+  const handleLikeClick = async () => {
+    try {
+      setTempLikeCount(incident.likes);
+      isLiked ? setTempLikeCount(incident.likes)  : setTempLikeCount(incident.likes + 1);
+      const endpoint = isLiked ? 'dislike' : 'like';
+      const response = await fetch(`http://localhost:8080/v1/incident/${endpoint}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ incidenteid: incident.incidenteid, estatus: ""}),
+      });
+      if (response.ok) {
+        const updatedLikes = await response.json();
+        setLikes(updatedLikes);
+        setIsLiked(!isLiked);
+      } else {
+        console.error("Error al actualizar like");
+      }
+    } catch (error) {
+      console.error("Error en la solicitud de like:", error);
     }
-    setIsLiked(!isLiked);
+  };
+
+  const handleIncidentNameClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowFullIncidentModal(true);
   };
 
   return (
-    <Popup
-      className="incident-popup-custom"
-      closeButton={false}
-      onClose={onClose}
-    >
+    <Popup className="incident-popup-custom" closeButton={true}>
       <div onClick={(e) => e.stopPropagation()} className="popup-container">
-        <div className="popup-header">
-          <button 
-            type="button" 
-            className="btn-close popup-close-btn" 
-            onClick={onClose}
-          />
-        </div>
-        
+        <div className="popup-header"></div>
+
         <div className="popup-category">
-          <a href="/#" className="category-link">{incident.nombre}</a>  
+          <a
+            href="#"
+            className={`category-link ${!isAuthenticated ? 'disabled' : ''}`}
+            onClick={handleIncidentNameClick}
+          >
+            {incident.nombre}
+          </a>
         </div>
-    
+
         <div className="popup-content">
           <p><strong>Fecha:</strong> {new Date(incident.fecha).toLocaleDateString()}</p>
-          <p><strong>Ubicación:</strong> {incident.latitud.toFixed(4)}, {incident.longitud.toFixed(4)}</p>
+          <p><strong>Coordenadas:</strong> {incident.latitud.toFixed(4)}, {incident.longitud.toFixed(4)}</p>
+          <p>{ciudad}, {colonia}, {calle}</p>
         </div>
-        
-        <div className="popup-footer" style={{ zIndex: 900000 }}>
-        <button className="change-status-report" onClick={() => setShowStatusModal(true)}>
-          Cambio de estado
-        </button>
-          <div className="popup-icons-left">
-            <span className="like-container" onClick={handleLikeClick}>
-              {isLiked ? (
-                <FaThumbsUp className="incident-popup-like liked" />
-              ) : (
-                <FaRegThumbsUp className="incident-popup-like" />
-              )}
-              <span className="like-count">{likes}</span>
-            </span>
-            <FaRegComment className="incident-popup-comment" />
+
+        {isAuthenticated && (
+          <div className="popup-footer" style={{ zIndex: 900000 }}>
+            <button className="change-status-report" onClick={() => setShowStatusModal(true)}>
+              Cambio de estado
+            </button>
+            <div className="popup-icons-left">
+              <span className="like-container" onClick={handleLikeClick}>
+                {isLiked ? (
+                  <FaThumbsUp className="incident-popup-like liked" />
+                ) : (
+                  <FaRegThumbsUp className="incident-popup-like" />
+                )}
+                <span className="like-count">{tempLikeCount}</span>
+              </span>
+              <span className="comment-container" onClick={() => setShowCommentSectionModal(true)}>
+                <FaRegComment className="incident-popup-comment" />
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      <ChangeStatus show={showStatusModal} onHide={() => setShowStatusModal(false)}/>
+      <ChangeStatus 
+        show={showStatusModal} 
+        onHide={() => setShowStatusModal(false)} 
+      />
+      <CommentSection
+        show={showCommentSectionModal}
+        onHide={() => setShowCommentSectionModal(false)}
+        incidenteid={incident.incidenteid}
+        currentUserID={userId} 
+      />
+      <ModalFullIncidentView 
+        mostrar={showFullIncidentModal} 
+        onHide={() => setShowFullIncidentModal(false)} 
+        incident={incident} 
+      />
     </Popup>
   );
 };

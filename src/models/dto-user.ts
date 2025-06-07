@@ -1,13 +1,13 @@
- import { IncidentDTO } from "./dto-incident";
+export type UserRole = '1' | '2' | '3';
 
- export interface UserDTO {
-  username: string;
+export interface UserDTO {
+  clienteid: number;
+  userName: string;
   nombre: string;
   apPaterno: string;
   apMaterno: string;
   correo: string;
-  password?: string;
-  token?: string;
+  rolid: string;
 }
 
   /**
@@ -22,6 +22,5 @@
         lastName: string;
         motherLastName: string;
         token?: string;
-        incidents: IncidentDTO[];
     }
    */
