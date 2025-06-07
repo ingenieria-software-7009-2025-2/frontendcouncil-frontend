@@ -11,13 +11,27 @@ const UserIncidents: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const userIdStr = sessionStorage.getItem("clienteid");
   const userId = Number(userIdStr);
-  
+
+  const [reportado, setReportado] = useState<number>(0);
+  const [revision, setRevision] = useState<number>(0);
+  const [resuelto, setResuelto] = useState<number>(0);
+
+
   useEffect(() => {
   const loadIncidents = async () => {
     try {
       setLoading(true); // Activamos el estado de carga
       const incidents = await IncidentService.getIncidentsByUser(userId);
       setIncidents(incidents); // Guardamos los datos
+
+      const r1 = incidents.filter(i => i.estado === "reportado").length;
+      const r2 = incidents.filter(i => i.estado === "en revisión").length;
+      const r3 = incidents.filter(i => i.estado === "resuelto").length;
+
+      setReportado(r1);
+      setRevision(r2);
+      setResuelto(r3);
+
       setError(null); // Limpiamos errores previos
     } catch (err) {
       setError('Error al cargar los incidentes'); // Mostramos error
@@ -64,6 +78,8 @@ const UserIncidents: React.FC = () => {
     return <div>Cargando incidentes...</div>;
   }*/
 
+
+
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
@@ -80,7 +96,7 @@ const UserIncidents: React.FC = () => {
         <Row className="mb-4 text-center">
           <Col md={4}>
             <div className="incident-stat-card">
-              <h3 className="stat-number">0</h3>
+              <h3 className="stat-number">{reportado}</h3>
               <p className="stat-label">Reportados</p>
             </div>
           </Col>
