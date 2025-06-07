@@ -34,7 +34,7 @@ const Filter = ({ onFilterChange, onCategoryChange }: FilterProps) => {
       
       // Inicializar todas las categorías como activadas
       const initialCategoryStates = loadedCategories.reduce((acc, category) => {
-        acc[category.id] = true;
+        acc[category.categoriaid] = true;
         return acc;
       }, {} as Record<number, boolean>);
       
@@ -106,13 +106,13 @@ const Filter = ({ onFilterChange, onCategoryChange }: FilterProps) => {
 
           <Dropdown.Divider />
           {categories.map(category => (
-            <Dropdown.Item as="div" className="menu-item" key={category.id}>
+            <Dropdown.Item as="div" className="menu-item" key={category.categoriaid}>
               <div className="d-flex justify-content-between align-items-center w-100">
                 <span>{category.icon} {category.name}</span>
                 <ToggleSwitch 
-                  id={`filter-category-${category.id}`}
-                  isOn={categoryStates[category.id] || false}
-                  onChange={handleCategoryToggle(category.id)}
+                  id={`filter-category-${category.categoriaid}`}
+                  isOn={categoryStates[category.categoriaid] || false}
+                  onChange={handleCategoryToggle(category.categoriaid)}
                 />
               </div>
             </Dropdown.Item>

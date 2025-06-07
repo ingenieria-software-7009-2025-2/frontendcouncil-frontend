@@ -6,7 +6,7 @@ export class IncidentService {
     {
       incidenteid: 2,
       clienteID: 102,
-      categoriaID: 3,
+      categoriaid: 3,
       nombre: "Corte eléctrico",
       descripcion: "Zona sin luz por varias horas",
       fecha: "2025-04-24",
@@ -19,7 +19,7 @@ export class IncidentService {
     {
       incidenteid: 3,
       clienteID: 103,
-      categoriaID: 2,
+      categoriaid: 2,
       nombre: "Semáforo descompuesto",
       descripcion: "Semáforo fuera de servicio en la esquina",
       fecha: "2025-04-23",

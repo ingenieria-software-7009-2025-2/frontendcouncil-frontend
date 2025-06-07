@@ -3,7 +3,7 @@ export type IncidentStatus = 'reportado' | 'en revisión' | 'resuelto';
 export interface IncidentDTO {
   incidenteid: number;
   clienteID: number;
-  categoriaID: number;
+  categoriaid: number;
   nombre: string;
   descripcion: string;
   fecha: string;     

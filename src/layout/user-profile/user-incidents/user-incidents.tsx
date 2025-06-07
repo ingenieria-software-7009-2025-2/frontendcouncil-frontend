@@ -122,7 +122,7 @@ const UserIncidents: React.FC = () => {
                   <tr key={incident.incidenteid} className="hover:bg-gray-50">
                     <td className="py-2 px-4 border-b border-gray-200">{incident.nombre}</td>
                     <td className="py-2 px-4 border-b border-gray-200">
-                      {incident.categoriaID}
+                      {incident.categoriaid}
                     </td>
                     <td className="py-2 px-4 border-b border-gray-200">
                       Lat: {incident.latitud.toFixed(4)}, Long: {incident.longitud.toFixed(4)}

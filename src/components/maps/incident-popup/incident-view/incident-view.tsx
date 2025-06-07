@@ -100,24 +100,12 @@ const ModalFullIncidentView: React.FC<ModalFullIncidentViewProps> = ({
 
   // Convertir Uint8Array a base64 para mostrar las imágenes
   const byteArrayToBase64 = (bytes: Uint8Array): string => {
-    let binary = '';
-    const len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
-  };
+  const binary = bytes.reduce((acc, byte) => acc + String.fromCharCode(byte), '');
+  return window.btoa(binary);
+};
 
   return (
-    <Modal 
-      show={mostrar} 
-      onHide={onHide} 
-      centered 
-      backdrop="static" 
-      size="xl"
-      dialogClassName="modal-wide"
-      style={{ zIndex: 900000 }}
-    >
+    <Modal show={mostrar} onHide={onHide} centered backdrop="static" dialogClassName="modal-wide" style={{ zIndex: 900000 }}>
       <Modal.Header closeButton className="border-0 pb-0">
         <Modal.Title className="w-100 text-center"> </Modal.Title>
       </Modal.Header>

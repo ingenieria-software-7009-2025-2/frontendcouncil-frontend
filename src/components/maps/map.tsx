@@ -159,7 +159,7 @@ const MapComponent: React.FC = () => {
     // Filtrar por categoría
     const categoryMatch = 
       Object.keys(filters.categories).length === 0 || // Si no hay categorías seleccionadas
-      (incident.categoriaID && filters.categories[incident.categoriaID]);
+      (incident.categoriaid && filters.categories[incident.categoriaid]);
     
     return statusMatch && categoryMatch;
   });
