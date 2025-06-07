@@ -6,7 +6,9 @@ export class CommentService {
   // Método para obtener todos los comentarios y filtrarlos por incidenteid
   public async getCommentsByIncidentId(incidenteid: number): Promise<CommentDTO[]> {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/v1/comment/all`);
+      const response = await fetch(`${this.apiBaseUrl}/v1/comment/all`,{
+        method: 'GET'
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

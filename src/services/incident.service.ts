@@ -109,8 +109,8 @@ export class IncidentService {
 
   static async getIncidentsByUser(userId: number): Promise<IncidentDTO[]> {
     try {
-      const response = await fetch(`${this.apiUrl}/user?clienteid=${userId}`, {
-        method: "GET",
+      const response = await fetch(`http://localhost:8080/v1/incident/user`, {
+        method: "POST",
         headers: {
            'Content-Type': 'application/json',
         },
