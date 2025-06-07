@@ -1,23 +1,67 @@
-import { PhotoDTO, PhotoBody } from '../models/dto-photo';
+import { PhotoDTO } from '../models/dto-photo';
 
 export class PhotoService {
-  private baseUrl: string = 'http://tu-backend.com/api/v1/photos'; // Ajusta esta URL
+  private apiUrl = 'http://localhost:8080/v1/photos';
+
+  async uploadPhoto(incidenteid: string, photoFile: File): Promise<PhotoDTO> {
+    try {
+      const byteArray = await this.fileToByteArray(photoFile);
+
+      // Estructura que coincide exactamente con PhotoBody del backend
+      const photoData = {
+        fotoid: Array.from(byteArray), // Convertir Uint8Array a array normal
+        incidenteid: incidenteid
+      };
+
+      const token = sessionStorage.getItem("token");
+      const response = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(photoData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al subir la foto');
+      }
+
+      const responseData = await response.json();
+      
+      // Convertir el array de bytes de vuelta a Uint8Array
+      return {
+        fotoid: new Uint8Array(responseData.fotoid),
+        incidenteid: responseData.incidenteid
+      };
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      throw error;
+    }
+  }
+
+  private fileToByteArray(file: File): Promise<Uint8Array> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onload = () => {
+        if (reader.result) {
+          resolve(new Uint8Array(reader.result as ArrayBuffer));
+        } else {
+          reject(new Error('No se pudo leer el archivo'));
+        }
+      };
+      reader.onerror = error => reject(error);
+    });
+  }
 
   async getPhotosByIncident(incidentId: string): Promise<PhotoDTO[]> {
-    const requestBody = {
-      fotoid: new Uint8Array(), // ByteArray vacío
-      incidenteid: incidentId
-    };
-
-    const response = await fetch(this.baseUrl, {
-      method: 'POST',
+    const response = await fetch(`${this.apiUrl}?incidenteid=${incidentId}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...requestBody,
-        fotoid: Array.from(requestBody.fotoid) // Convertir Uint8Array a array normal para JSON
-      })
+      }
     });
 
     if (!response.ok) {
@@ -26,70 +70,8 @@ export class PhotoService {
 
     const data = await response.json();
     return data.map((photo: any) => ({
-      ...photo,
-      fotoid: new Uint8Array(photo.fotoid) // Convertir array a Uint8Array
+      fotoid: new Uint8Array(photo.fotoid),
+      incidenteid: photo.incidenteid
     }));
   }
-
-  async uploadPhoto(incidentId: string, file: File): Promise<PhotoDTO> {
-    const arrayBuffer = await file.arrayBuffer();
-    const requestBody = {
-      fotoid: new Uint8Array(arrayBuffer),
-      incidenteid: incidentId
-    };
-
-    const response = await fetch(this.baseUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...requestBody,
-        fotoid: Array.from(requestBody.fotoid) // Convertir para JSON
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return {
-      ...data,
-      fotoid: new Uint8Array(data.fotoid)
-    };
-  }
-
-  // Método para mostrar fotos como URL (crea URL temporal)
-  createPhotoUrl(photo: PhotoDTO): string {
-    const blob = new Blob([photo.fotoid], { type: 'image/jpeg' }); // Ajusta el tipo MIME
-    return URL.createObjectURL(blob);
-  }
-
-  async uploadPhotos(incidentId: string, files: File[]): Promise<void> {
-    const token = sessionStorage.getItem("token");
-    
-    // Subir cada foto individualmente
-    await Promise.all(files.map(async (file) => {
-      const arrayBuffer = await file.arrayBuffer();
-      const photoBody = {
-        fotoid: Array.from(new Uint8Array(arrayBuffer)), // Convertir a array para JSON
-        incidenteid: incidentId
-      };
-
-      const response = await fetch(this.baseUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(photoBody)
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error al subir foto: ${response.status}`);
-      }
-    }));
-  }
-
 }

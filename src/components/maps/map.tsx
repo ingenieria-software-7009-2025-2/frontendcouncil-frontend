@@ -170,7 +170,7 @@ const MapComponent: React.FC = () => {
         <Container>
           <div className="search-container" style={{ zIndex: 900000 }}>
             <div className="menuH">
-              <Filter onFilterChange={handleFilterChange} onCategoryChange={() => {}} />
+              <Filter onFilterChange={handleFilterChange} onCategoryChange={handleCategoryChange} />
             </div>
             <SearchBar onLocationSelect={handleLocationSelect}/>
           </div>
