@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Modal, Button, Form, Carousel, Spinner } from 'react-bootstrap';
 import { XCircle, GeoAlt, Upload } from 'react-bootstrap-icons';
+import { PhotoService } from '../../services/photo.service';
 import './report-incidents.css'
 
 interface ReportIncidentModalProps {
@@ -108,17 +109,29 @@ const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
       if (!response.ok) {
         throw new Error('Error al enviar el incidente');
       }
-  
-      alert('Incidente reportado correctamente');
-      resetForm();
-      onHide();
-    } catch (error) {
-      console.error(error);
-      alert('Ocurrió un error al enviar el incidente');
-    } finally {
-      setIsLoading(false);
+      const incidentData = await response.json();
+      const incidentId = incidentData.incidenteid;
+
+    // 2. Subir cada foto asociada al incidente
+    if (photos.length > 0) {
+      const photoService = new PhotoService();
+      const uploadPromises = photos.map(photo => 
+        photoService.uploadPhoto(incidentId, photo)
+      );
+      
+      await Promise.all(uploadPromises);
     }
-  };  
+
+    alert('Incidente reportado correctamente con las fotos');
+    resetForm();
+    onHide();
+  } catch (error) {
+    console.error(error);
+    alert('Ocurrió un error al enviar el incidente o las fotos');
+  } finally {
+    setIsLoading(false);
+  }
+};
   
   // Resetear formulario al cerrar
   const resetForm = () => {
